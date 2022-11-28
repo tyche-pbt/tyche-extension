@@ -74,3 +74,11 @@
     font-size: 1.5em;
   }
 }
+
+.ExampleView {
+  .page-buttons {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+  }
+}
