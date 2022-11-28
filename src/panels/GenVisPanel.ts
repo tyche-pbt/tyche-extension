@@ -199,7 +199,7 @@ export class GenVisPanel {
           <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
           <meta name="theme-color" content="#000000">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
-          <title>Hello World</title>
+          <title>Generator Visualizer</title>
         </head>
         <body>
           <noscript>You need to enable JavaScript to run this app.</noscript>

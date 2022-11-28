@@ -1,16 +1,14 @@
 import * as React from "react";
 import "./App.scss";
 
-import { FeatureChart } from "./FeatureChart";
-import { FilterChart } from "./FilterChart";
-import { ExtremeExamples } from "./ExtremeExamples";
 import { SampleInfo } from "./datatypes";
-import { HighLevelStats } from "./HighLevelStats";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 import genTreeData from "./demo-data/genTree.json";
+import { MainView } from "./MainView";
+import { ExampleView } from "./ExampleView";
 
 type LoadDataCommand = {
   genName: string;
@@ -25,6 +23,7 @@ const App = (_props: AppProps) => {
   // const [dataset, setDataset] = useState<SampleInfo[]>([]);
   // const [activeFeatures, setActiveFeatures] = useState<string[]>([]);
   // const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [pageView, setPageView] = useState<"main" | "examples">("main");
 
   const [loading, setLoading] = useState(false);
   const [genName, setGenName] = useState("genTree");
@@ -63,33 +62,22 @@ const App = (_props: AppProps) => {
 
   return (
     <div className="App">
-      <VSCodeButton className="refresh-button" onClick={refreshData}>
-        ↺
-      </VSCodeButton>
+      <div className="top-buttons">
+        <VSCodeButton
+          style={{ marginRight: "10px" }}
+          onClick={() => pageView === "main" ? setPageView("examples") : setPageView("main")}
+        >
+          {pageView === "main" ? "See More Examples" : "Back to Main"}
+        </VSCodeButton>
+        <VSCodeButton onClick={refreshData}>
+          ↺
+        </VSCodeButton>
+      </div>
 
       <div className="pane-title"><code>{genName}</code></div>
 
-      <HighLevelStats dataset={dataset} />
-
-      {activeFeatures.map((x) =>
-        <div>
-          <FeatureChart
-            feature={x}
-            dataset={dataset}
-            filters={activeFilters}
-          ></FeatureChart>
-
-          <ExtremeExamples
-            feature={x}
-            dataset={dataset}
-            filters={activeFilters}
-          ></ExtremeExamples>
-        </div>
-      )}
-
-      {activeFilters.map((x) =>
-        <FilterChart filter={x} dataset={dataset}></FilterChart>
-      )}
+      {pageView === "main" && <MainView dataset={dataset} activeFeatures={activeFeatures} activeFilters={activeFilters} />}
+      {pageView === "examples" && <ExampleView dataset={dataset}></ExampleView>}
     </div>
   );
 }

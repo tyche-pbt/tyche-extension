@@ -1,38 +1,25 @@
 import Graphviz from "graphviz-react";
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import useMeasure from "react-use-measure";
+import "./ExampleDOT.scss";
 
 type ExampleDOTProps = {
   dot: string;
+  styleDOT?: React.CSSProperties;
+  onClickDOT?: () => void;
 };
 
-const useResize = (ref: RefObject<HTMLDivElement>) => {
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
-
-  const handleResize = useCallback(() => {
-    setWidth(ref.current!.offsetWidth)
-    setHeight(ref.current!.offsetHeight)
-  }, [ref])
-
-  useEffect(() => {
-    window.addEventListener('load', handleResize)
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('load', handleResize)
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [ref, handleResize])
-
-  return { width, height }
-}
-
 export const ExampleDOT = (props: ExampleDOTProps) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const [ref, { width }] = useMeasure();
 
-  const { width, height } = useResize(ref);
+  const [expanded, setExpanded] = useState(false);
 
-  return <div className="graphviz" ref={ref}>
-    <Graphviz dot={props.dot} options={{ height, width }}></Graphviz>
+  return <div className="ExampleDOT" ref={ref}>
+    <div onClick={() => props.onClickDOT && props.onClickDOT()} style={props.styleDOT}>
+      <Graphviz dot={props.dot} options={{ height: expanded ? width : 150, width }} ></Graphviz>
+    </div>
+    <div className="expander">
+      <span onClick={e => setExpanded(!expanded)}>{expanded ? "⌃" : "⌄"}</span>
+    </div>
   </div>;
 };

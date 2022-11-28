@@ -1,8 +1,13 @@
+.App {
+  margin: 0;
+  padding: 0;
+}
+
 .toggle {
   cursor: pointer;
 }
 
-.refresh-button {
+.top-buttons {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -51,62 +56,21 @@
 
 .ExtremeExamples {
   position: relative;
-  margin: 10px auto;
-  box-sizing: border-box;
-  display: block;
   width: 100%;
   padding: 10px;
-  border: 1px solid #ECEFF4;
 
-  .view-toggle {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+  .ee-title {
+    margin-bottom: 10px;
   }
 
-  .ee-title:not(:first-child) {
-    margin-top: 5px;
-  }
-
-  .ee-example {
-    width: 100%;
-    font-size: 1.5em;
-
-    code {
-      overflow-wrap: anywhere;
-    }
-  }
-
-  .graphviz {
-    height: 200px;
-    width: 100%;
-    margin: 5px auto;
+  .ee-container:not(:first-child) {
+    margin-top: 10px;
   }
 }
 
-.FeatureSourceCustomizer {
-  position: fixed;
-  padding: 0 10px 10px 10px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  background-color: rgba($color: #888, $alpha: 0.8);
-  display: flex;
-  align-items: flex-start;
-
-  .feature-picker {
-    flex-grow: 1;
-
-    label {
-      display: block;
-    }
-  }
-
-  .filter-picker {
-    flex-grow: 1;
-
-    label {
-      display: block;
-    }
+.PrettyExample {
+  code {
+    overflow-wrap: anywhere;
+    font-size: 1.5em;
   }
 }
