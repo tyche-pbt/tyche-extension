@@ -1,0 +1,112 @@
+.toggle {
+  cursor: pointer;
+}
+
+.refresh-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.pane-title {
+  padding: 10px;
+  font-size: 1.5em;
+}
+
+.FeatureChart {
+  margin: 20px 0 10px 0;
+
+  .chart-title {
+    padding-right: 10px;
+    text-align: right;
+  }
+}
+
+.FilterChart {
+  margin: 10px auto;
+
+  .chart-title {
+    padding-right: 10px;
+    text-align: right;
+  }
+}
+
+.HighLevelStats {
+  display: flex;
+  padding: 10px;
+
+  .stat {
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  .stat-title {
+    font-weight: bold;
+  }
+
+  .stat-number {
+    font-size: 2em;
+  }
+}
+
+.ExtremeExamples {
+  position: relative;
+  margin: 10px auto;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ECEFF4;
+
+  .view-toggle {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+
+  .ee-title:not(:first-child) {
+    margin-top: 5px;
+  }
+
+  .ee-example {
+    width: 100%;
+    font-size: 1.5em;
+
+    code {
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .graphviz {
+    height: 200px;
+    width: 100%;
+    margin: 5px auto;
+  }
+}
+
+.FeatureSourceCustomizer {
+  position: fixed;
+  padding: 0 10px 10px 10px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba($color: #888, $alpha: 0.8);
+  display: flex;
+  align-items: flex-start;
+
+  .feature-picker {
+    flex-grow: 1;
+
+    label {
+      display: block;
+    }
+  }
+
+  .filter-picker {
+    flex-grow: 1;
+
+    label {
+      display: block;
+    }
+  }
+}
