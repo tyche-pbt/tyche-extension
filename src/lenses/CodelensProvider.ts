@@ -6,9 +6,11 @@ export class CodelensProvider implements vscode.CodeLensProvider {
   private regex: RegExp;
   private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
+  private _extensionUri: vscode.Uri;
 
-  constructor() {
-    this.regex = /gen\w+ :: Gen .+/g; // TODO Fix
+  constructor(extensionUri: vscode.Uri) {
+    this.regex = /gen(\w|\d)+ :: Gen .+/g; // TODO Fix
+    this._extensionUri = extensionUri;
   }
 
   public provideCodeLenses(
@@ -30,7 +32,7 @@ export class CodelensProvider implements vscode.CodeLensProvider {
             title: "GenVis: Visualize Generator Distribution",
             tooltip: "Click this to visualize your generator.",
             command: "gen-vis.select-generator-inline",
-            arguments: [document, range]
+            arguments: [document, range, this._extensionUri]
           }
         ));
       }

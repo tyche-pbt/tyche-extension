@@ -3,10 +3,10 @@ import { CodelensProvider } from "./lenses/CodelensProvider";
 import { GenVisPanel } from "./panels/GenVisPanel";
 
 export function activate(context: ExtensionContext) {
-  languages.registerCodeLensProvider({ language: "haskell" }, new CodelensProvider());
+  languages.registerCodeLensProvider({ language: "haskell" }, new CodelensProvider(context.extensionUri));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.view-visualization", () => {
-    GenVisPanel.render(context.extensionUri);
+    GenVisPanel.render(context.extensionUri, true);
   }));
 
   context.subscriptions.push(commands.registerCommand('gen-vis.pick-new-data', () => {
@@ -18,7 +18,7 @@ export function activate(context: ExtensionContext) {
   }));
 
   context.subscriptions.push(commands.registerCommand('gen-vis.select-generator-inline', (document, range) => {
-    GenVisPanel.selectGeneratorInline(document, range);
+    GenVisPanel.selectGeneratorInline(document, range, context.extensionUri);
   }));
 
 }

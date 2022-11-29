@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
+import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocument } from "vscode";
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
+import { exec } from "child_process";
 
 const posixPath = path.posix || path;
 
@@ -31,7 +32,8 @@ export class GenVisPanel {
   public static currentPanel: GenVisPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _lastUri: vscode.Uri | undefined = undefined;
+  private _lastSource: vscode.Uri | { document: TextDocument, range: vscode.Range } | undefined = undefined;
+  private _outChannel: vscode.OutputChannel;
 
   /**
    * The HelloWorldPanel class private constructor (called only from the render method).
@@ -51,6 +53,12 @@ export class GenVisPanel {
 
     // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
+
+    this._outChannel = vscode.window.createOutputChannel("Generator Visualizer");
+  }
+
+  public showInformation(x: string) {
+    this._outChannel.appendLine(x);
   }
 
   /**
@@ -59,7 +67,7 @@ export class GenVisPanel {
    *
    * @param extensionUri The URI of the directory containing the extension.
    */
-  public static render(extensionUri: Uri) {
+  public static render(extensionUri: Uri, loadData: boolean) {
     if (GenVisPanel.currentPanel) {
       // If the webview panel already exists reveal it
       GenVisPanel.currentPanel._panel.reveal(ViewColumn.One);
@@ -80,7 +88,10 @@ export class GenVisPanel {
       );
 
       GenVisPanel.currentPanel = new GenVisPanel(panel, extensionUri);
-      GenVisPanel.currentPanel.loadDataFromFile();
+
+      if (loadData) {
+        GenVisPanel.currentPanel.loadDataFromFile();
+      }
     }
   }
 
@@ -102,10 +113,14 @@ export class GenVisPanel {
     }
   }
 
-  static selectGeneratorInline(document: any, range: any) {
-    const word = document.getText(document.getWordRangeAtPosition(range.start));
-    vscode.window.showInformationMessage(word);
-    // TODO Actually run the generator
+  static selectGeneratorInline(document: TextDocument, range: vscode.Range, extensionUri: Uri) {
+    if (!GenVisPanel.currentPanel) {
+      GenVisPanel.render(extensionUri, false);
+    }
+
+    GenVisPanel.currentPanel!.loadDataFromGenerator(document, range, () => {
+      vscode.window.showInformationMessage("Loaded data from generator.");
+    });
   }
 
   public static refreshData() {
@@ -126,22 +141,30 @@ export class GenVisPanel {
   }
 
   public refreshDataInFile() {
-    if (!this._lastUri) {
+    if (!this._lastSource) {
       vscode.window.showErrorMessage("No data source to refresh.");
       return;
     }
-    const uri = this._lastUri;
 
-    const dataset: SampleInfo[] =
-      JSON.parse(fs.readFileSync(uri.fsPath, 'utf8'));
+    if (this._lastSource instanceof vscode.Uri) {
+      const uri = this._lastSource;
 
-    this._panel.webview.postMessage({
-      command: 'load-data',
-      genName: posixPath.basename(uri.path).split('.')[0],
-      dataset,
-    });
+      const dataset: SampleInfo[] =
+        JSON.parse(fs.readFileSync(uri.fsPath, 'utf8'));
 
-    vscode.window.showInformationMessage("Data refreshed.");
+      this._panel.webview.postMessage({
+        command: 'load-data',
+        genName: posixPath.basename(uri.path).split('.')[0],
+        dataset,
+      });
+      vscode.window.showInformationMessage("Data refreshed.");
+    } else {
+      const { document, range } = this._lastSource;
+      this.loadDataFromGenerator(document, range, () => {
+        vscode.window.showInformationMessage("Data refreshed.");
+      });
+    }
+
   }
 
   public loadDataFromFile() {
@@ -161,10 +184,48 @@ export class GenVisPanel {
             genName: posixPath.basename(fileUri[0].path).split('.')[0],
             dataset,
           });
-          GenVisPanel.currentPanel._lastUri = fileUri[0];
+          GenVisPanel.currentPanel._lastSource = fileUri[0];
         }
       }
     });
+  }
+
+  public loadDataFromGenerator(document: TextDocument, range: vscode.Range, callback?: () => void) {
+    const wsFolders = vscode.workspace.workspaceFolders;
+    const genName = document.getText(document.getWordRangeAtPosition(range.start));
+
+    if (!wsFolders || wsFolders.length === 0) {
+      vscode.window.showErrorMessage("No active workspace. Please open a workspace with a cabal project.");
+      return;
+    }
+
+    this.showInformation(`Sampling data from ${genName}...`);
+    const runCommand = `cd ${wsFolders[0].uri.path}; cabal v2-run gen-vis-runner -- ${genName}`;
+    exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
+      if (err) {
+        vscode.window.showErrorMessage(err.message + stderr);
+        return;
+      }
+
+      const jsonStr = stdout.split("-----")[1];
+      if (!jsonStr) {
+        vscode.window.showErrorMessage("Invalid data returned from generator.");
+        return;
+      }
+      const dataset: SampleInfo[] = JSON.parse(jsonStr);
+
+      this.showInformation(`Got ${dataset.length} samples from ${genName}.`);
+
+      this._panel.webview.postMessage({
+        command: 'load-data',
+        genName: posixPath.basename(genName).split('.')[0],
+        dataset,
+      });
+
+      callback && callback();
+    });
+
+    this._lastSource = { document, range };
   }
 
   /**
