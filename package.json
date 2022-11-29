@@ -10,6 +10,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:haskell",
     "onCommand:gen-vis.view-visualization",
     "onCommand:gen-vis.pick-new-data",
     "onCommand:gen-vis.refresh-data"

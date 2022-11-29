@@ -102,6 +102,12 @@ export class GenVisPanel {
     }
   }
 
+  static selectGeneratorInline(document: any, range: any) {
+    const word = document.getText(document.getWordRangeAtPosition(range.start));
+    vscode.window.showInformationMessage(word);
+    // TODO Actually run the generator
+  }
+
   public static refreshData() {
     if (!GenVisPanel.currentPanel) {
       vscode.window.showErrorMessage("No active visualization to update.");
