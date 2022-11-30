@@ -8,3 +8,8 @@ export type SampleInfo = {
     [key: string]: boolean;
   };
 };
+
+export type PageState =
+  { state: "main" }
+  | { state: "examples" }
+  | { state: "filtered", feature: string, value: number };

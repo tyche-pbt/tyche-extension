@@ -119,7 +119,7 @@ export class GenVisPanel {
     }
 
     GenVisPanel.currentPanel!.loadDataFromGenerator(document, range, () => {
-      vscode.window.showInformationMessage("Loaded data from generator.");
+      // vscode.window.showInformationMessage("Loaded data from generator.",);
     });
   }
 
@@ -155,19 +155,24 @@ export class GenVisPanel {
       this._panel.webview.postMessage({
         command: 'load-data',
         genName: posixPath.basename(uri.path).split('.')[0],
+        genSource: `File: ${uri.path}`,
         dataset,
       });
-      vscode.window.showInformationMessage("Data refreshed.");
+      // vscode.window.showInformationMessage("Data refreshed.");
     } else {
       const { document, range } = this._lastSource;
       this.loadDataFromGenerator(document, range, () => {
-        vscode.window.showInformationMessage("Data refreshed.");
+        // vscode.window.showInformationMessage("Data refreshed.");
       });
     }
 
   }
 
   public loadDataFromFile() {
+    this._panel.webview.postMessage({
+      command: 'clear-data',
+    });
+
     vscode.window.showOpenDialog({
       canSelectMany: false,
       openLabel: 'Load New Data',
@@ -199,6 +204,10 @@ export class GenVisPanel {
       return;
     }
 
+    this._panel.webview.postMessage({
+      command: 'clear-data',
+    });
+
     this.showInformation(`Sampling data from ${genName}...`);
     const runCommand = `cd ${wsFolders[0].uri.path}; cabal v2-run gen-vis-runner -- ${genName}`;
     exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
@@ -218,7 +227,8 @@ export class GenVisPanel {
 
       this._panel.webview.postMessage({
         command: 'load-data',
-        genName: posixPath.basename(genName).split('.')[0],
+        genName: genName,
+        genSource: `Live: ${document.fileName}:${genName}`,
         dataset,
       });
 

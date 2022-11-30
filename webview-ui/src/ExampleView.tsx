@@ -7,16 +7,18 @@ type ExampleViewProps = {
   dataset: SampleInfo[];
 };
 
+const PAGE_LEN = 10;
+
 export const ExampleView = (props: ExampleViewProps) => {
   const [page, setPage] = useState(0);
 
   return (<div className="ExampleView">
-    {props.dataset.slice(page, page + 4).flatMap(x => [<VSCodeDivider />, <PrettyExample example={x} />]).slice(1)}
+    {props.dataset.slice(page, page + PAGE_LEN).flatMap(x => [<VSCodeDivider />, <PrettyExample example={x} />]).slice(1)}
     <div className="page-buttons">
-      <VSCodeButton onClick={() => setPage(page < 4 ? props.dataset.length - 4 : page - 4)}>
+      <VSCodeButton onClick={() => setPage(page < PAGE_LEN ? props.dataset.length - PAGE_LEN : page - PAGE_LEN)}>
         ◀
       </VSCodeButton>
-      <VSCodeButton onClick={() => setPage(page + 4 >= props.dataset.length ? 0 : page + 4)}>
+      <VSCodeButton onClick={() => setPage(page + PAGE_LEN >= props.dataset.length ? 0 : page + PAGE_LEN)}>
         ▶
       </VSCodeButton>
     </div>

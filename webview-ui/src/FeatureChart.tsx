@@ -14,6 +14,7 @@ type FeatureChartProps = {
   feature: string;
   dataset: SampleInfo[];
   filters: string[];
+  viewValue: (v: number) => void;
 };
 
 export const FeatureChart = (props: FeatureChartProps) => {
@@ -50,7 +51,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="freq" fill="#B48EAD" />
+          <Bar onClick={(data) => props.viewValue(parseInt(data.name))} dataKey="freq" fill="#B48EAD" />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -16,6 +16,11 @@
 .pane-title {
   padding: 10px;
   font-size: 1.5em;
+
+  small {
+    font-size: 10px;
+    font-family: monospace;
+  }
 }
 
 .FeatureChart {
@@ -59,19 +64,15 @@
   width: 100%;
   padding: 10px;
 
-  .ee-title {
-    margin-bottom: 10px;
-  }
-
-  .ee-container:not(:first-child) {
-    margin-top: 10px;
+  .PrettyExample {
+    margin: 5px 0;
   }
 }
 
 .PrettyExample {
   code {
     overflow-wrap: anywhere;
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
 }
 
