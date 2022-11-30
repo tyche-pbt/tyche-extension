@@ -1,5 +1,5 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
-import { PageState, SampleInfo } from "./datatypes";
+import { SampleInfo } from "./datatypes";
 import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { FilterChart } from "./FilterChart";
@@ -9,7 +9,7 @@ type MainViewProps = {
   dataset: SampleInfo[];
   activeFilters: string[];
   activeFeatures: string[];
-  setPageView: (state: PageState) => void;
+  setFilteredView: (feature: string, value: number) => void;
 }
 
 export const MainView = (props: MainViewProps) => {
@@ -21,7 +21,7 @@ export const MainView = (props: MainViewProps) => {
         feature={x}
         dataset={dataset}
         filters={activeFilters}
-        viewValue={(value) => props.setPageView({ state: "filtered", feature: x, value: value })}
+        viewValue={(value) => props.setFilteredView(x, value)}
       />,
       <ExtremeExamples
         feature={x}

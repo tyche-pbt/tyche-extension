@@ -1,7 +1,6 @@
 import Graphviz from "graphviz-react";
 import { useState } from "react";
 import useMeasure from "react-use-measure";
-import "./ExampleDOT.scss";
 
 type ExampleDOTProps = {
   dot: string;

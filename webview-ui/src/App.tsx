@@ -2,7 +2,7 @@ import * as React from "react";
 import "./App.scss";
 
 // import genTreeData from "./demo-data/genTree.json";
-import { PageState, SampleInfo } from "./datatypes";
+import { SampleInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -16,36 +16,58 @@ type LoadDataCommand = {
   dataset: SampleInfo[];
 };
 
+type PageState =
+  { state: "main" }
+  | { state: "examples" }
+  | { state: "filtered", feature: string, value: number };
+
 type AppProps = {};
 
-const App = (_props: AppProps) => {
+type AppState = {
+  loading: boolean;
+  dataset: SampleInfo[];
+  genName: string;
+  genSource: string;
+}
 
-  const [loading, setLoading] = useState(true);
-  const [genName, setGenName] = useState('');
-  const [genSource, setGenSource] = useState('');
-  const [dataset, setDataset] = useState<SampleInfo[]>([]);
-  const [activeFeatures, setActiveFeatures] = useState<string[]>([]);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+const App = (_props: AppProps) => {
+  const [state, setState] = useState<AppState>({
+    loading: true,
+    dataset: [],
+    genName: "",
+    genSource: ""
+  });
+
+  // const [state, setState] = useState<AppState>({
+  //   loading: false,
+  //   dataset: genTreeData as SampleInfo[],
+  //   genName: "genTree",
+  //   genSource: "Demo",
+  // });
+
+  const { loading, dataset, genName, genSource } = state;
+
   const [pageView, setPageView] = useState<PageState>({ state: "main" });
 
-  // const [loading, setLoading] = useState(false);
-  // const [genName, setGenName] = useState("genTree");
-  // const [genSource, setGenSource] = useState("Demo");
-  // const [dataset, setDataset] = useState<SampleInfo[]>(genTreeData as SampleInfo[]);
-  // const [activeFeatures, setActiveFeatures] = useState<string[]>(dataset.length > 0 ? Object.keys(dataset[0].features) : []);
-  // const [activeFilters, setActiveFilters] = useState<string[]>(dataset.length > 0 ? Object.keys(dataset[0].filters) : []);
+  const activeFeatures = dataset.length > 0 ? Object.keys(dataset[0].features) : [];
+  const activeFilters = dataset.length > 0 ? Object.keys(dataset[0].features) : [];
 
   const loadData = (command: LoadDataCommand) => {
-    setDataset(command.dataset);
-    setGenName(command.genName);
-    setGenSource(command.genSource);
-    setLoading(false);
-    setActiveFeatures(command.dataset.length > 0 ? Object.keys(command.dataset[0].features) : []);
-    setActiveFilters(command.dataset.length > 0 ? Object.keys(command.dataset[0].filters) : []);
+    setState({
+      loading: false,
+      dataset: command.dataset,
+      genName: command.genName,
+      genSource: command.genSource,
+    })
   };
 
   const clearData = () => {
-    setLoading(true);
+    setState({
+      loading: true,
+      dataset: [],
+      genName: "",
+      genSource: "",
+    });
   };
 
   const refreshData = () => {
@@ -90,7 +112,13 @@ const App = (_props: AppProps) => {
         <code title={genSource}>{genName}</code>
       </div>
 
-      {pageView.state === "main" && <MainView setPageView={setPageView} dataset={dataset} activeFeatures={activeFeatures} activeFilters={activeFilters} />}
+      {pageView.state === "main" &&
+        <MainView
+          setFilteredView={(f, v) => setPageView({ state: "filtered", feature: f, value: v })}
+          dataset={dataset}
+          activeFeatures={activeFeatures}
+          activeFilters={activeFilters}
+        />}
       {pageView.state === "examples" && <ExampleView dataset={dataset}></ExampleView>}
       {pageView.state === "filtered" && <ExampleView dataset={dataset.filter((x) => {
         console.log(x.features[pageView.feature], pageView.value);
