@@ -1,4 +1,3 @@
-import * as React from "react";
 import { SampleInfo } from "./datatypes";
 
 type HighLevelStatsProps = {

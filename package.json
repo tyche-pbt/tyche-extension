@@ -1,7 +1,7 @@
 {
   "name": "gen-vis",
   "displayName": "gen-vis",
-  "description": "A hello world sample extension to demonstrate using React + CRA with the Webview UI Toolkit for VS Code.",
+  "description": "A VSCode extension for visualizing data produced by a QuickCheck generator.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.46.0"

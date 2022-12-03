@@ -1,7 +1,6 @@
-import * as React from "react";
 import "./App.scss";
 
-// import genTreeData from "./demo-data/genTree.json";
+import genTreeData from "./demo-data/genTree.json";
 import { SampleInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
@@ -31,26 +30,26 @@ type AppState = {
 }
 
 const App = (_props: AppProps) => {
-  const [state, setState] = useState<AppState>({
-    loading: true,
-    dataset: [],
-    genName: "",
-    genSource: ""
-  });
-
   // const [state, setState] = useState<AppState>({
-  //   loading: false,
-  //   dataset: genTreeData as SampleInfo[],
-  //   genName: "genTree",
-  //   genSource: "Demo",
+  //   loading: true,
+  //   dataset: [],
+  //   genName: "",
+  //   genSource: ""
   // });
+
+  const [state, setState] = useState<AppState>({
+    loading: false,
+    dataset: genTreeData as SampleInfo[],
+    genName: "genTree",
+    genSource: "Demo",
+  });
 
   const { loading, dataset, genName, genSource } = state;
 
   const [pageView, setPageView] = useState<PageState>({ state: "main" });
 
   const activeFeatures = dataset.length > 0 ? Object.keys(dataset[0].features) : [];
-  const activeFilters = dataset.length > 0 ? Object.keys(dataset[0].features) : [];
+  const activeFilters = dataset.length > 0 ? Object.keys(dataset[0].filters) : [];
 
   const loadData = (command: LoadDataCommand) => {
     setState({
@@ -71,11 +70,11 @@ const App = (_props: AppProps) => {
   };
 
   const refreshData = () => {
-    vscode.postMessage({ command: 'request-refresh-data' });
+    vscode.postMessage({ command: "request-refresh-data" });
   };
 
   useEffect(() => {
-    window.addEventListener('message', (event) => {
+    window.addEventListener("message", (event) => {
       const message = event.data;
       switch (message.command) {
         case "load-data":

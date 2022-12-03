@@ -61,30 +61,15 @@ export class GenVisPanel {
     this._outChannel.appendLine(x);
   }
 
-  /**
-   * Renders the current webview panel if it exists otherwise a new webview panel
-   * will be created and displayed.
-   *
-   * @param extensionUri The URI of the directory containing the extension.
-   */
   public static render(extensionUri: Uri, loadData: boolean) {
     if (GenVisPanel.currentPanel) {
-      // If the webview panel already exists reveal it
       GenVisPanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
-      // If a webview panel does not already exist create and show a new one
       const panel = window.createWebviewPanel(
-        // Panel view type
         "genVis",
-        // Panel title
         "Generator Visualizer",
-        // The editor column the panel should be displayed in
         ViewColumn.Two,
-        // Extra panel configurations
-        {
-          // Enable JavaScript in the webview
-          enableScripts: true,
-        }
+        { enableScripts: true, }
       );
 
       GenVisPanel.currentPanel = new GenVisPanel(panel, extensionUri);
@@ -95,16 +80,9 @@ export class GenVisPanel {
     }
   }
 
-  /**
-   * Cleans up and disposes of webview resources when the webview panel is closed.
-   */
   public dispose() {
     GenVisPanel.currentPanel = undefined;
-
-    // Dispose of the current webview panel
     this._panel.dispose();
-
-    // Dispose of all disposables (i.e. commands) for the current webview panel
     while (this._disposables.length) {
       const disposable = this._disposables.pop();
       if (disposable) {
@@ -118,9 +96,7 @@ export class GenVisPanel {
       GenVisPanel.render(extensionUri, false);
     }
 
-    GenVisPanel.currentPanel!.loadDataFromGenerator(document, range, () => {
-      // vscode.window.showInformationMessage("Loaded data from generator.",);
-    });
+    GenVisPanel.currentPanel!.loadDataFromGenerator(document, range);
   }
 
   public static refreshData() {
@@ -150,43 +126,40 @@ export class GenVisPanel {
       const uri = this._lastSource;
 
       const dataset: SampleInfo[] =
-        JSON.parse(fs.readFileSync(uri.fsPath, 'utf8'));
+        JSON.parse(fs.readFileSync(uri.fsPath, "utf8"));
 
       this._panel.webview.postMessage({
-        command: 'load-data',
-        genName: posixPath.basename(uri.path).split('.')[0],
+        command: "load-data",
+        genName: posixPath.basename(uri.path).split(".")[0],
         genSource: `File: ${uri.path}`,
         dataset,
       });
-      // vscode.window.showInformationMessage("Data refreshed.");
     } else {
       const { document, range } = this._lastSource;
-      this.loadDataFromGenerator(document, range, () => {
-        // vscode.window.showInformationMessage("Data refreshed.");
-      });
+      this.loadDataFromGenerator(document, range);
     }
 
   }
 
   public loadDataFromFile() {
     this._panel.webview.postMessage({
-      command: 'clear-data',
+      command: "clear-data",
     });
 
     vscode.window.showOpenDialog({
       canSelectMany: false,
-      openLabel: 'Load New Data',
+      openLabel: "Load New Data",
       canSelectFiles: true,
       canSelectFolders: false
     }).then((fileUri) => {
       if (fileUri) {
         const dataset: SampleInfo[] =
-          JSON.parse(fs.readFileSync(fileUri[0].fsPath, 'utf8'));
+          JSON.parse(fs.readFileSync(fileUri[0].fsPath, "utf8"));
 
         if (GenVisPanel.currentPanel) {
           GenVisPanel.currentPanel._panel.webview.postMessage({
-            command: 'load-data',
-            genName: posixPath.basename(fileUri[0].path).split('.')[0],
+            command: "load-data",
+            genName: posixPath.basename(fileUri[0].path).split(".")[0],
             dataset,
           });
           GenVisPanel.currentPanel._lastSource = fileUri[0];
@@ -205,7 +178,7 @@ export class GenVisPanel {
     }
 
     this._panel.webview.postMessage({
-      command: 'clear-data',
+      command: "clear-data",
     });
 
     this.showInformation(`Sampling data from ${genName}...`);
@@ -226,7 +199,7 @@ export class GenVisPanel {
       this.showInformation(`Got ${dataset.length} samples from ${genName}.`);
 
       this._panel.webview.postMessage({
-        command: 'load-data',
+        command: "load-data",
         genName: genName,
         genSource: `Live: ${document.fileName}:${genName}`,
         dataset,
@@ -238,17 +211,6 @@ export class GenVisPanel {
     this._lastSource = { document, range };
   }
 
-  /**
-   * Defines and returns the HTML that should be rendered within the webview panel.
-   *
-   * @remarks This is also the place where references to the React webview build files
-   * are created and inserted into the webview HTML.
-   *
-   * @param webview A reference to the extension webview
-   * @param extensionUri The URI of the directory containing the extension
-   * @returns A template string literal containing the HTML that should be
-   * rendered within the webview panel
-   */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     // The CSS file from the React build output
     const stylesUri = getUri(webview, extensionUri, [
@@ -287,21 +249,13 @@ export class GenVisPanel {
     `;
   }
 
-  /**
-   * Sets up an event listener to listen for messages passed from the webview context and
-   * executes code based on the message that is recieved.
-   *
-   * @param webview A reference to the extension webview
-   * @param context A reference to the extension context
-   */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
       (message: any) => {
         const command = message.command;
-        const text = message.text;
 
         switch (command) {
-          case 'request-refresh-data':
+          case "request-refresh-data":
             this.refreshDataInFile();
             return;
         }

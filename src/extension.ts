@@ -9,16 +9,15 @@ export function activate(context: ExtensionContext) {
     GenVisPanel.render(context.extensionUri, true);
   }));
 
-  context.subscriptions.push(commands.registerCommand('gen-vis.pick-new-data', () => {
+  context.subscriptions.push(commands.registerCommand("gen-vis.pick-new-data", () => {
     GenVisPanel.pickNewData();
   }));
 
-  context.subscriptions.push(commands.registerCommand('gen-vis.refresh-data', () => {
+  context.subscriptions.push(commands.registerCommand("gen-vis.refresh-data", () => {
     GenVisPanel.refreshData();
   }));
 
-  context.subscriptions.push(commands.registerCommand('gen-vis.select-generator-inline', (document, range) => {
+  context.subscriptions.push(commands.registerCommand("gen-vis.select-generator-inline", (document, range) => {
     GenVisPanel.selectGeneratorInline(document, range, context.extensionUri);
   }));
-
 }
