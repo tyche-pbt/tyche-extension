@@ -27,8 +27,8 @@
   margin: 20px 0 10px 0;
 
   .chart-title {
-    padding-right: 10px;
-    text-align: right;
+    padding-left: 10px;
+    margin-bottom: 10px;
   }
 }
 
@@ -77,6 +77,7 @@
 }
 
 .ExampleView {
+
   .page-buttons {
     position: fixed;
     bottom: 5px;

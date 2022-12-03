@@ -1,58 +1,33 @@
-import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react";
-import { useState } from "react";
 import { SampleInfo } from "./datatypes";
 import { PrettyExample } from "./PrettyExample";
 
 type ExtremeExamplesProps = {
   dataset: SampleInfo[];
   feature: string;
-  filters: string[];
+  filter?: string;
+  end: "max" | "min";
 };
 
 export const ExtremeExamples = (props: ExtremeExamplesProps) => {
-  const [minFilter, setMinFilter] = useState("<none>");
-  const [maxFilter, setMaxFilter] = useState("<none>");
+  const { feature, filter, end } = props;
+  const dataset = filter ? props.dataset.filter((x) => x.filters[filter]) : props.dataset;
 
-  const dataset = (filter: string = "<none>"): SampleInfo[] => {
-    if (filter === "<none>") {
-      return props.dataset;
-    }
-    return props.dataset.filter((x) => x.filters[filter]);
+  if (dataset.length === 0) {
+    return <>No examples available.</>;
   }
 
-  const minByFeature = dataset(minFilter).reduce((acc, curr) => {
-    return acc.features[props.feature] < curr.features[props.feature] ? acc : curr;
-  }, dataset(minFilter)[0]);
-
-  const maxByFeature = dataset(maxFilter).reduce((acc, curr) => {
-    return acc.features[props.feature] > curr.features[props.feature] ? acc : curr;
-  }, dataset(maxFilter)[0]);
+  const example = dataset.reduce((acc, curr) => {
+    const cmp = (x: number, y: number) => end === "max" ? x > y : x < y;
+    return cmp(acc.features[feature], curr.features[feature]) ? acc : curr;
+  }, dataset[0]);
 
   return (
     <div className="ExtremeExamples">
       <div className="ee-container">
         <div className="ee-title">
-          Minimum by <code>{props.feature}</code>
-          &nbsp;
-          {props.filters.length > 0 &&
-            <VSCodeDropdown value={minFilter} onChange={e => setMinFilter((e as any).target.value)}>
-              <VSCodeOption value="<none>">none</VSCodeOption>
-              {props.filters.map(x => <VSCodeOption value={x}>{x}</VSCodeOption>)}
-            </VSCodeDropdown>}
+          {end === "max" ? "Maximum" : "Minimum"} by <code>{feature}</code>{filter && <span> (filtered by <code>{filter}</code>)</span>}
         </div>
-        <PrettyExample example={minByFeature}></PrettyExample>
-      </div>
-      <div className="ee-container">
-        <div className="ee-title">
-          Maximum by <code>{props.feature}</code>
-          &nbsp;
-          {props.filters.length > 0 &&
-            <VSCodeDropdown value={maxFilter} onChange={e => setMaxFilter((e as any).target.value)}>
-              <VSCodeOption value="<none>">none</VSCodeOption>
-              {props.filters.map(x => <VSCodeOption value={x}>{x}</VSCodeOption>)}
-            </VSCodeDropdown>}
-        </div>
-        <PrettyExample example={maxByFeature}></PrettyExample>
+        <PrettyExample example={example}></PrettyExample>
       </div>
     </div>
   );

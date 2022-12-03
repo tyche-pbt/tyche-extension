@@ -1,7 +1,7 @@
 import "./App.scss";
 
 import genTreeData from "./demo-data/genTree.json";
-import { SampleInfo } from "./datatypes";
+import { ExampleFilter, SampleInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -18,7 +18,7 @@ type LoadDataCommand = {
 type PageState =
   { state: "main" }
   | { state: "examples" }
-  | { state: "filtered", feature: string, value: number };
+  | { state: "filtered", exampleFilter: ExampleFilter };
 
 type AppProps = {};
 
@@ -48,8 +48,6 @@ const App = (_props: AppProps) => {
 
   const [pageView, setPageView] = useState<PageState>({ state: "main" });
 
-  const activeFeatures = dataset.length > 0 ? Object.keys(dataset[0].features) : [];
-  const activeFilters = dataset.length > 0 ? Object.keys(dataset[0].filters) : [];
 
   const loadData = (command: LoadDataCommand) => {
     setState({
@@ -93,6 +91,9 @@ const App = (_props: AppProps) => {
     </div>;
   }
 
+  const features = Object.keys(dataset[0].features);
+  const filters = Object.keys(dataset[0].filters);
+
   return (
     <div className="App">
       <div className="top-buttons">
@@ -113,16 +114,13 @@ const App = (_props: AppProps) => {
 
       {pageView.state === "main" &&
         <MainView
-          setFilteredView={(f, v) => setPageView({ state: "filtered", feature: f, value: v })}
+          setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
           dataset={dataset}
-          activeFeatures={activeFeatures}
-          activeFilters={activeFilters}
+          features={features}
+          filters={filters}
         />}
-      {pageView.state === "examples" && <ExampleView dataset={dataset}></ExampleView>}
-      {pageView.state === "filtered" && <ExampleView dataset={dataset.filter((x) => {
-        console.log(x.features[pageView.feature], pageView.value);
-        return x.features[pageView.feature] === pageView.value;
-      })}></ExampleView>}
+      {pageView.state === "examples" && <ExampleView dataset={dataset} />}
+      {pageView.state === "filtered" && <ExampleView dataset={dataset} filter={pageView.exampleFilter} />}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
-import { SampleInfo } from "./datatypes";
+import { ExampleFilter, SampleInfo } from "./datatypes";
 import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { FilterChart } from "./FilterChart";
@@ -7,28 +7,29 @@ import { HighLevelStats } from "./HighLevelStats";
 
 type MainViewProps = {
   dataset: SampleInfo[];
-  activeFilters: string[];
-  activeFeatures: string[];
-  setFilteredView: (feature: string, value: number) => void;
+  filters: string[];
+  features: string[];
+  setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
 
 export const MainView = (props: MainViewProps) => {
-  const { dataset, activeFilters, activeFeatures } = props;
+  const { dataset, filters, features } = props;
 
   const pageElements =
-    [...activeFeatures.flatMap((x) =>
+    [...features.flatMap((x) =>
       [<FeatureChart
         feature={x}
         dataset={dataset}
-        filters={activeFilters}
-        viewValue={(value) => props.setFilteredView(x, value)}
+        filter={filters[0]}
+        viewValue={(value) => props.setFilteredView({ feature: x, value, filter: filters[0] })}
       />,
       <ExtremeExamples
         feature={x}
         dataset={dataset}
-        filters={activeFilters}
+        filter={filters[0]}
+        end="max"
       />]),
-    ...activeFilters.map((x) =>
+    ...filters.map((x) =>
       <FilterChart filter={x} dataset={dataset} />
     )]
 

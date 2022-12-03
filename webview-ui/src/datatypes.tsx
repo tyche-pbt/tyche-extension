@@ -8,3 +8,9 @@ export type SampleInfo = {
     [key: string]: boolean;
   };
 };
+
+export type ExampleFilter = {
+  feature: string;
+  value: number;
+  filter?: string;
+};
