@@ -15,7 +15,7 @@ export const ExampleDOT = (props: ExampleDOTProps) => {
 
   return <div className="ExampleDOT" ref={ref}>
     <div onClick={() => props.onClickDOT && props.onClickDOT()} style={props.styleDOT}>
-      <Graphviz dot={props.dot} options={{ height: expanded ? width : 150, width }} ></Graphviz>
+      <Graphviz dot={props.dot} options={{ height: expanded ? width : 150, width }}></Graphviz>
     </div>
     <div className="expander">
       <span onClick={e => setExpanded(!expanded)}>{expanded ? "⌃" : "⌄"}</span>

@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import genTreeData from "./demo-data/genTree.json";
+import genTreeData from "./demo-data/genList.json";
 import { ExampleFilter, SampleInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";

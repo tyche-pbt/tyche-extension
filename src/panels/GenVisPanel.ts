@@ -10,6 +10,7 @@ const posixPath = path.posix || path;
 type SampleInfo = {
   item: string;
   dot?: string;
+  json?: object;
   features: {
     [key: string]: number;
   };
