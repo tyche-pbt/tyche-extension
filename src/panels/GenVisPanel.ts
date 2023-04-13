@@ -92,6 +92,11 @@ export class GenVisPanel {
     }
   }
 
+  public isViewing(document: TextDocument): boolean {
+    return this._lastSource !== undefined && ("document" in this._lastSource) && (this._lastSource.document === document);
+  }
+
+
   static selectGeneratorInline(document: TextDocument, range: vscode.Range, extensionUri: Uri) {
     if (!GenVisPanel.currentPanel) {
       GenVisPanel.render(extensionUri, false);
@@ -246,7 +251,7 @@ export class GenVisPanel {
       command: "load-data",
       genName: propertyName,
       genSource: `Live: ${document.fileName}:${propertyName}`,
-      dataset: stdout,
+      dataset: stdout
     });
 
     this._lastSource = { document, propertyName };

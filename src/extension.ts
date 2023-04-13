@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, languages } from "vscode";
+import { commands, ExtensionContext, languages, workspace } from "vscode";
 import { HaskellCodelensProvider } from "./lenses/HaskellCodelensProvider";
 import { GenVisPanel } from "./panels/GenVisPanel";
 import { PythonCodelensProvider } from "./lenses/PythonCodelensProvider";
@@ -26,4 +26,10 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(commands.registerCommand("gen-vis.hypothesis-run-property", (document, range) => {
     GenVisPanel.hypothesisRunProperty(document, range, context.extensionUri);
   }));
+
+  workspace.onDidSaveTextDocument((document) => {
+    if (GenVisPanel.currentPanel && GenVisPanel.currentPanel.isViewing(document)) {
+      GenVisPanel.currentPanel.refreshDataForActiveVisualization();
+    }
+  });
 }
