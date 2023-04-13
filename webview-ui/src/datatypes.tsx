@@ -1,7 +1,7 @@
 export type SampleInfo = {
   item: string;
   dot?: string;
-  json?: object;
+  json?: string | object;
   features: {
     [key: string]: number;
   };

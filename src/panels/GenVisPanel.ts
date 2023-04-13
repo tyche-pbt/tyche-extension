@@ -220,7 +220,7 @@ export class GenVisPanel {
     this._lastSource = { document, range };
   }
 
-  public loadDataFromGeneratorPython(document: TextDocument, propertyName: string, callback?: () => void) {
+  public loadDataFromGeneratorPython(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
     if (!wsFolders || wsFolders.length === 0) {
@@ -235,18 +235,13 @@ export class GenVisPanel {
     let fileName = path.parse(document.fileName).name;
     this.showInformation(`Sampling data from ${propertyName}...`);
     const runCommand = `cd ${wsFolders[0].uri.path}; python -c "import ${fileName}; import tyche; tyche.visualize(${fileName}.${propertyName})"`;
-    exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
+    exec(runCommand, { maxBuffer: 1024 * 1000 }, (err, stdout, stderr) => {
       if (err) {
         vscode.window.showErrorMessage(err.message + stderr);
         return;
       }
 
-      const jsonStr = stdout;
-      if (!jsonStr) {
-        vscode.window.showErrorMessage("Invalid data returned from generator.");
-        return;
-      }
-      const dataset: SampleInfo[] = JSON.parse(jsonStr);
+      const dataset: SampleInfo[] = JSON.parse(stdout);
 
       this.showInformation(`Got ${dataset.length} samples from ${propertyName}.`);
 
@@ -256,11 +251,9 @@ export class GenVisPanel {
         genSource: `Live: ${document.fileName}:${propertyName}`,
         dataset,
       });
-
-      callback && callback();
     });
 
-    this._lastSource = { document, range: propertyName as any }; // TODO fix
+    this._lastSource = undefined; // TODO fix
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {

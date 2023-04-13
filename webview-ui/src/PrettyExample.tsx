@@ -1,30 +1,37 @@
-import { useState } from "react";
 import { SampleInfo } from "./datatypes";
-import { toDOT } from "./dotUtils";
-import { ExampleDOT } from "./ExampleDOT";
+import ReactJSON from "react-json-view";
 
 type PrettyExampleProps = {
   example: SampleInfo;
 };
 
 export const PrettyExample = (props: PrettyExampleProps) => {
-  const [pretty, setPretty] = useState(false);
-
-  let dot = props.example.json ? toDOT(props.example.json) : props.example.dot;
-
-  if (!dot) {
+  if (!props.example.json) {
     return <div className="PrettyExample"><code>{props.example.item}</code></div>;
   }
 
   return <div className="PrettyExample">
-    <div
-      className="ee-example">
-      {pretty ? <ExampleDOT
-        onClickDOT={() => setPretty(false)}
-        styleDOT={{ cursor: "zoom-in" }}
-        dot={dot}
-      ></ExampleDOT>
-        : <div className="ee-example" style={{ cursor: "zoom-out" }} onClick={() => setPretty(true)}><code>{props.example.item}</code></div>}
-    </div>
+    <ReactJSON
+      src={typeof props.example.json === "string" ? JSON.parse(props.example.json) : props.example.json}
+      collapsed={true}
+      theme={{
+        base00: "2E3440",
+        base01: "3B4252",
+        base02: "434C5E",
+        base03: "4C566A",
+        base04: "D8DEE9",
+        base05: "E5E9F0",
+        base06: "ECEFF4",
+        base07: "8FBCBB",
+        base08: "88C0D0",
+        base09: "81A1C1",
+        base0A: "5E81AC",
+        base0B: "BF616A",
+        base0C: "D08770",
+        base0D: "EBCB8B",
+        base0E: "A3BE8C",
+        base0F: "B48EAD"
+      }}
+    />
   </div>;
 };
