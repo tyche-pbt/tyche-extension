@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export class CodelensProvider implements vscode.CodeLensProvider {
+export class HaskellCodelensProvider implements vscode.CodeLensProvider {
 
   private codeLenses: vscode.CodeLens[] = [];
   private regex: RegExp;

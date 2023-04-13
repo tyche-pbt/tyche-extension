@@ -97,7 +97,15 @@ export class GenVisPanel {
       GenVisPanel.render(extensionUri, false);
     }
 
-    GenVisPanel.currentPanel!.loadDataFromGenerator(document, range);
+    GenVisPanel.currentPanel!.loadDataFromGeneratorHaskell(document, range);
+  }
+
+  static hypothesisRunProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
+    if (!GenVisPanel.currentPanel) {
+      GenVisPanel.render(extensionUri, false);
+    }
+
+    GenVisPanel.currentPanel!.loadDataFromGeneratorPython(document, propertyName);
   }
 
   public static refreshData() {
@@ -137,7 +145,7 @@ export class GenVisPanel {
       });
     } else {
       const { document, range } = this._lastSource;
-      this.loadDataFromGenerator(document, range);
+      this.loadDataFromGeneratorHaskell(document, range);
     }
 
   }
@@ -169,7 +177,7 @@ export class GenVisPanel {
     });
   }
 
-  public loadDataFromGenerator(document: TextDocument, range: vscode.Range, callback?: () => void) {
+  public loadDataFromGeneratorHaskell(document: TextDocument, range: vscode.Range, callback?: () => void) {
     const wsFolders = vscode.workspace.workspaceFolders;
     const genName = document.getText(document.getWordRangeAtPosition(range.start));
 
@@ -210,6 +218,49 @@ export class GenVisPanel {
     });
 
     this._lastSource = { document, range };
+  }
+
+  public loadDataFromGeneratorPython(document: TextDocument, propertyName: string, callback?: () => void) {
+    const wsFolders = vscode.workspace.workspaceFolders;
+
+    if (!wsFolders || wsFolders.length === 0) {
+      vscode.window.showErrorMessage("No active workspace. Please open a workspace with a cabal project.");
+      return;
+    }
+
+    this._panel.webview.postMessage({
+      command: "clear-data",
+    });
+
+    let fileName = path.parse(document.fileName).name;
+    this.showInformation(`Sampling data from ${propertyName}...`);
+    const runCommand = `cd ${wsFolders[0].uri.path}; python -c "import ${fileName}; import tyche; tyche.visualize(${fileName}.${propertyName})"`;
+    exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
+      if (err) {
+        vscode.window.showErrorMessage(err.message + stderr);
+        return;
+      }
+
+      const jsonStr = stdout;
+      if (!jsonStr) {
+        vscode.window.showErrorMessage("Invalid data returned from generator.");
+        return;
+      }
+      const dataset: SampleInfo[] = JSON.parse(jsonStr);
+
+      this.showInformation(`Got ${dataset.length} samples from ${propertyName}.`);
+
+      this._panel.webview.postMessage({
+        command: "load-data",
+        genName: propertyName,
+        genSource: `Live: ${document.fileName}:${propertyName}`,
+        dataset,
+      });
+
+      callback && callback();
+    });
+
+    this._lastSource = { document, range: propertyName as any }; // TODO fix
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
