@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import genTreeData from "./demo-data/genTree.json";
+// import genTreeData from "./demo-data/genList.json";
 import { ExampleFilter, SampleInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { ExampleView } from "./ExampleView";
 type LoadDataCommand = {
   genName: string;
   genSource: string;
-  dataset: SampleInfo[];
+  dataset: string;
 };
 
 type PageState =
@@ -30,19 +30,19 @@ type AppState = {
 }
 
 const App = (_props: AppProps) => {
-  // const [state, setState] = useState<AppState>({
-  //   loading: true,
-  //   dataset: [],
-  //   genName: "",
-  //   genSource: ""
-  // });
-
   const [state, setState] = useState<AppState>({
-    loading: false,
-    dataset: genTreeData as SampleInfo[],
-    genName: "genTree",
-    genSource: "Demo",
+    loading: true,
+    dataset: [],
+    genName: "",
+    genSource: ""
   });
+
+  // const [state, setState] = useState<AppState>({
+  //   loading: false,
+  //   dataset: genTreeData as SampleInfo[],
+  //   genName: "genTree",
+  //   genSource: "Demo",
+  // });
 
   const { loading, dataset, genName, genSource } = state;
 
@@ -52,7 +52,7 @@ const App = (_props: AppProps) => {
   const loadData = (command: LoadDataCommand) => {
     setState({
       loading: false,
-      dataset: command.dataset,
+      dataset: JSON.parse(command.dataset),
       genName: command.genName,
       genSource: command.genSource,
     })

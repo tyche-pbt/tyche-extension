@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocument } from "vscode";
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
-import { exec } from "child_process";
+import * as child_process from "child_process";
 
 const posixPath = path.posix || path;
 
@@ -33,7 +33,7 @@ export class GenVisPanel {
   public static currentPanel: GenVisPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _lastSource: vscode.Uri | { document: TextDocument, range: vscode.Range } | undefined = undefined;
+  private _lastSource: vscode.Uri | { document: TextDocument, range: vscode.Range } | { document: TextDocument, propertyName: string } | undefined = undefined;
   private _outChannel: vscode.OutputChannel;
 
   /**
@@ -114,7 +114,7 @@ export class GenVisPanel {
       return;
     }
 
-    GenVisPanel.currentPanel.refreshDataInFile();
+    GenVisPanel.currentPanel.refreshDataForActiveVisualization();
   }
 
   public static pickNewData() {
@@ -125,7 +125,7 @@ export class GenVisPanel {
     GenVisPanel.currentPanel.loadDataFromFile();
   }
 
-  public refreshDataInFile() {
+  public refreshDataForActiveVisualization() {
     if (!this._lastSource) {
       vscode.window.showErrorMessage("No data source to refresh.");
       return;
@@ -143,11 +143,13 @@ export class GenVisPanel {
         genSource: `File: ${uri.path}`,
         dataset,
       });
-    } else {
+    } else if ("range" in this._lastSource) {
       const { document, range } = this._lastSource;
       this.loadDataFromGeneratorHaskell(document, range);
+    } else {
+      const { document, propertyName } = this._lastSource;
+      this.loadDataFromGeneratorPython(document, propertyName);
     }
-
   }
 
   public loadDataFromFile() {
@@ -192,7 +194,7 @@ export class GenVisPanel {
 
     this.showInformation(`Sampling data from ${genName}...`);
     const runCommand = `cd ${wsFolders[0].uri.path}; cabal v2-run gen-vis-runner -- ${genName}`;
-    exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
+    child_process.exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
       if (err) {
         vscode.window.showErrorMessage(err.message + stderr);
         return;
@@ -232,28 +234,22 @@ export class GenVisPanel {
       command: "clear-data",
     });
 
-    let fileName = path.parse(document.fileName).name;
+    const fileName = path.parse(document.fileName).name;
     this.showInformation(`Sampling data from ${propertyName}...`);
+
     const runCommand = `cd ${wsFolders[0].uri.path}; python -c "import ${fileName}; import tyche; tyche.visualize(${fileName}.${propertyName})"`;
-    exec(runCommand, { maxBuffer: 1024 * 1000 }, (err, stdout, stderr) => {
-      if (err) {
-        vscode.window.showErrorMessage(err.message + stderr);
-        return;
-      }
+    const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
 
-      const dataset: SampleInfo[] = JSON.parse(stdout);
+    this.showInformation(`Got samples from ${propertyName}.`);
 
-      this.showInformation(`Got ${dataset.length} samples from ${propertyName}.`);
-
-      this._panel.webview.postMessage({
-        command: "load-data",
-        genName: propertyName,
-        genSource: `Live: ${document.fileName}:${propertyName}`,
-        dataset,
-      });
+    this._panel.webview.postMessage({
+      command: "load-data",
+      genName: propertyName,
+      genSource: `Live: ${document.fileName}:${propertyName}`,
+      dataset: stdout,
     });
 
-    this._lastSource = undefined; // TODO fix
+    this._lastSource = { document, propertyName };
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
@@ -301,7 +297,7 @@ export class GenVisPanel {
 
         switch (command) {
           case "request-refresh-data":
-            this.refreshDataInFile();
+            this.refreshDataForActiveVisualization();
             return;
         }
       },
