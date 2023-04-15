@@ -1,6 +1,7 @@
 .App {
   margin: 0;
   padding: 0;
+  position: relative;
 }
 
 .toggle {
@@ -60,8 +61,6 @@
 }
 
 .ExtremeExamples {
-  position: relative;
-  width: 100%;
   padding: 10px;
 
   .PrettyExample {
@@ -70,7 +69,9 @@
 }
 
 .PrettyExample {
-  code {
+
+  pre {
+    white-space: pre-wrap;
     overflow-wrap: anywhere;
     font-size: 1.2em;
   }
