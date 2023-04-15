@@ -72,6 +72,7 @@ const App = (_props: AppProps) => {
   };
 
   useEffect(() => {
+    // NOTE: This `return` is critical. It tells React to clean up the listener on re-renders.
     return vscode.onMessage((event) => {
       const message = event.data;
       switch (message.command) {

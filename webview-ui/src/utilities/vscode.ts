@@ -20,6 +20,13 @@ class VSCodeAPIWrapper {
     }
   }
 
+  /**
+   * Listen for a message from the extension.
+   *
+   * @param callback A callback to call when there is a message from the extension.
+   * @returns A function telling the webview how to clean up the listener.
+   * @remarks Make sure to return the resulting callback from the `useEffect` hook.
+   */
   public onMessage(callback: (message: any) => void): () => void {
     window.addEventListener('message', callback);
     return () => window.removeEventListener('message', callback);
