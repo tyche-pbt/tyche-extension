@@ -20,6 +20,11 @@ class VSCodeAPIWrapper {
     }
   }
 
+  public onMessage(callback: (message: any) => void): () => void {
+    window.addEventListener('message', callback);
+    return () => window.removeEventListener('message', callback);
+  }
+
   /**
    * Post a message (i.e. send arbitrary data) to the owner of the webview.
    *

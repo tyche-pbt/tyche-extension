@@ -18,27 +18,28 @@ export const MainView = (props: MainViewProps) => {
   const pageElements =
     [...[undefined, ...filters].flatMap(filter =>
       features.flatMap((x) =>
-        [<FeatureChart
-          feature={x}
-          dataset={dataset}
-          filter={filter}
-          viewValue={(value) => props.setFilteredView({ feature: x, value, filter })}
-        />,
-        <ExtremeExamples
-          feature={x}
-          dataset={dataset}
-          filter={filter}
-          end="min"
-        />,
-        <ExtremeExamples
-          feature={x}
-          dataset={dataset}
-          filter={filter}
-          end="max"
-        />])),
+        [
+          <FeatureChart
+            feature={x}
+            dataset={dataset}
+            filter={filter}
+            viewValue={(value) => props.setFilteredView({ feature: x, value, filter })}
+          />,
+          <ExtremeExamples
+            feature={x}
+            dataset={dataset}
+            filter={filter}
+            end="min"
+          />,
+          <ExtremeExamples
+            feature={x}
+            dataset={dataset}
+            filter={filter}
+            end="max"
+          />])),
     ...filters.map((x) =>
-      <FilterChart filter={x} dataset={dataset} />
-    )]
+      <FilterChart filter={x} dataset={dataset} />)
+    ]
 
   return <div className="MainView">
     <HighLevelStats dataset={dataset} />

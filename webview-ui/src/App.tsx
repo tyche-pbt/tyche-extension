@@ -72,7 +72,7 @@ const App = (_props: AppProps) => {
   };
 
   useEffect(() => {
-    window.addEventListener("message", (event) => {
+    return vscode.onMessage((event) => {
       const message = event.data;
       switch (message.command) {
         case "load-data":
