@@ -55,7 +55,7 @@ export class GenVisPanel {
     // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
 
-    this._outChannel = vscode.window.createOutputChannel("Generator Visualizer");
+    this._outChannel = vscode.window.createOutputChannel("Testing Performance Report");
   }
 
   public showInformation(x: string) {
@@ -68,7 +68,7 @@ export class GenVisPanel {
     } else {
       const panel = window.createWebviewPanel(
         "genVis",
-        "Generator Visualizer",
+        "Testing Performance Report",
         ViewColumn.Two,
         { enableScripts: true, }
       );
