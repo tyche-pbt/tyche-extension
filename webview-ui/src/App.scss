@@ -60,6 +60,20 @@
   }
 }
 
+.CoverageInfo {
+  padding: 10px;
+
+  table {
+    td.coverage-file {
+      padding-right: 30px;
+    }
+
+    code {
+      font-size: 1.2em;
+    }
+  }
+}
+
 .ExtremeExamples {
   padding: 10px;
 
@@ -71,8 +85,8 @@
 .PrettyExample {
 
   pre {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
+    // white-space: pre-wrap;
+    // overflow-wrap: anywhere;
     font-size: 1.2em;
   }
 }

@@ -10,6 +10,11 @@ export type SampleInfo = {
   };
 };
 
+export type TestInfo = {
+  samples: SampleInfo[];
+  coverage: { [key: string]: number };
+}
+
 export type ExampleFilter = {
   feature: string;
   value: number;

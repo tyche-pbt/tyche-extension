@@ -251,7 +251,7 @@ export class GenVisPanel {
       command: "load-data",
       genName: propertyName,
       genSource: `Live: ${document.fileName}:${propertyName}`,
-      dataset: stdout
+      testInfo: stdout
     });
 
     this._lastSource = { document, propertyName };

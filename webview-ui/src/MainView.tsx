@@ -4,13 +4,16 @@ import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { FilterChart } from "./FilterChart";
 import { HighLevelStats } from "./HighLevelStats";
+import { CoverageInfo } from "./CoverageInfo";
 
 type MainViewProps = {
   dataset: SampleInfo[];
+  coverage: { [key: string]: number };
   filters: string[];
   features: string[];
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
+
 
 export const MainView = (props: MainViewProps) => {
   const { dataset, filters, features } = props;
@@ -43,6 +46,8 @@ export const MainView = (props: MainViewProps) => {
 
   return <div className="MainView">
     <HighLevelStats dataset={dataset} />
+    <VSCodeDivider />
+    <CoverageInfo coverage={props.coverage}></CoverageInfo>
     {pageElements.flatMap(x => [<VSCodeDivider />, x])}
   </div>;
 }

@@ -1,7 +1,7 @@
 import "./App.scss";
 
-// import genTreeData from "./demo-data/genList.json";
-import { ExampleFilter, SampleInfo } from "./datatypes";
+import genTreeData from "./demo-data/genBST.json";
+import { ExampleFilter, TestInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -12,7 +12,7 @@ import { ExampleView } from "./ExampleView";
 type LoadDataCommand = {
   genName: string;
   genSource: string;
-  dataset: string;
+  testInfo: string;
 };
 
 type PageState =
@@ -23,48 +23,35 @@ type PageState =
 type AppProps = {};
 
 type AppState = {
-  loading: boolean;
-  dataset: SampleInfo[];
+  state: "loading"
+} | {
+  state: "ready";
+  testInfo: TestInfo;
   genName: string;
   genSource: string;
 }
 
 const App = (_props: AppProps) => {
+  // const [state, setState] = useState<AppState>({ state: "loading" });
+
   const [state, setState] = useState<AppState>({
-    loading: true,
-    dataset: [],
-    genName: "",
-    genSource: ""
+    state: "ready",
+    testInfo: genTreeData as TestInfo,
+    genName: "genTree",
+    genSource: "Demo",
   });
-
-  // const [state, setState] = useState<AppState>({
-  //   loading: false,
-  //   dataset: genTreeData as SampleInfo[],
-  //   genName: "genTree",
-  //   genSource: "Demo",
-  // });
-
-  const { loading, dataset, genName, genSource } = state;
-
-  const [pageView, setPageView] = useState<PageState>({ state: "main" });
-
 
   const loadData = (command: LoadDataCommand) => {
     setState({
-      loading: false,
-      dataset: JSON.parse(command.dataset),
+      state: "ready",
+      testInfo: JSON.parse(command.testInfo),
       genName: command.genName,
       genSource: command.genSource,
     })
   };
 
   const clearData = () => {
-    setState({
-      loading: true,
-      dataset: [],
-      genName: "",
-      genSource: "",
-    });
+    setState({ state: "loading" });
   };
 
   const refreshData = () => {
@@ -86,14 +73,20 @@ const App = (_props: AppProps) => {
     });
   });
 
-  if (loading) {
+
+  const [pageView, setPageView] = useState<PageState>({ state: "main" });
+
+  if (state.state === "loading") {
     return <div className="App">
       <VSCodeProgressRing style={{ margin: "100px auto" }} />
     </div>;
   }
 
-  const features = Object.keys(dataset[0].features);
-  const filters = Object.keys(dataset[0].filters);
+  const { testInfo, genName, genSource } = state;
+  console.log(testInfo.coverage);
+
+  const features = Object.keys(testInfo.samples[0].features);
+  const filters = Object.keys(testInfo.samples[0].filters);
 
   return (
     <div className="App">
@@ -116,12 +109,13 @@ const App = (_props: AppProps) => {
       {pageView.state === "main" &&
         <MainView
           setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
-          dataset={dataset}
+          coverage={testInfo.coverage}
+          dataset={testInfo.samples}
           features={features}
           filters={filters}
         />}
-      {pageView.state === "examples" && <ExampleView dataset={dataset} />}
-      {pageView.state === "filtered" && <ExampleView dataset={dataset} filter={pageView.exampleFilter} />}
+      {pageView.state === "examples" && <ExampleView dataset={testInfo.samples} />}
+      {pageView.state === "filtered" && <ExampleView dataset={testInfo.samples} filter={pageView.exampleFilter} />}
     </div>
   );
 }
