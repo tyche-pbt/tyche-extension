@@ -20,13 +20,13 @@ export const FeatureChart = (props: FeatureChartProps) => {
 
   const dataset = filter ? props.dataset.filter((x) => x.filters[filter]) : props.dataset;
 
-  const featureData: { name: string; freq: number; }[] =
+  const featureData: { label: number; freq: number; }[] =
     Array.from(dataset.map((x) => Math.round(x.features[feature]))
       .reduce((acc, curr) => {
         return (acc.get(curr) ? acc.set(curr, acc.get(curr)! + 1) : acc.set(curr, 1), acc);
       }, new Map<number, number>()))
       .sort(([a], [b]) => a - b)
-      .map(([k, v]) => ({ name: k.toString(), freq: v }));
+      .map(([k, v]) => ({ label: k, freq: v }));
 
   return (
     <div className="FeatureChart">
@@ -38,7 +38,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar onClick={(data) => viewValue(parseInt(data.name))} dataKey="freq" fill="#B48EAD" />
+          <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill="#B48EAD" />
         </BarChart>
       </ResponsiveContainer>
     </div>
