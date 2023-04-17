@@ -242,7 +242,7 @@ export class GenVisPanel {
     const fileName = path.parse(document.fileName).name;
     this.showInformation(`Sampling data from ${propertyName}...`);
 
-    const runCommand = `cd ${path.parse(document.fileName).dir}; python -c "import ${fileName}; import tyche; tyche.visualize(${fileName}.${propertyName})"`;
+    const runCommand = `cd ${path.parse(document.fileName).dir}; python -c "import tyche; cov = tyche.setup(); import ${fileName}; tyche.visualize(${fileName}.${propertyName}, cov)"`;
     const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
 
     this.showInformation(`Got samples from ${propertyName}.`);
