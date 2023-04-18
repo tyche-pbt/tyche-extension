@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import genTreeData from "./demo-data/genBST.json";
+// import genTreeData from "./demo-data/genBST.json";
 import { ExampleFilter, TestInfo } from "./datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
@@ -32,14 +32,14 @@ type AppState = {
 }
 
 const App = (_props: AppProps) => {
-  // const [state, setState] = useState<AppState>({ state: "loading" });
+  const [state, setState] = useState<AppState>({ state: "loading" });
 
-  const [state, setState] = useState<AppState>({
-    state: "ready",
-    testInfo: genTreeData as TestInfo,
-    genName: "genTree",
-    genSource: "Demo",
-  });
+  // const [state, setState] = useState<AppState>({
+  //   state: "ready",
+  //   testInfo: genTreeData as TestInfo,
+  //   genName: "genTree",
+  //   genSource: "Demo",
+  // });
 
   const loadData = (command: LoadDataCommand) => {
     setState({

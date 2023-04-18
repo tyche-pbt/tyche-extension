@@ -239,10 +239,14 @@ export class GenVisPanel {
       command: "clear-data",
     });
 
-    const fileName = path.parse(document.fileName).name;
+    const wsPath = wsFolders[0].uri.path;
+
+    const modPath = path.relative(wsPath, document.fileName).replace(".py", "").replace(/\//g, ".");
     this.showInformation(`Sampling data from ${propertyName}...`);
 
-    const runCommand = `cd ${path.parse(document.fileName).dir}; python -c "import tyche; cov = tyche.setup(); import ${fileName}; tyche.visualize(${fileName}.${propertyName}, cov)"`;
+    const runCommand =
+      `cd ${wsPath}; ` +
+      `python -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
     const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
 
     this.showInformation(`Got samples from ${propertyName}.`);
