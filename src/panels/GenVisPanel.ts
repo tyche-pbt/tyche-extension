@@ -37,7 +37,7 @@ export class GenVisPanel {
   private _outChannel: vscode.OutputChannel;
 
   /**
-   * The HelloWorldPanel class private constructor (called only from the render method).
+   * The GenVisPanel class private constructor (called only from the render method).
    *
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
