@@ -35,7 +35,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={featureData}>
-          <XAxis dataKey="name" />
+          <XAxis dataKey="label" />
           <YAxis />
           <Tooltip />
           <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill="#B48EAD" />
