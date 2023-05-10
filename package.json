@@ -30,6 +30,11 @@
         "command": "gen-vis.refresh-data",
         "title": "Refresh Visualization Data",
         "category": "Generator Visualizer"
+      },
+      {
+        "command": "gen-vis.toggle-coverage",
+        "title": "Toggle Coverage Highlighting",
+        "category": "Tyche"
       }
     ]
   },

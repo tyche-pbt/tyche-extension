@@ -12,7 +12,7 @@ export type SampleInfo = {
 
 export type TestInfo = {
   samples: SampleInfo[];
-  coverage: { [key: string]: number };
+  coverage: { [key: string]: { percentage: number } };
 }
 
 export type ExampleFilter = {

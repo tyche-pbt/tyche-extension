@@ -7,16 +7,34 @@ import * as child_process from "child_process";
 
 const posixPath = path.posix || path;
 
-type SampleInfo = {
+export type SampleInfo = {
   item: string;
   dot?: string;
-  json?: object;
+  json?: string | object;
   features: {
     [key: string]: number;
   };
   filters: {
     [key: string]: boolean;
   };
+};
+
+export type TestInfo = {
+  samples: SampleInfo[];
+  coverage: { [key: string]: { percentage: number, hitLines: number[], missedLines: number[] } };
+};
+
+const createDecorationTypes = () => {
+  const greenLineDecoration = window.createTextEditorDecorationType({
+    isWholeLine: true,
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
+  });
+
+  const redLineDecoration = window.createTextEditorDecorationType({
+    isWholeLine: true,
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
+  });
+  return [greenLineDecoration, redLineDecoration];
 };
 
 /**
@@ -35,6 +53,9 @@ export class GenVisPanel {
   private _disposables: Disposable[] = [];
   private _lastSource: vscode.Uri | { document: TextDocument, range: vscode.Range } | { document: TextDocument, propertyName: string } | undefined = undefined;
   private _outChannel: vscode.OutputChannel;
+  private _lastInfo: TestInfo | undefined = undefined;
+  private _decorationTypes: vscode.TextEditorDecorationType[] = [];
+  private _shouldShowCoverage: boolean = false;
 
   /**
    * The GenVisPanel class private constructor (called only from the render method).
@@ -227,6 +248,46 @@ export class GenVisPanel {
     this._lastSource = { document, range };
   }
 
+  public toggleCoverage() {
+    this._shouldShowCoverage = !this._shouldShowCoverage;
+    this.decorateCoverage();
+  }
+
+  public decorateCoverage() {
+    // Dispose decoration types (and thus decorations)
+    this._decorationTypes.forEach((decorationType) => {
+      decorationType.dispose();
+    });
+    this._decorationTypes = [];
+
+    if (!this._lastInfo || !this._shouldShowCoverage) {
+      return;
+    }
+    const info = this._lastInfo;
+
+    const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
+      editor.setDecorations(decorationType,
+        lines.map((line) => {
+          let range = new vscode.Range(new vscode.Position(line - 1, 0), new vscode.Position(line - 1, 0));
+          return { range };
+        })
+      );
+    };
+
+    // Mint new decoration types
+    const [greenLineDecoration, redLineDecoration] = createDecorationTypes();
+    this._decorationTypes = [greenLineDecoration, redLineDecoration];
+
+    window.visibleTextEditors.forEach((editor) => {
+      const p = editor.document.fileName;
+      if (p in info.coverage) {
+        decorate(editor, info.coverage[p].hitLines, greenLineDecoration);
+        decorate(editor, info.coverage[p].missedLines, redLineDecoration);
+      }
+    });
+  }
+
+
   public loadDataFromGeneratorPython(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
@@ -258,7 +319,12 @@ export class GenVisPanel {
       testInfo: stdout
     });
 
+    const info = JSON.parse(stdout) as TestInfo;
+
+    this._lastInfo = info;
     this._lastSource = { document, propertyName };
+
+    this.decorateCoverage();
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {

@@ -8,7 +8,7 @@ import { CoverageInfo } from "./CoverageInfo";
 
 type MainViewProps = {
   dataset: SampleInfo[];
-  coverage: { [key: string]: number };
+  coverage: { [key: string]: { percentage: number } };
   filters: string[];
   features: string[];
   setFilteredView: (exampleFilter: ExampleFilter) => void;
