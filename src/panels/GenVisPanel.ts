@@ -235,9 +235,9 @@ export class GenVisPanel {
       return;
     }
 
-    this._panel.webview.postMessage({
-      command: "clear-data",
-    });
+    // this._panel.webview.postMessage({
+    //   command: "clear-data",
+    // });
 
     const wsPath = wsFolders[0].uri.path;
 
