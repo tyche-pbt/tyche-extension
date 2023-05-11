@@ -6,7 +6,7 @@ export function activate(context: ExtensionContext) {
   languages.registerCodeLensProvider({ language: "python" }, new PropertyCodelensProvider(context.extensionUri));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.view-visualization", () => {
-    TychePanel.render(context.extensionUri, true);
+    TychePanel.render(context.extensionUri);
   }));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.refresh-data", () => {

@@ -34,7 +34,7 @@ export class TychePanel {
     this._setWebviewMessageListener(this._panel.webview);
   }
 
-  public static render(extensionUri: Uri, loadData: boolean) {
+  public static render(extensionUri: Uri) {
     if (TychePanel.currentPanel) {
       TychePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
@@ -80,7 +80,7 @@ export class TychePanel {
 
   public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
     if (!TychePanel.currentPanel) {
-      TychePanel.render(extensionUri, false);
+      TychePanel.render(extensionUri);
     }
 
     TychePanel.currentPanel!._executeHypothesisTestAndLoad(document, propertyName);
