@@ -8,7 +8,7 @@ import { SampleInfo, TestInfo } from "../datatypes";
 
 const posixPath = path.posix || path;
 
-const createDecorationTypes = () => {
+const mintDecorationTypes = () => {
   const greenLineDecoration = window.createTextEditorDecorationType({
     isWholeLine: true,
     backgroundColor: "rgba(0, 255, 0, 0.1)",
@@ -35,7 +35,7 @@ export class GenVisPanel {
   public static currentPanel: GenVisPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _lastSource: vscode.Uri | { document: TextDocument, range: vscode.Range } | { document: TextDocument, propertyName: string } | undefined = undefined;
+  private _lastSource: { document: TextDocument, propertyName: string } | undefined = undefined;
   private _outChannel: vscode.OutputChannel;
   private _lastInfo: TestInfo | undefined = undefined;
   private _decorationTypes: vscode.TextEditorDecorationType[] = [];
@@ -79,10 +79,6 @@ export class GenVisPanel {
       );
 
       GenVisPanel.currentPanel = new GenVisPanel(panel, extensionUri);
-
-      if (loadData) {
-        GenVisPanel.currentPanel.loadDataFromFile();
-      }
     }
   }
 
@@ -101,21 +97,12 @@ export class GenVisPanel {
     return this._lastSource !== undefined && ("document" in this._lastSource) && (this._lastSource.document === document);
   }
 
-
-  static selectGeneratorInline(document: TextDocument, range: vscode.Range, extensionUri: Uri) {
+  static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
     if (!GenVisPanel.currentPanel) {
       GenVisPanel.render(extensionUri, false);
     }
 
-    GenVisPanel.currentPanel!.loadDataFromGeneratorHaskell(document, range);
-  }
-
-  static hypothesisRunProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
-    if (!GenVisPanel.currentPanel) {
-      GenVisPanel.render(extensionUri, false);
-    }
-
-    GenVisPanel.currentPanel!.loadDataFromGeneratorPython(document, propertyName);
+    GenVisPanel.currentPanel!.executeHypothesisTestAndLoad(document, propertyName);
   }
 
   public static refreshData() {
@@ -127,109 +114,14 @@ export class GenVisPanel {
     GenVisPanel.currentPanel.refreshDataForActiveVisualization();
   }
 
-  public static pickNewData() {
-    if (!GenVisPanel.currentPanel) {
-      vscode.window.showErrorMessage("No active visualization to update.");
-      return;
-    }
-    GenVisPanel.currentPanel.loadDataFromFile();
-  }
-
   public refreshDataForActiveVisualization() {
     if (!this._lastSource) {
       vscode.window.showErrorMessage("No data source to refresh.");
       return;
     }
 
-    if (this._lastSource instanceof vscode.Uri) {
-      const uri = this._lastSource;
-
-      const dataset: SampleInfo[] =
-        JSON.parse(fs.readFileSync(uri.fsPath, "utf8"));
-
-      this._panel.webview.postMessage({
-        command: "load-data",
-        genName: posixPath.basename(uri.path).split(".")[0],
-        genSource: `File: ${uri.path}`,
-        dataset,
-      });
-    } else if ("range" in this._lastSource) {
-      const { document, range } = this._lastSource;
-      this.loadDataFromGeneratorHaskell(document, range);
-    } else {
-      const { document, propertyName } = this._lastSource;
-      this.loadDataFromGeneratorPython(document, propertyName);
-    }
-  }
-
-  public loadDataFromFile() {
-    this._panel.webview.postMessage({
-      command: "clear-data",
-    });
-
-    vscode.window.showOpenDialog({
-      canSelectMany: false,
-      openLabel: "Load New Data",
-      canSelectFiles: true,
-      canSelectFolders: false
-    }).then((fileUri) => {
-      if (fileUri) {
-        const dataset: SampleInfo[] =
-          JSON.parse(fs.readFileSync(fileUri[0].fsPath, "utf8"));
-
-        if (GenVisPanel.currentPanel) {
-          GenVisPanel.currentPanel._panel.webview.postMessage({
-            command: "load-data",
-            genName: posixPath.basename(fileUri[0].path).split(".")[0],
-            dataset,
-          });
-          GenVisPanel.currentPanel._lastSource = fileUri[0];
-        }
-      }
-    });
-  }
-
-  public loadDataFromGeneratorHaskell(document: TextDocument, range: vscode.Range, callback?: () => void) {
-    const wsFolders = vscode.workspace.workspaceFolders;
-    const genName = document.getText(document.getWordRangeAtPosition(range.start));
-
-    if (!wsFolders || wsFolders.length === 0) {
-      vscode.window.showErrorMessage("No active workspace. Please open a workspace with a cabal project.");
-      return;
-    }
-
-    this._panel.webview.postMessage({
-      command: "clear-data",
-    });
-
-    this.showInformation(`Sampling data from ${genName}...`);
-    const runCommand = `cd ${wsFolders[0].uri.path}; cabal v2-run gen-vis-runner -- ${genName}`;
-    child_process.exec(runCommand, { maxBuffer: 1024 * 10000 }, (err, stdout, stderr) => {
-      if (err) {
-        vscode.window.showErrorMessage(err.message + stderr);
-        return;
-      }
-
-      const jsonStr = stdout.split("-----")[1];
-      if (!jsonStr) {
-        vscode.window.showErrorMessage("Invalid data returned from generator.");
-        return;
-      }
-      const dataset: SampleInfo[] = JSON.parse(jsonStr);
-
-      this.showInformation(`Got ${dataset.length} samples from ${genName}.`);
-
-      this._panel.webview.postMessage({
-        command: "load-data",
-        genName: genName,
-        genSource: `Live: ${document.fileName}:${genName}`,
-        dataset,
-      });
-
-      callback && callback();
-    });
-
-    this._lastSource = { document, range };
+    const { document, propertyName } = this._lastSource;
+    this.executeHypothesisTestAndLoad(document, propertyName);
   }
 
   public toggleCoverage() {
@@ -259,7 +151,7 @@ export class GenVisPanel {
     };
 
     // Mint new decoration types
-    const [greenLineDecoration, redLineDecoration] = createDecorationTypes();
+    const [greenLineDecoration, redLineDecoration] = mintDecorationTypes();
     this._decorationTypes = [greenLineDecoration, redLineDecoration];
 
     window.visibleTextEditors.forEach((editor) => {
@@ -272,7 +164,7 @@ export class GenVisPanel {
   }
 
 
-  public loadDataFromGeneratorPython(document: TextDocument, propertyName: string) {
+  public executeHypothesisTestAndLoad(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
     if (!wsFolders || wsFolders.length === 0) {

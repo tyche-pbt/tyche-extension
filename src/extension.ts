@@ -1,30 +1,20 @@
 import { commands, ExtensionContext, languages, workspace, window } from "vscode";
-import { HaskellCodelensProvider } from "./lenses/HaskellCodelensProvider";
 import { GenVisPanel } from "./panels/GenVisPanel";
-import { PythonCodelensProvider } from "./lenses/PythonCodelensProvider";
+import { PropertyCodelensProvider } from "./lenses/PropertyCodelensProvider";
 
 export function activate(context: ExtensionContext) {
-  languages.registerCodeLensProvider({ language: "haskell" }, new HaskellCodelensProvider(context.extensionUri));
-  languages.registerCodeLensProvider({ language: "python" }, new PythonCodelensProvider(context.extensionUri));
+  languages.registerCodeLensProvider({ language: "python" }, new PropertyCodelensProvider(context.extensionUri));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.view-visualization", () => {
     GenVisPanel.render(context.extensionUri, true);
-  }));
-
-  context.subscriptions.push(commands.registerCommand("gen-vis.pick-new-data", () => {
-    GenVisPanel.pickNewData();
   }));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.refresh-data", () => {
     GenVisPanel.refreshData();
   }));
 
-  context.subscriptions.push(commands.registerCommand("gen-vis.select-generator-inline", (document, range) => {
-    GenVisPanel.selectGeneratorInline(document, range, context.extensionUri);
-  }));
-
   context.subscriptions.push(commands.registerCommand("gen-vis.hypothesis-run-property", (document, range) => {
-    GenVisPanel.hypothesisRunProperty(document, range, context.extensionUri);
+    GenVisPanel.runProperty(document, range, context.extensionUri);
   }));
 
   context.subscriptions.push(commands.registerCommand("gen-vis.toggle-coverage", () => {

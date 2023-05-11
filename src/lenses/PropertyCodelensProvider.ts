@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export class HaskellCodelensProvider implements vscode.CodeLensProvider {
+export class PropertyCodelensProvider implements vscode.CodeLensProvider {
 
   private codeLenses: vscode.CodeLens[] = [];
   private regex: RegExp;
@@ -9,7 +9,8 @@ export class HaskellCodelensProvider implements vscode.CodeLensProvider {
   private _extensionUri: vscode.Uri;
 
   constructor(extensionUri: vscode.Uri) {
-    this.regex = /gen(\w|\d)+ :: Gen .+/g; // TODO Fix
+    this.regex = /^@given.*?def (.*?)\(/gms; // /@given.*def .*\(/gms; // TODO Fix
+
     this._extensionUri = extensionUri;
   }
 
@@ -23,16 +24,16 @@ export class HaskellCodelensProvider implements vscode.CodeLensProvider {
     let matches;
     while ((matches = regex.exec(text)) !== null) {
       const line = document.lineAt(document.positionAt(matches.index).line);
-      const indexOf = line.text.indexOf(matches[0]);
-      const position = new vscode.Position(line.lineNumber, indexOf);
-      const range = document.getWordRangeAtPosition(position, new RegExp(this.regex));
+      const position = new vscode.Position(line.lineNumber, 0);
+      const range = new vscode.Range(position, position);
+      const propertyName = matches[1];
       if (range) {
         this.codeLenses.push(new vscode.CodeLens(range,
           {
-            title: "GenVis: Visualize Generator Distribution",
+            title: "Tyche: Run Property and Visualize",
             tooltip: "Click this to visualize your generator.",
-            command: "gen-vis.select-generator-inline",
-            arguments: [document, range, this._extensionUri]
+            command: "gen-vis.hypothesis-run-property",
+            arguments: [document, propertyName, this._extensionUri]
           }
         ));
       }
