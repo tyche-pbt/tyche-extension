@@ -11,14 +11,13 @@ import { SampleInfo } from "../../src/datatypes";
 type FeatureChartProps = {
   feature: string;
   dataset: SampleInfo[];
-  filter?: string;
   viewValue: (v: number) => void;
 };
 
 export const FeatureChart = (props: FeatureChartProps) => {
-  const { feature, filter, viewValue } = props;
+  const { feature, viewValue } = props;
 
-  const dataset = filter ? props.dataset.filter((x) => x.filters[filter]) : props.dataset;
+  const dataset = props.dataset;
 
   const featureData: { label: number; freq: number; }[] =
     Array.from(dataset.map((x) => Math.round(x.features[feature]))
@@ -31,7 +30,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
   return (
     <div className="FeatureChart">
       <div className="chart-title">
-        Distribution of <code>{feature}</code>{filter && <span> (filtered by <code>{filter}</code>)</span>}
+        Distribution of <code>{feature}</code>
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={featureData}>

@@ -5,8 +5,8 @@ export type SampleInfo = {
   features: {
     [key: string]: number;
   };
-  filters: {
-    [key: string]: boolean;
+  bucketings: {
+    [key: string]: string;
   };
 };
 
@@ -18,5 +18,4 @@ export type TestInfo = {
 export type ExampleFilter = {
   feature: string;
   value: number;
-  filter?: string;
 };

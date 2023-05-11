@@ -4,13 +4,13 @@ import { PrettyExample } from "./PrettyExample";
 type ExtremeExamplesProps = {
   dataset: SampleInfo[];
   feature: string;
-  filter?: string;
+  bucket?: { name: string, value: string };
   end: "max" | "min";
 };
 
 export const ExtremeExamples = (props: ExtremeExamplesProps) => {
-  const { feature, filter, end } = props;
-  const dataset = filter ? props.dataset.filter((x) => x.filters[filter]) : props.dataset;
+  const { feature, bucket, end } = props;
+  const dataset = bucket ? props.dataset.filter((x) => x.bucketings[bucket.name] === bucket.value) : props.dataset;
 
   if (dataset.length === 0) {
     return <>No examples available.</>;
@@ -25,7 +25,7 @@ export const ExtremeExamples = (props: ExtremeExamplesProps) => {
     <div className="ExtremeExamples">
       <div className="ee-container">
         <div className="ee-title">
-          {end === "max" ? "Maximum" : "Minimum"} by <code>{feature}</code>{filter && <span> (filtered by <code>{filter}</code>)</span>}
+          {end === "max" ? "Maximum" : "Minimum"} by <code>{feature}</code>{bucket && <span> (filtered by <code>{bucket.name} = {bucket.value}</code>)</span>}
         </div>
         <PrettyExample example={example}></PrettyExample>
       </div>

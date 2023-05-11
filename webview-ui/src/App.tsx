@@ -83,10 +83,9 @@ const App = (_props: AppProps) => {
   }
 
   const { testInfo, genName, genSource } = state;
-  console.log(testInfo.coverage);
 
   const features = Object.keys(testInfo.samples[0].features);
-  const filters = Object.keys(testInfo.samples[0].filters);
+  const bucketings = Object.keys(testInfo.samples[0].bucketings);
 
   return (
     <div className="App">
@@ -112,7 +111,7 @@ const App = (_props: AppProps) => {
           coverage={testInfo.coverage}
           dataset={testInfo.samples}
           features={features}
-          filters={filters}
+          bucketings={bucketings}
         />}
       {pageView.state === "examples" && <ExampleView dataset={testInfo.samples} />}
       {pageView.state === "filtered" && <ExampleView dataset={testInfo.samples} filter={pageView.exampleFilter} />}
