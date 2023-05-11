@@ -1,12 +1,9 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocument } from "vscode";
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
 import * as child_process from "child_process";
-import { SampleInfo, TestInfo } from "../datatypes";
-
-const posixPath = path.posix || path;
+import { TestInfo } from "../datatypes";
 
 const mintDecorationTypes = () => {
   const greenLineDecoration = window.createTextEditorDecorationType({
@@ -21,55 +18,25 @@ const mintDecorationTypes = () => {
   return [greenLineDecoration, redLineDecoration];
 };
 
-/**
- * This class manages the state and behavior of HelloWorld webview panels.
- *
- * It contains all the data and methods for:
- *
- * - Creating and rendering HelloWorld webview panels
- * - Properly cleaning up and disposing of webview resources when the panel is closed
- * - Setting the HTML (and by proxy CSS/JavaScript) content of the webview panel
- * - Setting message listeners so data can be passed between the webview and extension
- */
-export class GenVisPanel {
-  public static currentPanel: GenVisPanel | undefined;
+export class TychePanel {
+  public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
   private _lastSource: { document: TextDocument, propertyName: string } | undefined = undefined;
-  private _outChannel: vscode.OutputChannel;
   private _lastInfo: TestInfo | undefined = undefined;
   private _decorationTypes: vscode.TextEditorDecorationType[] = [];
   private _shouldShowCoverage: boolean = false;
 
-  /**
-   * The GenVisPanel class private constructor (called only from the render method).
-   *
-   * @param panel A reference to the webview panel
-   * @param extensionUri The URI of the directory containing the extension
-   */
   private constructor(panel: WebviewPanel, extensionUri: Uri) {
     this._panel = panel;
-
-    // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-    // the panel or when the panel is closed programmatically)
     this._panel.onDidDispose(this.dispose, null, this._disposables);
-
-    // Set the HTML content for the webview panel
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
-
-    // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
-
-    this._outChannel = vscode.window.createOutputChannel("Testing Performance Report");
-  }
-
-  public showInformation(x: string) {
-    this._outChannel.appendLine(x);
   }
 
   public static render(extensionUri: Uri, loadData: boolean) {
-    if (GenVisPanel.currentPanel) {
-      GenVisPanel.currentPanel._panel.reveal(ViewColumn.One);
+    if (TychePanel.currentPanel) {
+      TychePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
       const panel = window.createWebviewPanel(
         "genVis",
@@ -78,12 +45,12 @@ export class GenVisPanel {
         { enableScripts: true, }
       );
 
-      GenVisPanel.currentPanel = new GenVisPanel(panel, extensionUri);
+      TychePanel.currentPanel = new TychePanel(panel, extensionUri);
     }
   }
 
   public dispose() {
-    GenVisPanel.currentPanel = undefined;
+    TychePanel.currentPanel = undefined;
     this._panel.dispose();
     while (this._disposables.length) {
       const disposable = this._disposables.pop();
@@ -93,44 +60,62 @@ export class GenVisPanel {
     }
   }
 
-  public isViewing(document: TextDocument): boolean {
-    return this._lastSource !== undefined && ("document" in this._lastSource) && (this._lastSource.document === document);
-  }
-
-  static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
-    if (!GenVisPanel.currentPanel) {
-      GenVisPanel.render(extensionUri, false);
+  public static lastSourceIs(document: TextDocument): boolean {
+    if (!TychePanel.currentPanel) {
+      return false;
     }
 
-    GenVisPanel.currentPanel!.executeHypothesisTestAndLoad(document, propertyName);
+    const panel = TychePanel.currentPanel;
+    return panel._lastSource !== undefined && (panel._lastSource.document === document);
   }
 
   public static refreshData() {
-    if (!GenVisPanel.currentPanel) {
+    if (!TychePanel.currentPanel) {
       vscode.window.showErrorMessage("No active visualization to update.");
       return;
     }
 
-    GenVisPanel.currentPanel.refreshDataForActiveVisualization();
+    TychePanel.currentPanel._refreshDataForActiveVisualization();
   }
 
-  public refreshDataForActiveVisualization() {
+  public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
+    if (!TychePanel.currentPanel) {
+      TychePanel.render(extensionUri, false);
+    }
+
+    TychePanel.currentPanel!._executeHypothesisTestAndLoad(document, propertyName);
+  }
+
+  public static toggleCoverage() {
+    if (!TychePanel.currentPanel) {
+      return;
+    }
+
+    let panel = TychePanel.currentPanel;
+    panel._shouldShowCoverage = !panel._shouldShowCoverage;
+    panel._decorateCoverage();
+  }
+
+  public static decorateCoverage() {
+    if (!TychePanel.currentPanel) {
+      return;
+    }
+
+    const panel = TychePanel.currentPanel;
+    panel._decorateCoverage();
+  }
+
+  private _refreshDataForActiveVisualization() {
     if (!this._lastSource) {
       vscode.window.showErrorMessage("No data source to refresh.");
       return;
     }
 
     const { document, propertyName } = this._lastSource;
-    this.executeHypothesisTestAndLoad(document, propertyName);
+    this._executeHypothesisTestAndLoad(document, propertyName);
   }
 
-  public toggleCoverage() {
-    this._shouldShowCoverage = !this._shouldShowCoverage;
-    this.decorateCoverage();
-  }
-
-  public decorateCoverage() {
-    // Dispose decoration types (and thus decorations)
+  private _decorateCoverage() {
     this._decorationTypes.forEach((decorationType) => {
       decorationType.dispose();
     });
@@ -150,7 +135,6 @@ export class GenVisPanel {
       );
     };
 
-    // Mint new decoration types
     const [greenLineDecoration, redLineDecoration] = mintDecorationTypes();
     this._decorationTypes = [greenLineDecoration, redLineDecoration];
 
@@ -163,8 +147,7 @@ export class GenVisPanel {
     });
   }
 
-
-  public executeHypothesisTestAndLoad(document: TextDocument, propertyName: string) {
+  private _executeHypothesisTestAndLoad(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
     if (!wsFolders || wsFolders.length === 0) {
@@ -172,21 +155,16 @@ export class GenVisPanel {
       return;
     }
 
-    // this._panel.webview.postMessage({
-    //   command: "clear-data",
-    // });
+    // this._panel.webview.postMessage({ command: "clear-data" });
 
     const wsPath = wsFolders[0].uri.path;
 
     const modPath = path.relative(wsPath, document.fileName).replace(".py", "").replace(/\//g, ".");
-    this.showInformation(`Sampling data from ${propertyName}...`);
 
     const runCommand =
       `cd ${wsPath}; ` +
       `python -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
     const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
-
-    this.showInformation(`Got samples from ${propertyName}.`);
 
     this._panel.webview.postMessage({
       command: "load-data",
@@ -200,7 +178,23 @@ export class GenVisPanel {
     this._lastInfo = info;
     this._lastSource = { document, propertyName };
 
-    this.decorateCoverage();
+    this._decorateCoverage();
+  }
+
+  private _setWebviewMessageListener(webview: Webview) {
+    webview.onDidReceiveMessage(
+      (message: any) => {
+        const command = message.command;
+
+        switch (command) {
+          case "request-refresh-data":
+            this._refreshDataForActiveVisualization();
+            return;
+        }
+      },
+      undefined,
+      this._disposables
+    );
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
@@ -239,21 +233,5 @@ export class GenVisPanel {
         </body>
       </html>
     `;
-  }
-
-  private _setWebviewMessageListener(webview: Webview) {
-    webview.onDidReceiveMessage(
-      (message: any) => {
-        const command = message.command;
-
-        switch (command) {
-          case "request-refresh-data":
-            this.refreshDataForActiveVisualization();
-            return;
-        }
-      },
-      undefined,
-      this._disposables
-    );
   }
 }
