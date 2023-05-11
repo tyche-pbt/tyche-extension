@@ -16,13 +16,16 @@ export const ExampleView = (props: ExampleViewProps) => {
   const { filter } = props;
 
   const dataset = filter
-    ? props.dataset.filter((x) => x.features[filter.feature] === filter.value)
+    ? props.dataset.filter((x) =>
+      ("feature" in filter && x.features[filter.feature] === filter.value) ||
+      ("bucketing" in filter && x.bucketings[filter.bucketing] === filter.value)
+    )
     : props.dataset;
 
   return (<div className="ExampleView">
     {filter &&
       <>
-        <em>Examples where <code>{filter.feature} = {filter.value}</code></em>
+        <em>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></em>
         <VSCodeDivider style={{ marginBottom: "20px" }} />
       </>}
     {dataset.slice(page, page + PAGE_LEN).flatMap(x => [<VSCodeDivider />, <PrettyExample example={x} />]).slice(1)}

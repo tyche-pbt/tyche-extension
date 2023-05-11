@@ -18,4 +18,4 @@ export type TestInfo = {
 export type ExampleFilter = {
   feature: string;
   value: number;
-};
+} | { bucketing: string, value: string };

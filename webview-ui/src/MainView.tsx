@@ -36,7 +36,7 @@ export const MainView = (props: MainViewProps) => {
         end="max"
       />]),
     ...bucketings.map((x) =>
-      <BucketChart bucketing={x} dataset={dataset} />)
+      <BucketChart bucketing={x} dataset={dataset} viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />)
     ]
 
   return <div className="MainView">
