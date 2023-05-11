@@ -1,7 +1,7 @@
 import "./App.scss";
 
 // import genTreeData from "./demo-data/genBST.json";
-import { ExampleFilter, TestInfo } from "./datatypes";
+import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";

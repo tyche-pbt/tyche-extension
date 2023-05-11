@@ -4,25 +4,9 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocumen
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
 import * as child_process from "child_process";
+import { SampleInfo, TestInfo } from "../datatypes";
 
 const posixPath = path.posix || path;
-
-export type SampleInfo = {
-  item: string;
-  dot?: string;
-  json?: string | object;
-  features: {
-    [key: string]: number;
-  };
-  filters: {
-    [key: string]: boolean;
-  };
-};
-
-export type TestInfo = {
-  samples: SampleInfo[];
-  coverage: { [key: string]: { percentage: number, hitLines: number[], missedLines: number[] } };
-};
 
 const createDecorationTypes = () => {
   const greenLineDecoration = window.createTextEditorDecorationType({

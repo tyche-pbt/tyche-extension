@@ -1,4 +1,4 @@
-import { SampleInfo } from "./datatypes";
+import { SampleInfo } from "../../src/datatypes";
 
 type HighLevelStatsProps = {
   dataset: SampleInfo[];

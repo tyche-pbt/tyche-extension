@@ -1,5 +1,5 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
-import { ExampleFilter, SampleInfo } from "./datatypes";
+import { ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { FilterChart } from "./FilterChart";

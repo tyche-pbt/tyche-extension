@@ -1,4 +1,4 @@
-import { SampleInfo } from "./datatypes";
+import { SampleInfo } from "../../src/datatypes";
 // import ReactJSON from "react-json-view";
 
 type PrettyExampleProps = {

@@ -12,8 +12,8 @@ export type SampleInfo = {
 
 export type TestInfo = {
   samples: SampleInfo[];
-  coverage: { [key: string]: { percentage: number } };
-}
+  coverage: { [key: string]: { percentage: number, hitLines: number[], missedLines: number[] } };
+};
 
 export type ExampleFilter = {
   feature: string;

@@ -6,7 +6,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from "recharts";
-import { SampleInfo } from "./datatypes";
+import { SampleInfo } from "../../src/datatypes";
 
 type FeatureChartProps = {
   feature: string;

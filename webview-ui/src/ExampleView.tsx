@@ -1,4 +1,4 @@
-import { ExampleFilter, SampleInfo } from "./datatypes";
+import { ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { VSCodeButton, VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
 import { PrettyExample } from "./PrettyExample";
 import { useState } from "react";

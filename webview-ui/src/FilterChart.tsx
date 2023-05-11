@@ -5,7 +5,7 @@ import {
   Cell,
   ResponsiveContainer
 } from 'recharts';
-import { SampleInfo } from "./datatypes";
+import { SampleInfo } from "../../src/datatypes";
 
 type FilterChartProps = {
   filter: string;
