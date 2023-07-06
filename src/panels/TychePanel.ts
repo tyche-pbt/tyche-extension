@@ -83,6 +83,7 @@ export class TychePanel {
       TychePanel.render(extensionUri);
     }
 
+    TychePanel.currentPanel!._clearData();
     TychePanel.currentPanel!._executeHypothesisTestAndLoad(document, propertyName);
   }
 
@@ -147,6 +148,11 @@ export class TychePanel {
     });
   }
 
+
+  private _clearData() {
+    this._panel.webview.postMessage({ command: "clear-data" });
+  }
+
   private _executeHypothesisTestAndLoad(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
@@ -154,8 +160,6 @@ export class TychePanel {
       vscode.window.showErrorMessage("No active workspace. Please open a workspace with a cabal project.");
       return;
     }
-
-    // this._panel.webview.postMessage({ command: "clear-data" });
 
     const wsPath = wsFolders[0].uri.path;
 
