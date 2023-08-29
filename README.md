@@ -1,6 +1,6 @@
-# GenVis
+# Tyche
 
-A VSCode extension for visualizing QuickCheck generators.
+A VSCode extension for visualizing Hypothesis generators.
 
 ## Running
 
