@@ -19,24 +19,26 @@ export const MainView = (props: MainViewProps) => {
   const { dataset, features, bucketings } = props;
 
   const pageElements =
-    [...features.flatMap((x) =>
-      [<FeatureChart
-        feature={x}
-        dataset={dataset}
-        viewValue={(value) => props.setFilteredView({ feature: x, value })}
-      />,
-      <ExtremeExamples
-        feature={x}
-        dataset={dataset}
-        end="min"
-      />,
-      <ExtremeExamples
-        feature={x}
-        dataset={dataset}
-        end="max"
-      />]),
-    ...bucketings.map((x) =>
-      <BucketChart bucketing={x} dataset={dataset} viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />)
+    [...bucketings.map((x) =>
+      <BucketChart bucketing={x} dataset={dataset} viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />),
+    ...features.flatMap((x) =>
+      [
+        <FeatureChart
+          feature={x}
+          dataset={dataset}
+          viewValue={(value) => props.setFilteredView({ feature: x, value })}
+        />,
+        <ExtremeExamples
+          feature={x}
+          dataset={dataset}
+          end="min"
+        />,
+        <ExtremeExamples
+          feature={x}
+          dataset={dataset}
+          end="max"
+        />,
+      ]),
     ]
 
   return <div className="MainView">
