@@ -1,8 +1,10 @@
 {
   "name": "tyche",
-  "displayName": "tyche",
+  "displayName": "Tyche",
   "description": "A VSCode extension for visualizing data produced when testing a Hypothesis property.",
   "version": "0.0.1",
+  "author": "Harrison Goldstein",
+  "repository": "https://github.com/hgoldstein95/tyche-extension",
   "engines": {
     "vscode": "^1.46.0"
   },
@@ -47,11 +49,13 @@
     "eslint": "^7.19.0",
     "glob": "^7.1.6",
     "prettier": "^2.2.1",
+    "rewire": "^7.0.0",
     "sass": "^1.56.1",
     "typescript": "^4.1.3",
     "vscode-test": "^1.5.0"
   },
   "dependencies": {
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "react": "^18.2.0"
   }
 }
