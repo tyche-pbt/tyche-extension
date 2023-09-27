@@ -167,7 +167,7 @@ export class TychePanel {
 
     const runCommand =
       `cd ${wsPath}; ` +
-      `python -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
+      `python3 -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
     const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
 
     this._panel.webview.postMessage({
