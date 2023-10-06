@@ -4,6 +4,7 @@
   "description": "A VSCode extension for visualizing data produced when testing a Hypothesis property.",
   "version": "0.0.1",
   "author": "Harrison Goldstein",
+  "publisher": "HarrisonGoldstein",
   "repository": "https://github.com/hgoldstein95/tyche-extension",
   "engines": {
     "vscode": "^1.46.0"
