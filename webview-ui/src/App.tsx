@@ -1,6 +1,5 @@
 import "./App.scss";
 
-// import genTreeData from "./demo-data/genBST.json";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
@@ -8,6 +7,7 @@ import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/rea
 
 import { MainView } from "./MainView";
 import { ExampleView } from "./ExampleView";
+import { PrettyExample } from "./PrettyExample";
 
 type LoadDataCommand = {
   genName: string;
@@ -36,7 +36,15 @@ const App = (_props: AppProps) => {
 
   // const [state, setState] = useState<AppState>({
   //   state: "ready",
-  //   testInfo: genTreeData as TestInfo,
+  //   testInfo: {
+  //     type: "failure",
+  //     counterExample: {
+  //       item: "Node(Leaf(), 5, Node(Leaf(), 6, Leaf())",
+  //       features: {},
+  //       bucketings: {}
+  //     },
+  //     message: "Something went wrong."
+  //   },
   //   genName: "genTree",
   //   genSource: "Demo",
   // });
@@ -83,6 +91,25 @@ const App = (_props: AppProps) => {
   }
 
   const { testInfo, genName, genSource } = state;
+
+  if (testInfo.type && testInfo.type === "failure") {
+    return <div className="App">
+      <div className="pane-title">
+        <code title={genSource}>{genName}</code>: Found Counterexample
+      </div>
+      The property failed with the following counterexample:
+      <PrettyExample example={testInfo.counterExample} />
+      and the following error:
+      <pre>{testInfo.message}</pre>
+    </div>;
+  }
+
+  if (testInfo.type && testInfo.type === "error") {
+    return <div className="App">
+      Something went wrong. The test runner failed with the following error:
+      <pre>{testInfo.message}</pre>
+    </div>;
+  }
 
   const features = Object.keys(testInfo.samples[0].features);
   const bucketings = Object.keys(testInfo.samples[0].bucketings);

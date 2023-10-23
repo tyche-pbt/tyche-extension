@@ -16,10 +16,24 @@ export type CoverageItem = {
   missedLines: number[],
 };
 
-export type TestInfo = {
+export type SucceedingTestInfo = {
+  type?: "success";
   samples: SampleInfo[];
   coverage: { [key: string]: CoverageItem };
 };
+
+export type FailingTestInfo = {
+  type: "failure";
+  counterExample: SampleInfo;
+  message: string;
+};
+
+export type NoTestInfo = {
+  type: "error";
+  message: string;
+};
+
+export type TestInfo = SucceedingTestInfo | FailingTestInfo | NoTestInfo;
 
 export type ExampleFilter = {
   feature: string;

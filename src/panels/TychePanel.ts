@@ -126,6 +126,9 @@ export class TychePanel {
       return;
     }
     const info = this._lastInfo;
+    if (info.type && info.type !== "success") {
+      return;
+    }
 
     const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
       editor.setDecorations(decorationType,
