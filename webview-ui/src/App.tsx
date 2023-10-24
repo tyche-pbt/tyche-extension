@@ -121,7 +121,7 @@ const App = (_props: AppProps) => {
           style={{ marginRight: "10px" }}
           onClick={() => pageView.state === "main" ? setPageView({ state: "examples" }) : setPageView({ state: "main" })}
         >
-          {pageView.state === "main" ? "See More Examples" : "Back to Main"}
+          {pageView.state === "main" ? "See More Examples" : "Back to Overview"}
         </VSCodeButton>
         <VSCodeButton onClick={refreshData}>
           ↺
