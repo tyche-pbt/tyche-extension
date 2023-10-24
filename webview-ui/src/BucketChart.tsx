@@ -29,7 +29,7 @@ export const BucketChart = (props: BucketChartProps) => {
     </div>
     <ResponsiveContainer width="100%" height={120}>
       <PieChart>
-        <Pie dataKey="value" data={bucketedData} cx="40%" outerRadius={60} onClick={(data) => props.viewValue(data.name)}>
+        <Pie dataKey="value" data={bucketedData} cx="40%" outerRadius={60} onClick={(data) => props.viewValue(data.name)} isAnimationActive={false}>
           <Cell key="cell-0" fill="#A3BE8C" />
           <Cell key="cell-1" fill="#D08770" />
           <Cell key="cell-2" fill="#88C0D0" />
