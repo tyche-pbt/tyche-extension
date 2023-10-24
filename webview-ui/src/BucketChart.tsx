@@ -1,9 +1,11 @@
 import {
   Tooltip,
-  Pie,
-  PieChart,
-  Cell,
-  ResponsiveContainer
+  ResponsiveContainer,
+  BarChart,
+  XAxis,
+  YAxis,
+  Legend,
+  Bar
 } from 'recharts';
 import { SampleInfo } from "../../src/datatypes";
 
@@ -16,29 +18,47 @@ type BucketChartProps = {
 export const BucketChart = (props: BucketChartProps) => {
   const buckets = Array.from(new Set(props.dataset.map((x) => x.bucketings[props.bucketing])));
 
-  const bucketedData = buckets.map(
-    (bucket) => ({
-      name: `${bucket}`,
-      value: props.dataset.filter((y) => y.bucketings[props.bucketing] === bucket).length
-    })
-  );
+  const bucketedData = [{
+    name: props.bucketing,
+    ...Object.fromEntries(buckets.map(
+      (bucket) => ([
+        `${bucket}`,
+        props.dataset.filter((y) => y.bucketings[props.bucketing] === bucket).length,
+      ]))),
+  }];
+
+  const colors = [
+    "#A3BE8C",
+    "#D08770",
+    "#88C0D0",
+    "#BF616A",
+    "#EBCB8B",
+    "#5E81AC",
+  ];
 
   return <div className="BucketChart">
     <div className="chart-title">
       Categorized by <code>{props.bucketing}</code>
     </div>
     <ResponsiveContainer width="100%" height={120}>
-      <PieChart>
-        <Pie dataKey="value" data={bucketedData} cx="40%" outerRadius={60} onClick={(data) => props.viewValue(data.name)} isAnimationActive={false}>
-          <Cell key="cell-0" fill="#A3BE8C" />
-          <Cell key="cell-1" fill="#D08770" />
-          <Cell key="cell-2" fill="#88C0D0" />
-          <Cell key="cell-3" fill="#BF616A" />
-          <Cell key="cell-4" fill="#EBCB8B" />
-          <Cell key="cell-5" fill="#5E81AC" />
-        </Pie>
+      <BarChart
+        width={800}
+        height={100}
+        data={bucketedData}
+        layout="vertical"
+        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+      >
+        <XAxis type="number" domain={[0, props.dataset.length]} />
+        <YAxis type="category" dataKey="name" hide={true} />
         <Tooltip />
-      </PieChart>
+        <Legend />
+        {
+          buckets.map(
+            (bucket, i) =>
+              <Bar dataKey={bucket} stackId="a" fill={colors[i % colors.length]} />
+          )
+        }
+      </BarChart>
     </ResponsiveContainer>
   </div>;
 }
