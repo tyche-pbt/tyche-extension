@@ -55,7 +55,11 @@ export const BucketChart = (props: BucketChartProps) => {
         {
           buckets.map(
             (bucket, i) =>
-              <Bar dataKey={bucket} stackId="a" fill={colors[i % colors.length]} />
+              <Bar
+                dataKey={bucket}
+                stackId="a"
+                fill={colors[i % colors.length]}
+                onClick={() => props.viewValue(bucket)} />
           )
         }
       </BarChart>
