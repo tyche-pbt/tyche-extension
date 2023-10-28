@@ -22,6 +22,15 @@ export function activate(context: ExtensionContext) {
     TychePanel.toggleCoverage();
   }));
 
+  const config = workspace.getConfiguration("tyche");
+  const server = new WebSocketServer({ port: config.get("websocketPort") });
+  server.on("connection", (socket) => {
+    socket.on("message", (message) => {
+      TychePanel.loadJSONStringFromCommand(context.extensionUri, message.toString());
+    });
+  });
+  context.subscriptions.push({ dispose() { server.close(); } });
+
   workspace.onDidSaveTextDocument((document) => {
     if (TychePanel.lastSourceIs(document)) {
       TychePanel.refreshData();
@@ -30,13 +39,5 @@ export function activate(context: ExtensionContext) {
 
   window.onDidChangeVisibleTextEditors(() => {
     TychePanel.decorateCoverage();
-  });
-
-  const config = workspace.getConfiguration("tyche");
-  const server = new WebSocketServer({ port: config.get("websocketPort") });
-  server.on("connection", (socket) => {
-    socket.on("message", (message) => {
-      TychePanel.loadJSONStringFromCommand(context.extensionUri, message.toString());
-    });
   });
 }
