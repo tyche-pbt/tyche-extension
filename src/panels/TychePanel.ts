@@ -173,17 +173,25 @@ export class TychePanel {
       `python3 -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
     const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
 
+    this._loadJSONString(document, propertyName, stdout);
+  }
+
+  public loadJSONStringFromCommand(jsonString: string) {
+    this._loadJSONString(undefined, "unknown", jsonString);
+  }
+
+  private _loadJSONString(document: TextDocument | undefined, propertyName: string, jsonString: string) {
     this._panel.webview.postMessage({
       command: "load-data",
       genName: propertyName,
-      genSource: `Live: ${document.fileName}:${propertyName}`,
-      testInfo: stdout
+      genSource: document ? `Live: ${document.fileName}:${propertyName}` : "Sent from Command",
+      testInfo: jsonString
     });
 
-    const info = JSON.parse(stdout) as TestInfo;
+    const info = JSON.parse(jsonString) as TestInfo;
 
     this._lastInfo = info;
-    this._lastSource = { document, propertyName };
+    this._lastSource = document ? { document, propertyName } : undefined;
 
     this._decorateCoverage();
   }
