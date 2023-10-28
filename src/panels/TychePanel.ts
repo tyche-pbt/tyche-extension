@@ -176,8 +176,12 @@ export class TychePanel {
     this._loadJSONString(document, propertyName, stdout);
   }
 
-  public loadJSONStringFromCommand(jsonString: string) {
-    this._loadJSONString(undefined, "unknown", jsonString);
+  public static loadJSONStringFromCommand(extensionUri: Uri, jsonString: string) {
+    if (!TychePanel.currentPanel) {
+      TychePanel.render(extensionUri);
+    }
+
+    TychePanel.currentPanel!._loadJSONString(undefined, "Command", jsonString);
   }
 
   private _loadJSONString(document: TextDocument | undefined, propertyName: string, jsonString: string) {

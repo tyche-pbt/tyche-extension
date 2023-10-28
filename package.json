@@ -19,16 +19,26 @@
   "contributes": {
     "commands": [
       {
-        "command": "gen-vis.refresh-data",
+        "command": "tyche.refresh-data",
         "title": "Refresh Visualization Data",
         "category": "Tyche"
       },
       {
-        "command": "gen-vis.toggle-coverage",
+        "command": "tyche.toggle-coverage",
         "title": "Toggle Coverage Highlighting",
         "category": "Tyche"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Tyche",
+      "properties": {
+        "tyche.websocketPort": {
+          "type": "number",
+          "default": 8181,
+          "description": "The port to use for the websocket server."
+        }
+      }
+    }
   },
   "scripts": {
     "install:all": "npm install && cd webview-ui && npm install",
@@ -45,6 +55,7 @@
     "@types/glob": "^7.1.3",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.46.0",
+    "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "eslint": "^7.19.0",
@@ -57,6 +68,7 @@
   },
   "dependencies": {
     "path": "^0.12.7",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "ws": "^8.14.2"
   }
 }
