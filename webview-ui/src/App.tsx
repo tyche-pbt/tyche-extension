@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import { ExampleFilter, TestInfo } from "../../src/datatypes";
+import { ExampleFilter, TestInfo, Report } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -29,33 +29,26 @@ type AppState = {
   testInfo: TestInfo;
   genName: string;
   genSource: string;
-}
+} | {
+  state: "error";
+  message: string;
+};
 
 const App = (_props: AppProps) => {
   const [state, setState] = useState<AppState>({ state: "loading" });
 
-  // const [state, setState] = useState<AppState>({
-  //   state: "ready",
-  //   testInfo: {
-  //     type: "failure",
-  //     counterExample: {
-  //       item: "Node(Leaf(), 5, Node(Leaf(), 6, Leaf())",
-  //       features: {},
-  //       bucketings: {}
-  //     },
-  //     message: "Something went wrong."
-  //   },
-  //   genName: "genTree",
-  //   genSource: "Demo",
-  // });
-
   const loadData = (command: LoadDataCommand) => {
-    setState({
-      state: "ready",
-      testInfo: JSON.parse(command.testInfo),
-      genName: command.genName,
-      genSource: command.genSource,
-    })
+    try {
+      const report = JSON.parse(command.testInfo) as Report;
+      setState({
+        state: "ready",
+        testInfo: report.tests[0].info,
+        genName: command.genName,
+        genSource: command.genSource,
+      });
+    } catch (e) {
+      setState({ state: "error", message: "Failed to parse report." });
+    }
   };
 
   const clearData = () => {
@@ -87,6 +80,13 @@ const App = (_props: AppProps) => {
   if (state.state === "loading") {
     return <div className="App">
       <VSCodeProgressRing style={{ margin: "100px auto" }} />
+    </div>;
+  }
+
+  if (state.state === "error") {
+    return <div className="App">
+      Something went wrong. The test runner failed with the following error:
+      <pre>{state.message}</pre>
     </div>;
   }
 

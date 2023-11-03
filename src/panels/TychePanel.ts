@@ -3,7 +3,7 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocumen
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
 import * as child_process from "child_process";
-import { TestInfo } from "../datatypes";
+import { Report } from "../datatypes";
 
 const mintDecorationTypes = () => {
   const greenLineDecoration = window.createTextEditorDecorationType({
@@ -23,7 +23,7 @@ export class TychePanel {
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
   private _lastSource: { document: TextDocument, propertyName: string } | undefined = undefined;
-  private _lastInfo: TestInfo | undefined = undefined;
+  private _lastReport: Report | undefined = undefined;
   private _decorationTypes: vscode.TextEditorDecorationType[] = [];
   private _shouldShowCoverage: boolean = false;
 
@@ -122,10 +122,10 @@ export class TychePanel {
     });
     this._decorationTypes = [];
 
-    if (!this._lastInfo || !this._shouldShowCoverage) {
+    if (!this._lastReport || !this._shouldShowCoverage) {
       return;
     }
-    const info = this._lastInfo;
+    const info = this._lastReport.tests[0].info; // TODO: Fix
     if (info.type && info.type !== "success") {
       return;
     }
@@ -192,9 +192,9 @@ export class TychePanel {
       testInfo: jsonString
     });
 
-    const info = JSON.parse(jsonString) as TestInfo;
+    const info = JSON.parse(jsonString) as Report;
 
-    this._lastInfo = info;
+    this._lastReport = info;
     this._lastSource = document ? { document, propertyName } : undefined;
 
     this._decorateCoverage();
