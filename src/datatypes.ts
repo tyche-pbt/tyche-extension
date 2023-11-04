@@ -36,12 +36,7 @@ export type NoTestInfo = {
 export type TestInfo = SucceedingTestInfo | FailingTestInfo | NoTestInfo;
 
 export type Report = {
-  command?: string;
-  tests: {
-    fileName?: string;
-    propertyName?: string;
-    info: TestInfo;
-  }[]
+  [key: string]: TestInfo;
 };
 
 export type ExampleFilter = {

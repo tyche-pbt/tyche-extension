@@ -125,7 +125,7 @@ export class TychePanel {
     if (!this._lastReport || !this._shouldShowCoverage) {
       return;
     }
-    const info = this._lastReport.tests[0].info; // TODO: Fix
+    const info = Object.values(this._lastReport)[0]; // TODO: Fix
     if (info.type && info.type !== "success") {
       return;
     }
