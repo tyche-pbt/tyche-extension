@@ -31,7 +31,6 @@ export class TychePanel {
     this._panel = panel;
     this._panel.onDidDispose(this.dispose, null, this._disposables);
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
-    this._setWebviewMessageListener(this._panel.webview);
   }
 
   public static render(extensionUri: Uri) {
@@ -39,8 +38,8 @@ export class TychePanel {
       TychePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
       const panel = window.createWebviewPanel(
-        "genVis",
-        "Testing Performance Report",
+        "tyche",
+        "Tyche Report",
         ViewColumn.Two,
         { enableScripts: true, }
       );
@@ -69,15 +68,6 @@ export class TychePanel {
     return panel._lastSource !== undefined && (panel._lastSource.document === document);
   }
 
-  public static refreshData() {
-    if (!TychePanel.currentPanel) {
-      vscode.window.showErrorMessage("No active visualization to update.");
-      return;
-    }
-
-    TychePanel.currentPanel._refreshDataForActiveVisualization();
-  }
-
   public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
     if (!TychePanel.currentPanel) {
       TychePanel.render(extensionUri);
@@ -104,16 +94,6 @@ export class TychePanel {
 
     const panel = TychePanel.currentPanel;
     panel._decorateCoverage();
-  }
-
-  private _refreshDataForActiveVisualization() {
-    if (!this._lastSource) {
-      vscode.window.showErrorMessage("No data source to refresh.");
-      return;
-    }
-
-    const { document, propertyName } = this._lastSource;
-    this._executeHypothesisTestAndLoad(document, propertyName);
   }
 
   private _decorateCoverage() {
@@ -185,9 +165,7 @@ export class TychePanel {
   private _loadJSONString(document: TextDocument | undefined, propertyName: string, jsonString: string) {
     this._panel.webview.postMessage({
       command: "load-data",
-      genName: propertyName,
-      genSource: document ? `Live: ${document.fileName}:${propertyName}` : "Sent from Command",
-      testInfo: jsonString
+      report: jsonString
     });
 
     const info = JSON.parse(jsonString) as Report;
@@ -196,22 +174,6 @@ export class TychePanel {
     this._lastSource = document ? { document, propertyName } : undefined;
 
     this._decorateCoverage();
-  }
-
-  private _setWebviewMessageListener(webview: Webview) {
-    webview.onDidReceiveMessage(
-      (message: any) => {
-        const command = message.command;
-
-        switch (command) {
-          case "request-refresh-data":
-            this._refreshDataForActiveVisualization();
-            return;
-        }
-      },
-      undefined,
-      this._disposables
-    );
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {

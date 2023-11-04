@@ -13,16 +13,12 @@
     "Testing"
   ],
   "activationEvents": [
-    "onLanguage:python"
+    "onLanguage:python",
+    "onLanguage:haskell"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "tyche.refresh-data",
-        "title": "Refresh Visualization Data",
-        "category": "Tyche"
-      },
       {
         "command": "tyche.toggle-coverage",
         "title": "Toggle Coverage Highlighting",

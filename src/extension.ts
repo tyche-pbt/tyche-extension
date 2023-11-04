@@ -10,10 +10,6 @@ export function activate(context: ExtensionContext) {
     TychePanel.render(context.extensionUri);
   }));
 
-  context.subscriptions.push(commands.registerCommand("gen-vis.refresh-data", () => {
-    TychePanel.refreshData();
-  }));
-
   context.subscriptions.push(commands.registerCommand("gen-vis.hypothesis-run-property", (document, range) => {
     TychePanel.runProperty(document, range, context.extensionUri);
   }));
@@ -30,12 +26,6 @@ export function activate(context: ExtensionContext) {
     });
   });
   context.subscriptions.push({ dispose() { server.close(); } });
-
-  workspace.onDidSaveTextDocument((document) => {
-    if (TychePanel.lastSourceIs(document)) {
-      TychePanel.refreshData();
-    }
-  });
 
   window.onDidChangeVisibleTextEditors(() => {
     TychePanel.decorateCoverage();

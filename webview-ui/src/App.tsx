@@ -8,9 +8,7 @@ import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } fro
 import PropertyView from "./PropertyView";
 
 type LoadDataCommand = {
-  genName: string;
-  genSource: string;
-  testInfo: string;
+  report: string;
 };
 
 type AppProps = {};
@@ -31,7 +29,7 @@ const App = (_props: AppProps) => {
   const loadData = (command: LoadDataCommand) => {
     try {
       const old_report = state.state === "ready" ? state.report : {};
-      const report = JSON.parse(command.testInfo) as Report;
+      const report = JSON.parse(command.report) as Report;
       setState({
         state: "ready",
         report: { ...old_report, ...report },
