@@ -160,7 +160,7 @@ export class TychePanel {
     const wsFolders = vscode.workspace.workspaceFolders;
 
     if (!wsFolders || wsFolders.length === 0) {
-      vscode.window.showErrorMessage("No active workspace. Please open a workspace with a cabal project.");
+      vscode.window.showErrorMessage("No active workspace. Please open a workspace.");
       return;
     }
 
@@ -170,10 +170,8 @@ export class TychePanel {
 
     const runCommand =
       `cd ${wsPath}; ` +
-      `python3 -c "import tyche; cov = tyche.setup(); import ${modPath} as t; tyche.visualize(t.${propertyName}, cov)"`;
-    const stdout = child_process.execSync(runCommand, { encoding: "utf8" });
-
-    this._loadJSONString(document, propertyName, stdout);
+      `pytest ${modPath}.py -k ${propertyName}`;
+    child_process.exec(runCommand, { encoding: "utf8" });
   }
 
   public static loadJSONStringFromCommand(extensionUri: Uri, jsonString: string) {

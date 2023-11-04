@@ -6,7 +6,7 @@ import { BucketChart } from "./BucketChart";
 import { HighLevelStats } from "./HighLevelStats";
 import { CoverageInfo } from "./CoverageInfo";
 
-type MainViewProps = {
+type ChartPaneProps = {
   dataset: SampleInfo[];
   coverage: { [key: string]: { percentage: number } };
   features: string[];
@@ -15,7 +15,7 @@ type MainViewProps = {
 }
 
 
-export const MainView = (props: MainViewProps) => {
+export const ChartPane = (props: ChartPaneProps) => {
   const { dataset, features, bucketings } = props;
 
   const pageElements =
@@ -41,7 +41,7 @@ export const MainView = (props: MainViewProps) => {
       ]),
     ]
 
-  return <div className="MainView">
+  return <div className="ChartPane">
     <HighLevelStats dataset={dataset} />
     <VSCodeDivider />
     <CoverageInfo coverage={props.coverage}></CoverageInfo>

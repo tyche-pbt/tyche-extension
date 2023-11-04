@@ -2,7 +2,7 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { PrettyExample } from "./PrettyExample";
 import { useState } from "react";
-import { MainView } from "./MainView";
+import { ChartPane } from "./ChartPane";
 import { ExampleView } from "./ExampleView";
 
 type PropertyViewProps = {
@@ -50,7 +50,7 @@ const PropertyView = (props: PropertyViewProps) => {
       </div>
 
       {pageView.state === "main" &&
-        <MainView
+        <ChartPane
           setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
           coverage={testInfo.coverage}
           dataset={testInfo.samples}
