@@ -22,8 +22,7 @@ export class TychePanel {
   public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _lastSource: { document: TextDocument, propertyName: string } | undefined = undefined;
-  private _lastReport: Report | undefined = undefined;
+  private _report: Report | undefined = undefined;
   private _decorationTypes: vscode.TextEditorDecorationType[] = [];
   private _shouldShowCoverage: boolean = false;
 
@@ -57,15 +56,6 @@ export class TychePanel {
         disposable.dispose();
       }
     }
-  }
-
-  public static lastSourceIs(document: TextDocument): boolean {
-    if (!TychePanel.currentPanel) {
-      return false;
-    }
-
-    const panel = TychePanel.currentPanel;
-    return panel._lastSource !== undefined && (panel._lastSource.document === document);
   }
 
   public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
@@ -102,10 +92,10 @@ export class TychePanel {
     });
     this._decorationTypes = [];
 
-    if (!this._lastReport || !this._shouldShowCoverage) {
+    if (!this._report || !this._shouldShowCoverage) {
       return;
     }
-    const info = Object.values(this._lastReport)[0]; // TODO: Fix
+    const info = Object.values(this._report)[0]; // TODO: Fix
     if (info.type && info.type !== "success") {
       return;
     }
@@ -159,19 +149,19 @@ export class TychePanel {
       TychePanel.render(extensionUri);
     }
 
-    TychePanel.currentPanel!._loadJSONString(undefined, "Command", jsonString);
+    TychePanel.currentPanel!._loadJSONString(jsonString);
   }
 
-  private _loadJSONString(document: TextDocument | undefined, propertyName: string, jsonString: string) {
+  private _loadJSONString(jsonString: string) {
     this._panel.webview.postMessage({
       command: "load-data",
       report: jsonString
     });
 
-    const info = JSON.parse(jsonString) as Report;
+    const report = JSON.parse(jsonString) as Report;
 
-    this._lastReport = info;
-    this._lastSource = document ? { document, propertyName } : undefined;
+    const oldReport = this._report || {};
+    this._report = { ...oldReport, ...report };
 
     this._decorateCoverage();
   }
