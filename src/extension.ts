@@ -3,6 +3,18 @@ import { TychePanel } from "./panels/TychePanel";
 import { HypothesisCodelensProvider } from "./lenses/HypothesisCodelensProvider";
 import { WebSocketServer } from "ws";
 
+function launchWebsocketServer(context: ExtensionContext) {
+  const server = new WebSocketServer({
+    port: workspace.getConfiguration("tyche").get("websocketPort")
+  });
+  server.on("connection", (socket) => {
+    socket.on("message", (message) => {
+      TychePanel.renderJSONReport(message.toString(), context.extensionUri);
+    });
+  });
+  context.subscriptions.push({ dispose() { server.close(); } });
+}
+
 export function activate(context: ExtensionContext) {
   // Provided to the user.
   context.subscriptions.push(commands.registerCommand("tyche.toggle-coverage", () => {
@@ -15,14 +27,7 @@ export function activate(context: ExtensionContext) {
   });
 
   // Set up the websocket server that listens for reports.
-  const config = workspace.getConfiguration("tyche");
-  const server = new WebSocketServer({ port: config.get("websocketPort") });
-  server.on("connection", (socket) => {
-    socket.on("message", (message) => {
-      TychePanel.renderJSONReport(message.toString(), context.extensionUri);
-    });
-  });
-  context.subscriptions.push({ dispose() { server.close(); } });
+  launchWebsocketServer(context);
 
   // Code Lens for Hypothesis
   languages.registerCodeLensProvider({ language: "python" }, new HypothesisCodelensProvider());
