@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import { TestInfo, SuccessReport } from "../../src/datatypes";
+import { TestInfo, Report } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -8,7 +8,7 @@ import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } fro
 import PropertyView from "./PropertyView";
 
 type LoadDataCommand = {
-  report: SuccessReport;
+  report: Report;
 };
 
 type AppProps = {};
@@ -17,7 +17,7 @@ type AppState = {
   state: "loading"
 } | {
   state: "ready";
-  report: SuccessReport;
+  report: Report;
 };
 
 const App = (_props: AppProps) => {
@@ -59,14 +59,14 @@ const App = (_props: AppProps) => {
     <div className="App">
       <VSCodePanels style={{ width: "100%" }}>
         {
-          Object.keys(state.report.report).map((propertyName: string, index: number) =>
+          Object.keys(state.report.properties).map((propertyName: string, index: number) =>
             <VSCodePanelTab id={`tab-${index}`}>
               {propertyName}
             </VSCodePanelTab>
           )
         }
         {
-          Object.values(state.report.report).map((info: TestInfo, index: number) =>
+          Object.values(state.report.properties).map((info: TestInfo, index: number) =>
             <VSCodePanelView id={`view-${index}`} style={{ width: "100%" }}>
               <PropertyView testInfo={info} />
             </VSCodePanelView>

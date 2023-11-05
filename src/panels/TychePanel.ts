@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { CoverageItem, Report, SuccessReport, SuccessTestInfo, mergeCoverage, mergeReports, schemaReport } from "../datatypes";
+import { CoverageItem, Report, SuccessTestInfo, mergeCoverage, mergeReports, schemaReport, schemaRequest } from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -88,9 +88,9 @@ export class TychePanel {
    * @param jsonString A string containing the JSON of a `Report`.
    */
   public static renderJSONReport(jsonString: string, extensionUri: Uri) {
-    const newReport = TychePanel.parseJSONReport(jsonString);
+    const report = TychePanel.parseJSONRequest(jsonString);
 
-    if (!newReport) {
+    if (!report) {
       return;
     }
 
@@ -98,7 +98,7 @@ export class TychePanel {
       TychePanel.render(extensionUri);
     }
 
-    TychePanel.currentPanel!._loadJSONReport(newReport);
+    TychePanel.currentPanel!._loadJSONReport(report);
   }
 
   /**
@@ -110,12 +110,12 @@ export class TychePanel {
     });
     this._decorationTypes = [];
 
-    if (!this._report || this._report.type === "failure" || !this._shouldShowCoverage) {
+    if (!this._report || !this._shouldShowCoverage) {
       return;
     }
 
     let infos: SuccessTestInfo[] =
-      Object.values(this._report.report).filter((info) => info.type !== "failure") as SuccessTestInfo[];
+      Object.values(this._report.properties).filter((info) => info.type !== "failure") as SuccessTestInfo[];
 
     if (infos.length === 0) {
       return;
@@ -156,22 +156,22 @@ export class TychePanel {
     });
   }
 
-  public static parseJSONReport(jsonString: string): SuccessReport | undefined {
-    const parsedReport = schemaReport.safeParse(JSON.parse(jsonString));
+  public static parseJSONRequest(jsonString: string): Report | undefined {
+    const parsedRequest = schemaRequest.safeParse(JSON.parse(jsonString));
 
-    if (!parsedReport.success) {
-      window.showErrorMessage("Tyche: Could not parse JSON report.\n" + parsedReport.error.message);
+    if (!parsedRequest.success) {
+      window.showErrorMessage("Tyche: Could not parse JSON report.\n" + parsedRequest.error.message);
       return undefined;
     }
 
-    const newReport = parsedReport.data;
+    const newRequest = parsedRequest.data;
 
-    if (newReport.type === "failure") {
-      window.showErrorMessage("Tyche: Encountered unknown failure.\n" + newReport.message);
+    if (newRequest.type === "failure") {
+      window.showErrorMessage("Tyche: Encountered unknown failure.\n" + newRequest.message);
       return undefined;
     }
 
-    return newReport;
+    return newRequest.report;
   }
 
   /**
@@ -179,7 +179,7 @@ export class TychePanel {
    *
    * @param jsonString A string containing the JSON of a `Report`.
    */
-  private _loadJSONReport(newReport: SuccessReport) {
+  private _loadJSONReport(newReport: Report) {
     this._report = mergeReports(this._report, newReport);
 
     this._panel.webview.postMessage({

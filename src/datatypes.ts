@@ -12,7 +12,7 @@ export const schemaCoverageItem = z.object({
 });
 
 export const schemaSuccessTestInfo = z.object({
-  type: z.literal("success").optional(),
+  type: z.literal("success"),
   samples: z.array(schemaSampleInfo),
   coverage: z.record(schemaCoverageItem),
 });
@@ -25,18 +25,21 @@ export const schemaFailureTestInfo = z.object({
 
 export const schemaTestInfo = z.union([schemaSuccessTestInfo, schemaFailureTestInfo]);
 
-export const schemaSuccessReport = z.object({
-  type: z.literal("success").optional(),
+export const schemaReport = z.object({
   clear: z.boolean().optional(),
-  report: z.record(schemaTestInfo),
+  properties: z.record(schemaTestInfo),
 });
 
-export const schemaFailureReport = z.object({
-  type: z.literal("failure"),
-  message: z.string(),
-});
-
-export const schemaReport = z.union([schemaSuccessReport, schemaFailureReport]);
+export const schemaRequest = z.union([
+  z.object({
+    type: z.literal("success"),
+    report: schemaReport,
+  }),
+  z.object({
+    type: z.literal("failure"),
+    message: z.string(),
+  })
+]);
 
 export type SampleInfo = z.infer<typeof schemaSampleInfo>;
 
@@ -48,12 +51,9 @@ export type FailureTestInfo = z.infer<typeof schemaFailureTestInfo>;
 
 export type TestInfo = z.infer<typeof schemaTestInfo>;
 
-
-export type SuccessReport = z.infer<typeof schemaSuccessReport>;
-
-export type FailureReport = z.infer<typeof schemaFailureReport>;
-
 export type Report = z.infer<typeof schemaReport>;
+
+export type Request = z.infer<typeof schemaRequest>;
 
 export type ExampleFilter = {
   feature: string;
@@ -76,15 +76,15 @@ export const mergeCoverage = (oldCoverage: { [key: string]: CoverageItem }, newC
   return result;
 };
 
-export const mergeReports = (oldReport: Report | undefined, newReport: SuccessReport): SuccessReport => {
-  if (!oldReport || oldReport.type === "failure" || newReport.clear) {
+export const mergeReports = (oldReport: Report | undefined, newReport: Report): Report => {
+  if (!oldReport || newReport.clear) {
     return newReport;
   } else {
     return {
       clear: false,
-      report: {
-        ...oldReport.report,
-        ...newReport.report,
+      properties: {
+        ...oldReport.properties,
+        ...newReport.properties,
       },
     };
   }

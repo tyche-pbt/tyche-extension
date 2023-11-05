@@ -42,6 +42,7 @@
     "build:webview": "cd webview-ui && npm run build",
     "test:webview": "cd webview-ui && npm run test",
     "vscode:prepublish": "npm run compile",
+    "build": "npm run build:webview && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
