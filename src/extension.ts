@@ -7,12 +7,12 @@ export function activate(context: ExtensionContext) {
   languages.registerCodeLensProvider({ language: "python" }, new PropertyCodelensProvider(context.extensionUri));
 
   // Used by the `PropertyCodelensProvider`.
-  context.subscriptions.push(commands.registerCommand("gen-vis.hypothesis-run-property", (document, range) => {
+  context.subscriptions.push(commands.registerCommand("tyche.hypothesis-run-property", (document, range) => {
     TychePanel.runProperty(document, range, context.extensionUri);
   }));
 
   // Provided to the user.
-  context.subscriptions.push(commands.registerCommand("gen-vis.toggle-coverage", () => {
+  context.subscriptions.push(commands.registerCommand("tyche.toggle-coverage", () => {
     TychePanel.toggleCoverage();
   }));
 

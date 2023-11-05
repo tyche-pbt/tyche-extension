@@ -32,7 +32,7 @@ export class PropertyCodelensProvider implements vscode.CodeLensProvider {
           {
             title: "Tyche: Run Property and Visualize",
             tooltip: "Click this to visualize your generator.",
-            command: "gen-vis.hypothesis-run-property",
+            command: "tyche.hypothesis-run-property",
             arguments: [document, propertyName, this._extensionUri]
           }
         ));
