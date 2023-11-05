@@ -3,7 +3,7 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocumen
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
 import * as child_process from "child_process";
-import { Report, mergeReports } from "../datatypes";
+import { CoverageItem, Report, mergeCoverage, mergeReports } from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -128,10 +128,17 @@ export class TychePanel {
       return;
     }
 
-    const info = Object.values(this._report.report)[0]; // TODO: Fix
-    if (info.type && info.type !== "success") {
+    let infos: { coverage: { [key: string]: CoverageItem } }[] =
+      Object.values(this._report.report).filter((info) => info.type !== "failure") as { coverage: { [key: string]: CoverageItem } }[];
+
+    if (infos.length === 0) {
       return;
     }
+
+    const hd = infos[0].coverage;
+    const tl = infos.slice(1);
+
+    const coverage = tl.reduce((acc, cur) => mergeCoverage(acc, cur.coverage), hd);
 
     const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
       editor.setDecorations(decorationType,
@@ -156,9 +163,9 @@ export class TychePanel {
 
     window.visibleTextEditors.forEach((editor) => {
       const p = editor.document.fileName;
-      if (p in info.coverage) {
-        decorate(editor, info.coverage[p].hitLines, greenLineDecoration);
-        decorate(editor, info.coverage[p].missedLines, redLineDecoration);
+      if (p in coverage) {
+        decorate(editor, coverage[p].hitLines, greenLineDecoration);
+        decorate(editor, coverage[p].missedLines, redLineDecoration);
       }
     });
   }

@@ -16,6 +16,19 @@ export type CoverageItem = {
 };
 
 
+export const mergeCoverage = (oldCoverage: { [key: string]: CoverageItem }, newCoverage: { [key: string]: CoverageItem }): { [key: string]: CoverageItem } => {
+  const result: { [key: string]: CoverageItem } = oldCoverage;
+  Object.keys(newCoverage).forEach((key) => {
+    if (key in result) {
+      result[key].hitLines = Array.from(new Set([...result[key].hitLines, ...newCoverage[key].hitLines]));
+      result[key].missedLines = result[key].missedLines.filter((l) => l in newCoverage[key].missedLines);
+    } else {
+      result[key] = newCoverage[key];
+    }
+  });
+  return result;
+};
+
 export type TestInfo =
   {
     type?: "success";
