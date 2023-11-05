@@ -19,7 +19,7 @@ const PropertyView = (props: PropertyViewProps) => {
 
   const { testInfo } = props;
 
-  if (testInfo.type && testInfo.type === "failure") {
+  if (testInfo.outcome === "propertyFailed") {
     return <div className="PropertyView">
       The property failed with the following counterexample:
       <PrettyExample example={testInfo.counterExample} />

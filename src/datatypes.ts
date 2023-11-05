@@ -12,13 +12,13 @@ export const schemaCoverageItem = z.object({
 });
 
 export const schemaSuccessTestInfo = z.object({
-  type: z.literal("success"),
+  outcome: z.literal("propertyPassed"),
   samples: z.array(schemaSampleInfo),
   coverage: z.record(schemaCoverageItem),
 });
 
 export const schemaFailureTestInfo = z.object({
-  type: z.literal("failure"),
+  outcome: z.literal("propertyFailed"),
   counterExample: schemaSampleInfo,
   message: z.string(),
 });

@@ -115,7 +115,7 @@ export class TychePanel {
     }
 
     let infos: SuccessTestInfo[] =
-      Object.values(this._report.properties).filter((info) => info.type !== "failure") as SuccessTestInfo[];
+      Object.values(this._report.properties).filter((info) => info.outcome === "propertyPassed") as SuccessTestInfo[];
 
     if (infos.length === 0) {
       return;
