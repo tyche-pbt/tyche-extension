@@ -1,6 +1,6 @@
 import "./App.scss";
 
-import { TestInfo, Report } from "../../src/datatypes";
+import { TestInfo, SuccessReport } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
@@ -8,7 +8,7 @@ import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } fro
 import PropertyView from "./PropertyView";
 
 type LoadDataCommand = {
-  report: Report;
+  report: SuccessReport;
 };
 
 type AppProps = {};
@@ -17,7 +17,7 @@ type AppState = {
   state: "loading"
 } | {
   state: "ready";
-  report: Report;
+  report: SuccessReport;
 };
 
 const App = (_props: AppProps) => {
@@ -52,13 +52,6 @@ const App = (_props: AppProps) => {
   if (state.state === "loading") {
     return <div className="App">
       <VSCodeProgressRing style={{ margin: "100px auto" }} />
-    </div>;
-  }
-
-  if (state.report.type === "failure") {
-    return <div className="App">
-      Something went wrong. The test runner failed with the following error:
-      <pre>{state.report.message}</pre>
     </div>;
   }
 

@@ -19,7 +19,7 @@ export function activate(context: ExtensionContext) {
   const server = new WebSocketServer({ port: config.get("websocketPort") });
   server.on("connection", (socket) => {
     socket.on("message", (message) => {
-      TychePanel.loadJSONReport(message.toString(), context.extensionUri);
+      TychePanel.renderJSONReport(message.toString(), context.extensionUri);
     });
   });
   context.subscriptions.push({ dispose() { server.close(); } });
