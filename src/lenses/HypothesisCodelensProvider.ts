@@ -1,17 +1,16 @@
 import * as vscode from "vscode";
+import * as path from "path";
+import * as child_process from "child_process";
 
-export class PropertyCodelensProvider implements vscode.CodeLensProvider {
+export class HypothesisCodelensProvider implements vscode.CodeLensProvider {
 
   private codeLenses: vscode.CodeLens[] = [];
   private regex: RegExp;
   private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
-  private _extensionUri: vscode.Uri;
 
-  constructor(extensionUri: vscode.Uri) {
+  constructor() {
     this.regex = /^@given.*?def (.*?)\(/gms; // /@given.*def .*\(/gms; // TODO Fix
-
-    this._extensionUri = extensionUri;
   }
 
   public provideCodeLenses(
@@ -30,14 +29,38 @@ export class PropertyCodelensProvider implements vscode.CodeLensProvider {
       if (range) {
         this.codeLenses.push(new vscode.CodeLens(range,
           {
-            title: "Tyche: Run Property and Visualize",
+            title: "Tyche: Execute Hypothesis Test",
             tooltip: "Click this to visualize your generator.",
-            command: "tyche.hypothesis-run-property",
-            arguments: [document, propertyName, this._extensionUri]
+            command: "tyche.execute-hypothesis-test",
+            arguments: [document, propertyName]
           }
         ));
       }
     }
     return this.codeLenses;
+  }
+
+  /**
+   * Executes a Hypothesis test using `pytest`.
+   *
+   * @param document The document containing the property.
+   * @param propertyName The name of the property.
+   */
+  public static executeHypothesisTest(document: vscode.TextDocument, propertyName: string) {
+    const wsFolders = vscode.workspace.workspaceFolders;
+
+    if (!wsFolders || wsFolders.length === 0) {
+      vscode.window.showErrorMessage("No active workspace. Please open a workspace.");
+      return;
+    }
+
+    const wsPath = wsFolders[0].uri.path;
+
+    const modPath = path.relative(wsPath, document.fileName).replace(".py", "").replace(/\//g, ".");
+
+    const runCommand =
+      `cd ${wsPath}; ` +
+      `pytest ${modPath}.py -k ${propertyName}`;
+    child_process.exec(runCommand, { encoding: "utf8" });
   }
 }

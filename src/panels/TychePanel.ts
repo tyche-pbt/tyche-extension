@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocument } from "vscode";
 import { getUri } from "../utilities/getUri";
-import * as path from "path";
-import * as child_process from "child_process";
 import { CoverageItem, Report, mergeCoverage, mergeReports } from "../datatypes";
 
 /**
@@ -54,24 +52,6 @@ export class TychePanel {
         disposable.dispose();
       }
     }
-  }
-
-  /**
-   * Runs a property and loads the report into the Tyche panel.
-   *
-   * This is used by the `PropertyCodelensProvider`.
-   *
-   * @param document The document containing the property.
-   * @param propertyName The name of the property.
-   * @param extensionUri
-   */
-  public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
-    if (!TychePanel.currentPanel) {
-      TychePanel.render(extensionUri);
-    }
-
-    TychePanel.currentPanel!._clearData();
-    TychePanel.currentPanel!._executeHypothesisTest(document, propertyName);
   }
 
   /**
@@ -168,38 +148,6 @@ export class TychePanel {
         decorate(editor, coverage[p].missedLines, redLineDecoration);
       }
     });
-  }
-
-  /**
-   * Clears the data in the Tyche panel.
-   */
-  private _clearData() {
-    this._panel.webview.postMessage({ command: "clear-data" });
-    this._report = undefined;
-  }
-
-  /**
-   * Executes a Hypothesis test using `pytest`.
-   *
-   * @param document The document containing the property.
-   * @param propertyName The name of the property.
-   */
-  private _executeHypothesisTest(document: TextDocument, propertyName: string) {
-    const wsFolders = vscode.workspace.workspaceFolders;
-
-    if (!wsFolders || wsFolders.length === 0) {
-      vscode.window.showErrorMessage("No active workspace. Please open a workspace.");
-      return;
-    }
-
-    const wsPath = wsFolders[0].uri.path;
-
-    const modPath = path.relative(wsPath, document.fileName).replace(".py", "").replace(/\//g, ".");
-
-    const runCommand =
-      `cd ${wsPath}; ` +
-      `pytest ${modPath}.py -k ${propertyName}`;
-    child_process.exec(runCommand, { encoding: "utf8" });
   }
 
   /**

@@ -1,16 +1,9 @@
 import { commands, ExtensionContext, languages, workspace, window } from "vscode";
 import { TychePanel } from "./panels/TychePanel";
-import { PropertyCodelensProvider } from "./lenses/PropertyCodelensProvider";
+import { HypothesisCodelensProvider } from "./lenses/HypothesisCodelensProvider";
 import { WebSocketServer } from "ws";
 
 export function activate(context: ExtensionContext) {
-  languages.registerCodeLensProvider({ language: "python" }, new PropertyCodelensProvider(context.extensionUri));
-
-  // Used by the `PropertyCodelensProvider`.
-  context.subscriptions.push(commands.registerCommand("tyche.hypothesis-run-property", (document, range) => {
-    TychePanel.runProperty(document, range, context.extensionUri);
-  }));
-
   // Provided to the user.
   context.subscriptions.push(commands.registerCommand("tyche.toggle-coverage", () => {
     TychePanel.toggleCoverage();
@@ -30,4 +23,10 @@ export function activate(context: ExtensionContext) {
     });
   });
   context.subscriptions.push({ dispose() { server.close(); } });
+
+  // Code Lens for Hypothesis
+  languages.registerCodeLensProvider({ language: "python" }, new HypothesisCodelensProvider());
+  context.subscriptions.push(commands.registerCommand("tyche.execute-hypothesis-test",
+    HypothesisCodelensProvider.executeHypothesisTest
+  ));
 }
