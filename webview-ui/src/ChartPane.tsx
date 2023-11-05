@@ -1,5 +1,5 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
-import { ExampleFilter, SampleInfo } from "../../src/datatypes";
+import { CoverageItem, ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { BucketChart } from "./BucketChart";
@@ -8,12 +8,11 @@ import { CoverageInfo } from "./CoverageInfo";
 
 type ChartPaneProps = {
   dataset: SampleInfo[];
-  coverage: { [key: string]: { percentage: number } };
+  coverage: { [key: string]: CoverageItem };
   features: string[];
   bucketings: string[];
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
-
 
 export const ChartPane = (props: ChartPaneProps) => {
   const { dataset, features, bucketings } = props;

@@ -11,7 +11,6 @@ export type SampleInfo = {
 };
 
 export type CoverageItem = {
-  percentage: number,
   hitLines: number[],
   missedLines: number[],
 };
