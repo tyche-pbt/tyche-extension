@@ -16,27 +16,39 @@ export type CoverageItem = {
   missedLines: number[],
 };
 
-export type SucceedingTestInfo = {
-  type?: "success";
-  samples: SampleInfo[];
-  coverage: { [key: string]: CoverageItem };
-};
 
-export type FailingTestInfo = {
-  type: "failure";
-  counterExample: SampleInfo;
-  message: string;
-};
-
-export type NoTestInfo = {
-  type: "error";
-  message: string;
-};
-
-export type TestInfo = SucceedingTestInfo | FailingTestInfo | NoTestInfo;
+export type TestInfo =
+  {
+    type?: "success";
+    samples: SampleInfo[];
+    coverage: { [key: string]: CoverageItem };
+  } | {
+    type: "failure";
+    counterExample: SampleInfo;
+    message: string;
+  };
 
 export type Report = {
-  [key: string]: TestInfo;
+  type?: "success";
+  clear?: boolean;
+  report: { [key: string]: TestInfo };
+} | {
+  type: "failure";
+  message: string;
+};
+
+export const mergeReports = (oldReport: Report | undefined, newReport: Report): Report => {
+  if (!oldReport || oldReport.type === "failure" || newReport.type === "failure" || newReport.clear) {
+    return newReport;
+  } else {
+    return {
+      clear: false,
+      report: {
+        ...oldReport.report,
+        ...newReport.report,
+      },
+    };
+  }
 };
 
 export type ExampleFilter = {

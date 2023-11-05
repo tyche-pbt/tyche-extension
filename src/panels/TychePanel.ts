@@ -3,21 +3,11 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, TextDocumen
 import { getUri } from "../utilities/getUri";
 import * as path from "path";
 import * as child_process from "child_process";
-import { Report } from "../datatypes";
+import { Report, mergeReports } from "../datatypes";
 
-const mintDecorationTypes = () => {
-  const greenLineDecoration = window.createTextEditorDecorationType({
-    isWholeLine: true,
-    backgroundColor: "rgba(0, 255, 0, 0.1)",
-  });
-
-  const redLineDecoration = window.createTextEditorDecorationType({
-    isWholeLine: true,
-    backgroundColor: "rgba(255, 0, 0, 0.1)",
-  });
-  return [greenLineDecoration, redLineDecoration];
-};
-
+/**
+ * The main panel of the Tyche extension.
+ */
 export class TychePanel {
   public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
@@ -32,6 +22,11 @@ export class TychePanel {
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
   }
 
+  /**
+   * Renders the Tyche panel.
+   * @param extensionUri The URI of the extension.
+   * @returns The Tyche panel.
+   */
   public static render(extensionUri: Uri) {
     if (TychePanel.currentPanel) {
       TychePanel.currentPanel._panel.reveal(ViewColumn.One);
@@ -47,6 +42,9 @@ export class TychePanel {
     }
   }
 
+  /**
+   * Disposes the Tyche panel.
+   */
   public dispose() {
     TychePanel.currentPanel = undefined;
     this._panel.dispose();
@@ -58,15 +56,27 @@ export class TychePanel {
     }
   }
 
+  /**
+   * Runs a property and loads the report into the Tyche panel.
+   *
+   * This is used by the `PropertyCodelensProvider`.
+   *
+   * @param document The document containing the property.
+   * @param propertyName The name of the property.
+   * @param extensionUri
+   */
   public static runProperty(document: TextDocument, propertyName: string, extensionUri: Uri) {
     if (!TychePanel.currentPanel) {
       TychePanel.render(extensionUri);
     }
 
     TychePanel.currentPanel!._clearData();
-    TychePanel.currentPanel!._executeHypothesisTestAndLoad(document, propertyName);
+    TychePanel.currentPanel!._executeHypothesisTest(document, propertyName);
   }
 
+  /**
+   * Toggles coverage highlighting and re-renders coverage highlights.
+   */
   public static toggleCoverage() {
     if (!TychePanel.currentPanel) {
       return;
@@ -77,6 +87,11 @@ export class TychePanel {
     panel._decorateCoverage();
   }
 
+  /**
+   * Re-renders coverage highlights.
+   *
+   * Used when the user switches documents.
+   */
   public static decorateCoverage() {
     if (!TychePanel.currentPanel) {
       return;
@@ -86,16 +101,33 @@ export class TychePanel {
     panel._decorateCoverage();
   }
 
+  /**
+   * Loads a JSON-formatted report into the Tyche panel.
+   *
+   * @param extensionUri
+   * @param jsonString A string containing the JSON of a `Report`.
+   */
+  public static loadJSONReport(jsonString: string, extensionUri: Uri) {
+    if (!TychePanel.currentPanel) {
+      TychePanel.render(extensionUri);
+    }
+
+    TychePanel.currentPanel!._loadJSONString(jsonString);
+  }
+
+  /**
+   * Decorates the current document with coverage highlighting, based on the stored report.
+   */
   private _decorateCoverage() {
     this._decorationTypes.forEach((decorationType) => {
       decorationType.dispose();
     });
     this._decorationTypes = [];
 
-    if (!this._report || !this._shouldShowCoverage) {
+    if (!this._report || this._report.type === "failure" || !this._shouldShowCoverage) {
       return;
     }
-    const info = Object.values(this._report)[0]; // TODO: Fix
+    const info = Object.values(this._report.report)[0]; // TODO: Fix
     if (info.type && info.type !== "success") {
       return;
     }
@@ -109,7 +141,16 @@ export class TychePanel {
       );
     };
 
-    const [greenLineDecoration, redLineDecoration] = mintDecorationTypes();
+    const greenLineDecoration = window.createTextEditorDecorationType({
+      isWholeLine: true,
+      backgroundColor: "rgba(0, 255, 0, 0.1)",
+    });
+
+    const redLineDecoration = window.createTextEditorDecorationType({
+      isWholeLine: true,
+      backgroundColor: "rgba(255, 0, 0, 0.1)",
+    });
+
     this._decorationTypes = [greenLineDecoration, redLineDecoration];
 
     window.visibleTextEditors.forEach((editor) => {
@@ -121,12 +162,21 @@ export class TychePanel {
     });
   }
 
-
+  /**
+   * Clears the data in the Tyche panel.
+   */
   private _clearData() {
     this._panel.webview.postMessage({ command: "clear-data" });
+    this._report = undefined;
   }
 
-  private _executeHypothesisTestAndLoad(document: TextDocument, propertyName: string) {
+  /**
+   * Executes a Hypothesis test using `pytest`.
+   *
+   * @param document The document containing the property.
+   * @param propertyName The name of the property.
+   */
+  private _executeHypothesisTest(document: TextDocument, propertyName: string) {
     const wsFolders = vscode.workspace.workspaceFolders;
 
     if (!wsFolders || wsFolders.length === 0) {
@@ -144,28 +194,29 @@ export class TychePanel {
     child_process.exec(runCommand, { encoding: "utf8" });
   }
 
-  public static loadJSONStringFromCommand(extensionUri: Uri, jsonString: string) {
-    if (!TychePanel.currentPanel) {
-      TychePanel.render(extensionUri);
-    }
-
-    TychePanel.currentPanel!._loadJSONString(jsonString);
-  }
-
+  /**
+   * Loads a JSON-formatted report into the Tyche panel and updates coverage.
+   *
+   * @param jsonString A string containing the JSON of a `Report`.
+   */
   private _loadJSONString(jsonString: string) {
+    const newReport = JSON.parse(jsonString) as Report;
+    this._report = mergeReports(this._report, newReport);
+
     this._panel.webview.postMessage({
       command: "load-data",
-      report: jsonString
+      report: this._report,
     });
-
-    const report = JSON.parse(jsonString) as Report;
-
-    const oldReport = this._report || {};
-    this._report = { ...oldReport, ...report };
 
     this._decorateCoverage();
   }
 
+  /**
+   * Gets the HTML content of the Tyche panel. (Provided by VSCode example.)
+   *
+   * @param webview
+   * @param extensionUri
+   */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     // The CSS file from the React build output
     const stylesUri = getUri(webview, extensionUri, [

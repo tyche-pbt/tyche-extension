@@ -8,7 +8,7 @@ import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } fro
 import PropertyView from "./PropertyView";
 
 type LoadDataCommand = {
-  report: string;
+  report: Report;
 };
 
 type AppProps = {};
@@ -18,25 +18,16 @@ type AppState = {
 } | {
   state: "ready";
   report: Report;
-} | {
-  state: "error";
-  message: string;
 };
 
 const App = (_props: AppProps) => {
   const [state, setState] = useState<AppState>({ state: "loading" });
 
   const loadData = (command: LoadDataCommand) => {
-    try {
-      const old_report = state.state === "ready" ? state.report : {};
-      const report = JSON.parse(command.report) as Report;
-      setState({
-        state: "ready",
-        report: { ...old_report, ...report },
-      });
-    } catch (e) {
-      setState({ state: "error", message: "Failed to parse report." });
-    }
+    setState({
+      state: "ready",
+      report: command.report,
+    });
   };
 
   const clearData = () => {
@@ -58,17 +49,16 @@ const App = (_props: AppProps) => {
     });
   });
 
-
   if (state.state === "loading") {
     return <div className="App">
       <VSCodeProgressRing style={{ margin: "100px auto" }} />
     </div>;
   }
 
-  if (state.state === "error") {
+  if (state.report.type === "failure") {
     return <div className="App">
       Something went wrong. The test runner failed with the following error:
-      <pre>{state.message}</pre>
+      <pre>{state.report.message}</pre>
     </div>;
   }
 
@@ -76,14 +66,14 @@ const App = (_props: AppProps) => {
     <div className="App">
       <VSCodePanels style={{ width: "100%" }}>
         {
-          Object.keys(state.report).map((propertyName: string, index: number) =>
+          Object.keys(state.report.report).map((propertyName: string, index: number) =>
             <VSCodePanelTab id={`tab-${index}`}>
               {propertyName}
             </VSCodePanelTab>
           )
         }
         {
-          Object.values(state.report).map((info: TestInfo, index: number) =>
+          Object.values(state.report.report).map((info: TestInfo, index: number) =>
             <VSCodePanelView id={`view-${index}`} style={{ width: "100%" }}>
               <PropertyView testInfo={info} />
             </VSCodePanelView>

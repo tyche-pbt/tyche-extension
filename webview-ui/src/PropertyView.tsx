@@ -20,17 +20,10 @@ const PropertyView = (props: PropertyViewProps) => {
   const { testInfo } = props;
 
   if (testInfo.type && testInfo.type === "failure") {
-    return <div className="App">
+    return <div className="PropertyView">
       The property failed with the following counterexample:
       <PrettyExample example={testInfo.counterExample} />
       and the following error:
-      <pre>{testInfo.message}</pre>
-    </div>;
-  }
-
-  if (testInfo.type && testInfo.type === "error") {
-    return <div className="App">
-      Something went wrong. The test runner failed with the following error:
       <pre>{testInfo.message}</pre>
     </div>;
   }
