@@ -2,7 +2,7 @@
   "name": "tyche",
   "displayName": "Tyche",
   "description": "A VSCode extension for visualizing data produced when testing a Hypothesis property.",
-  "version": "0.0.2",
+  "version": "0.1.2",
   "author": "Harrison Goldstein",
   "publisher": "HarrisonGoldstein",
   "repository": "https://github.com/hgoldstein95/tyche-extension",
@@ -14,7 +14,8 @@
   ],
   "activationEvents": [
     "onLanguage:python",
-    "onLanguage:haskell"
+    "onLanguage:haskell",
+    "onLanguage:ocaml"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -41,11 +42,11 @@
     "start:webview": "cd webview-ui && npm run start",
     "build:webview": "cd webview-ui && npm run build",
     "test:webview": "cd webview-ui && npm run test",
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run build",
     "build": "npm run build:webview && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "npm run build && npm run lint",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
