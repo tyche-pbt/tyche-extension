@@ -42,8 +42,13 @@ export const ChartPane = (props: ChartPaneProps) => {
 
   return <div className="ChartPane">
     <HighLevelStats dataset={dataset} />
-    <VSCodeDivider />
-    <CoverageInfo coverage={props.coverage}></CoverageInfo>
+    {Object.entries(props.coverage).length > 0
+      ?
+      <>
+        <VSCodeDivider />
+        <CoverageInfo coverage={props.coverage}></CoverageInfo>
+      </>
+      : <></>}
     {pageElements.flatMap(x => [<VSCodeDivider />, x])}
   </div>;
 }

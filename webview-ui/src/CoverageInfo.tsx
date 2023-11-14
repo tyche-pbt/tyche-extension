@@ -1,6 +1,6 @@
 import { CoverageItem } from "../../src/datatypes";
 
-type CoverageInfoProps = { coverage: {[key: string]: CoverageItem} };
+type CoverageInfoProps = { coverage: { [key: string]: CoverageItem } };
 
 export const CoverageInfo = (props: CoverageInfoProps) => {
   return <div className="CoverageInfo">

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { CoverageItem, Report, SuccessTestInfo, mergeCoverage, mergeReports, schemaReport, schemaRequest } from "../datatypes";
+import { CoverageItem, ErrorLine, Report, SuccessTestInfo, TestCaseLine, buildReport, mergeCoverage, mergeReports, schemaDataLines, schemaReport, schemaRequest } from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -157,21 +157,23 @@ export class TychePanel {
   }
 
   public static parseJSONRequest(jsonString: string): Report | undefined {
-    const parsedRequest = schemaRequest.safeParse(JSON.parse(jsonString));
+    const parsedRequest = schemaDataLines.safeParse(JSON.parse(jsonString));
 
     if (!parsedRequest.success) {
       window.showErrorMessage("Tyche: Could not parse JSON report.\n" + parsedRequest.error.message);
       return undefined;
     }
 
-    const newRequest = parsedRequest.data;
+    const dataLines = parsedRequest.data;
 
-    if (newRequest.type === "failure") {
-      window.showErrorMessage("Tyche: Encountered unknown failure.\n" + newRequest.message);
+    const errorLine = dataLines.find((line) => line.type === "error") as ErrorLine | undefined;
+    if (errorLine !== undefined) {
+      window.showErrorMessage("Tyche: Encountered unknown failure.\n" + errorLine.message);
       return undefined;
     }
 
-    return newRequest.report;
+    // TODO Handle InfoLines
+    return buildReport(dataLines.filter((line) => line.type === "test_case") as TestCaseLine[]);
   }
 
   /**
