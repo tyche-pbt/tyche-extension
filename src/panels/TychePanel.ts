@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { CoverageItem, ErrorLine, Report, SuccessTestInfo, TestCaseLine, buildReport, mergeCoverage, mergeReports, schemaDataLines, schemaReport, schemaRequest } from "../datatypes";
+import { CoverageItem, ErrorLine, Report, SuccessTestInfo, TestCaseLine, buildReport, mergeCoverage, mergeReports, schemaDataLine, schemaDataLines, schemaReport, schemaRequest } from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -157,14 +157,20 @@ export class TychePanel {
   }
 
   public static parseJSONRequest(jsonString: string): Report | undefined {
-    const parsedRequest = schemaDataLines.safeParse(JSON.parse(jsonString));
-
-    if (!parsedRequest.success) {
-      window.showErrorMessage("Tyche: Could not parse JSON report.\n" + parsedRequest.error.message);
-      return undefined;
+    const dataLines = [];
+    for (const line of jsonString.split("\n")) {
+      if (line === "") {
+        continue;
+      }
+      try {
+        const obj = JSON.parse(line);
+        const parsedLine = schemaDataLine.parse(obj);
+        dataLines.push(parsedLine);
+      } catch (e) {
+        window.showErrorMessage("Tyche: Could not parse JSON report.\n" + e + "\nInvalid Object: " + line);
+        return undefined;
+      }
     }
-
-    const dataLines = parsedRequest.data;
 
     const errorLine = dataLines.find((line) => line.type === "error") as ErrorLine | undefined;
     if (errorLine !== undefined) {

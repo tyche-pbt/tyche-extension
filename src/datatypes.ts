@@ -10,8 +10,8 @@ export const schemaTestCaseLine = z.object({
   representation: z.union([z.string(), z.record(z.string())]),
   how_generated: z.string().optional(),
   features: z.record(z.any()),
-  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info")]),
-  metadata: z.record(z.string()).optional(),
+  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info"), z.null()]),
+  metadata: z.record(z.any()).optional(),
 });
 
 export const schemaInfoLine = z.object({
@@ -51,9 +51,6 @@ export const buildReport = (data: TestCaseLine[]): Report => {
     properties: {},
   };
   for (const line of data) {
-    if (line.status === "gave_up") {
-      continue; // TODO
-    }
     const sample = {
       item: line.representation.toString(),
       features: filterObject(line.features, v => typeof v === "number"),
