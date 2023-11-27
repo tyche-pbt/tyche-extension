@@ -2,6 +2,7 @@ import { commands, ExtensionContext, languages, workspace, window } from "vscode
 import { TychePanel } from "./panels/TychePanel";
 import { HypothesisCodelensProvider } from "./lenses/HypothesisCodelensProvider";
 import { WebSocketServer } from "ws";
+import { parseDataLines } from "./datatypes";
 
 function launchWebsocketServer(context: ExtensionContext) {
   const server = new WebSocketServer({
@@ -9,7 +10,14 @@ function launchWebsocketServer(context: ExtensionContext) {
   });
   server.on("connection", (socket) => {
     socket.on("message", (message) => {
-      TychePanel.renderJSONReport(message.toString(), context.extensionUri);
+      const lines = parseDataLines(message.toString());
+
+      if (typeof lines === "string") {
+        window.showErrorMessage(lines);
+        return;
+      }
+
+      TychePanel.renderNewLines(lines, context.extensionUri);
     });
   });
   context.subscriptions.push({ dispose() { server.close(); } });

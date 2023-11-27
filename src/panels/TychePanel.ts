@@ -1,7 +1,17 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { CoverageItem, ErrorLine, Report, SuccessTestInfo, TestCaseLine, buildReport, mergeCoverage, mergeReports, schemaDataLine, schemaDataLines, schemaReport, schemaRequest } from "../datatypes";
+import {
+  DataLine,
+  ErrorLine,
+  Report,
+  SuccessTestInfo,
+  TestCaseLine,
+  buildReport,
+  mergeCoverage,
+  mergeReports,
+  schemaDataLine
+} from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -87,8 +97,8 @@ export class TychePanel {
    * @param extensionUri
    * @param jsonString A string containing the JSON of a `Report`.
    */
-  public static renderJSONReport(jsonString: string, extensionUri: Uri) {
-    const report = TychePanel.parseJSONRequest(jsonString);
+  public static renderNewLines(lines: DataLine[], extensionUri: Uri) {
+    const report = buildReport(lines.filter((line) => line.type === "test_case") as TestCaseLine[]);
 
     if (!report) {
       return;
@@ -154,32 +164,6 @@ export class TychePanel {
         decorate(editor, coverage[p].missedLines, redLineDecoration);
       }
     });
-  }
-
-  public static parseJSONRequest(jsonString: string): Report | undefined {
-    const dataLines = [];
-    for (const line of jsonString.split("\n")) {
-      if (line === "") {
-        continue;
-      }
-      try {
-        const obj = JSON.parse(line);
-        const parsedLine = schemaDataLine.parse(obj);
-        dataLines.push(parsedLine);
-      } catch (e) {
-        window.showErrorMessage("Tyche: Could not parse JSON report.\n" + e + "\nInvalid Object: " + line);
-        return undefined;
-      }
-    }
-
-    const errorLine = dataLines.find((line) => line.type === "error") as ErrorLine | undefined;
-    if (errorLine !== undefined) {
-      window.showErrorMessage("Tyche: Encountered unknown failure.\n" + errorLine.message);
-      return undefined;
-    }
-
-    // TODO Handle InfoLines
-    return buildReport(dataLines.filter((line) => line.type === "test_case") as TestCaseLine[]);
   }
 
   /**
