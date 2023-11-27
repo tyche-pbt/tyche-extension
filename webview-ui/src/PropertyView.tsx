@@ -1,6 +1,5 @@
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
-import { PrettyExample } from "./PrettyExample";
 import { useState } from "react";
 import { ChartPane } from "./ChartPane";
 import { ExampleView } from "./ExampleView";
@@ -18,15 +17,6 @@ const PropertyView = (props: PropertyViewProps) => {
   const [pageView, setPageView] = useState<PageState>({ state: "main" });
 
   const { testInfo } = props;
-
-  if (testInfo.outcome === "propertyFailed") {
-    return <div className="PropertyView">
-      The property failed with the following counterexample:
-      <PrettyExample example={testInfo.counterExample} />
-      and the following error:
-      <pre>{testInfo.message}</pre>
-    </div>;
-  }
 
   const features = Object.keys(testInfo.samples[0].features);
   const bucketings = Object.keys(testInfo.samples[0].bucketings);

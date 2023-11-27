@@ -63,6 +63,7 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
 }
 
 export const schemaSampleInfo = z.object({
+  outcome: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
   item: z.string(),
   features: z.record(z.number()),
   bucketings: z.record(z.string()),
@@ -73,48 +74,22 @@ export const schemaCoverageItem = z.object({
   missedLines: z.array(z.number()),
 });
 
-export const schemaSuccessTestInfo = z.object({
-  outcome: z.literal("propertyPassed"),
+export const schemaTestInfo = z.object({
   samples: z.array(schemaSampleInfo),
   coverage: z.record(schemaCoverageItem),
 });
-
-export const schemaFailureTestInfo = z.object({
-  outcome: z.literal("propertyFailed"),
-  counterExample: schemaSampleInfo,
-  message: z.string(),
-});
-
-export const schemaTestInfo = z.union([schemaSuccessTestInfo, schemaFailureTestInfo]);
 
 export const schemaReport = z.object({
   properties: z.record(schemaTestInfo),
 });
 
-export const schemaRequest = z.union([
-  z.object({
-    type: z.literal("success"),
-    report: schemaReport,
-  }),
-  z.object({
-    type: z.literal("failure"),
-    message: z.string(),
-  })
-]);
-
 export type SampleInfo = z.infer<typeof schemaSampleInfo>;
 
 export type CoverageItem = z.infer<typeof schemaCoverageItem>;
 
-export type SuccessTestInfo = z.infer<typeof schemaSuccessTestInfo>;
-
-export type FailureTestInfo = z.infer<typeof schemaFailureTestInfo>;
-
 export type TestInfo = z.infer<typeof schemaTestInfo>;
 
 export type Report = z.infer<typeof schemaReport>;
-
-export type Request = z.infer<typeof schemaRequest>;
 
 export type ExampleFilter = {
   feature: string;

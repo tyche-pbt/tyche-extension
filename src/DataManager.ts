@@ -1,4 +1,4 @@
-import { DataLine, InfoLine, Report, SuccessTestInfo, TestCaseLine } from './datatypes';
+import { DataLine, InfoLine, Report, TestCaseLine } from './datatypes';
 
 function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {
   return Object.entries(obj)
@@ -51,26 +51,18 @@ export class DataManager {
     };
     for (const line of data) {
       const sample = {
+        outcome: line.status,
         item: line.representation.toString(),
         features: filterObject(line.features, v => typeof v === "number"),
         bucketings: filterObject(line.features, v => typeof v === "string"),
       };
-      if (line.status === "failed") {
+      if (!(line.property in report.properties)) {
         report.properties[line.property] = {
-          outcome: "propertyFailed",
-          counterExample: sample,
-          message: line.status_reason,
+          samples: [sample],
+          coverage: {}, // TODO
         };
       } else {
-        if (!(line.property in report.properties)) {
-          report.properties[line.property] = {
-            outcome: "propertyPassed",
-            samples: [sample],
-            coverage: {}, // TODO
-          };
-        } else if (report.properties[line.property].outcome === "propertyPassed") {
-          (report.properties[line.property] as SuccessTestInfo).samples.push(sample);
-        }
+        report.properties[line.property].samples.push(sample);
       }
     }
     return report;
