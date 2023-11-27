@@ -56,47 +56,8 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
     return ("Tyche: Encountered unknown failure.\n" + errorLine.message);
   }
 
-  // TODO Handle InfoLines
   return dataLines;
 }
-
-function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {
-  return Object.entries(obj)
-    .filter(([_, v]) => pred(v))
-    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
-}
-
-export const buildReport = (data: TestCaseLine[]): Report => {
-  const report: Report = {
-    clear: false,
-    properties: {},
-  };
-  for (const line of data) {
-    const sample = {
-      item: line.representation.toString(),
-      features: filterObject(line.features, v => typeof v === "number"),
-      bucketings: filterObject(line.features, v => typeof v === "string"),
-    };
-    if (line.status === "failed") {
-      report.properties[line.property] = {
-        outcome: "propertyFailed",
-        counterExample: sample,
-        message: line.status_reason,
-      };
-    } else {
-      if (!(line.property in report.properties)) {
-        report.properties[line.property] = {
-          outcome: "propertyPassed",
-          samples: [sample],
-          coverage: {}, // TODO
-        };
-      } else if (report.properties[line.property].outcome === "propertyPassed") {
-        (report.properties[line.property] as SuccessTestInfo).samples.push(sample);
-      }
-    }
-  }
-  return report;
-};
 
 export const schemaSampleInfo = z.object({
   item: z.string(),
@@ -124,7 +85,6 @@ export const schemaFailureTestInfo = z.object({
 export const schemaTestInfo = z.union([schemaSuccessTestInfo, schemaFailureTestInfo]);
 
 export const schemaReport = z.object({
-  clear: z.boolean().optional(),
   properties: z.record(schemaTestInfo),
 });
 
@@ -159,31 +119,4 @@ export type ExampleFilter = {
 } | {
   bucketing: string,
   value: string
-};
-
-export const mergeCoverage = (oldCoverage: { [key: string]: CoverageItem }, newCoverage: { [key: string]: CoverageItem }): { [key: string]: CoverageItem } => {
-  const result: { [key: string]: CoverageItem } = oldCoverage;
-  Object.keys(newCoverage).forEach((key) => {
-    if (key in result) {
-      result[key].hitLines = Array.from(new Set([...result[key].hitLines, ...newCoverage[key].hitLines]));
-      result[key].missedLines = result[key].missedLines.filter((l) => l in newCoverage[key].missedLines);
-    } else {
-      result[key] = newCoverage[key];
-    }
-  });
-  return result;
-};
-
-export const mergeReports = (oldReport: Report | undefined, newReport: Report): Report => {
-  if (!oldReport || newReport.clear) {
-    return newReport;
-  } else {
-    return {
-      clear: false,
-      properties: {
-        ...oldReport.properties,
-        ...newReport.properties,
-      },
-    };
-  }
 };

@@ -3,6 +3,9 @@ import { TychePanel } from "./panels/TychePanel";
 import { HypothesisCodelensProvider } from "./lenses/HypothesisCodelensProvider";
 import { WebSocketServer } from "ws";
 import { parseDataLines } from "./datatypes";
+import { DataManager } from "./DataManager";
+
+const dataManager = new DataManager();
 
 function launchWebsocketServer(context: ExtensionContext) {
   const server = new WebSocketServer({
@@ -17,7 +20,8 @@ function launchWebsocketServer(context: ExtensionContext) {
         return;
       }
 
-      TychePanel.renderNewLines(lines, context.extensionUri);
+      dataManager.addLines(lines);
+      TychePanel.getOrCreate(dataManager, context.extensionUri);
     });
   });
   context.subscriptions.push({ dispose() { server.close(); } });
@@ -26,12 +30,12 @@ function launchWebsocketServer(context: ExtensionContext) {
 export function activate(context: ExtensionContext) {
   // Provided to the user.
   context.subscriptions.push(commands.registerCommand("tyche.toggle-coverage", () => {
-    TychePanel.toggleCoverage();
+    TychePanel.toggleCoverage(dataManager);
   }));
 
   // Re-renders coverage highlights when the user switches documents.
   window.onDidChangeVisibleTextEditors(() => {
-    TychePanel.decorateCoverage();
+    TychePanel.decorateCoverage(dataManager);
   });
 
   // Set up the websocket server that listens for reports.

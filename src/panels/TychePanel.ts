@@ -1,17 +1,8 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import {
-  DataLine,
-  ErrorLine,
-  Report,
-  SuccessTestInfo,
-  TestCaseLine,
-  buildReport,
-  mergeCoverage,
-  mergeReports,
-  schemaDataLine
-} from "../datatypes";
+import { Report } from "../datatypes";
+import { DataManager } from "../DataManager";
 
 /**
  * The main panel of the Tyche extension.
@@ -20,7 +11,6 @@ export class TychePanel {
   public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _report: Report | undefined = undefined;
   private _decorationTypes: vscode.TextEditorDecorationType[] = [];
   private _shouldShowCoverage: boolean = false;
 
@@ -35,9 +25,9 @@ export class TychePanel {
    * @param extensionUri The URI of the extension.
    * @returns The Tyche panel.
    */
-  public static render(extensionUri: Uri) {
+  public static getOrCreate(dataManager: DataManager, extensionUri: Uri) {
     if (TychePanel.currentPanel) {
-      TychePanel.currentPanel._panel.reveal(ViewColumn.One);
+      TychePanel.currentPanel._panel.reveal(ViewColumn.Two);
     } else {
       const panel = window.createWebviewPanel(
         "tyche",
@@ -48,6 +38,15 @@ export class TychePanel {
 
       TychePanel.currentPanel = new TychePanel(panel, extensionUri);
     }
+    TychePanel.currentPanel.render(dataManager);
+    return TychePanel.currentPanel;
+  }
+
+  public render(dataManager: DataManager) {
+    this._panel.webview.postMessage({
+      command: "load-data",
+      report: dataManager.report,
+    });
   }
 
   /**
@@ -67,14 +66,14 @@ export class TychePanel {
   /**
    * Toggles coverage highlighting and re-renders coverage highlights.
    */
-  public static toggleCoverage() {
+  public static toggleCoverage(dataManager: DataManager) {
     if (!TychePanel.currentPanel) {
       return;
     }
 
     let panel = TychePanel.currentPanel;
     panel._shouldShowCoverage = !panel._shouldShowCoverage;
-    panel._decorateCoverage();
+    panel._decorateCoverage(dataManager.report);
   }
 
   /**
@@ -82,104 +81,72 @@ export class TychePanel {
    *
    * Used when the user switches documents.
    */
-  public static decorateCoverage() {
+  public static decorateCoverage(dataManager: DataManager) {
     if (!TychePanel.currentPanel) {
       return;
     }
 
     const panel = TychePanel.currentPanel;
-    panel._decorateCoverage();
-  }
-
-  /**
-   * Loads a JSON-formatted report into the Tyche panel.
-   *
-   * @param extensionUri
-   * @param jsonString A string containing the JSON of a `Report`.
-   */
-  public static renderNewLines(lines: DataLine[], extensionUri: Uri) {
-    const report = buildReport(lines.filter((line) => line.type === "test_case") as TestCaseLine[]);
-
-    if (!report) {
-      return;
-    }
-
-    if (!TychePanel.currentPanel) {
-      TychePanel.render(extensionUri);
-    }
-
-    TychePanel.currentPanel!._loadJSONReport(report);
+    panel._decorateCoverage(dataManager.report);
   }
 
   /**
    * Decorates the current document with coverage highlighting, based on the stored report.
    */
-  private _decorateCoverage() {
-    this._decorationTypes.forEach((decorationType) => {
-      decorationType.dispose();
-    });
-    this._decorationTypes = [];
+  private _decorateCoverage(_report: Report) {
+    // TODO: Bring this back
+    // const report = dataManager.report;
 
-    if (!this._report || !this._shouldShowCoverage) {
-      return;
-    }
+    // this._decorationTypes.forEach((decorationType) => {
+    //   decorationType.dispose();
+    // });
+    // this._decorationTypes = [];
 
-    let infos: SuccessTestInfo[] =
-      Object.values(this._report.properties).filter((info) => info.outcome === "propertyPassed") as SuccessTestInfo[];
+    // if (!this._shouldShowCoverage) {
+    //   return;
+    // }
 
-    if (infos.length === 0) {
-      return;
-    }
+    // let infos: SuccessTestInfo[] =
+    //   Object.values(report.properties).filter((info) => info.outcome === "propertyPassed") as SuccessTestInfo[];
 
-    const hd = infos[0].coverage;
-    const tl = infos.slice(1);
+    // if (infos.length === 0) {
+    //   return;
+    // }
 
-    const coverage = tl.reduce((acc, cur) => mergeCoverage(acc, cur.coverage), hd);
+    // const hd = infos[0].coverage;
+    // const tl = infos.slice(1);
 
-    const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
-      editor.setDecorations(decorationType,
-        lines.map((line) => {
-          let range = new vscode.Range(new vscode.Position(line - 1, 0), new vscode.Position(line - 1, 0));
-          return { range };
-        })
-      );
-    };
+    // const coverage = tl.reduce((acc, cur) => mergeCoverage(acc, cur.coverage), hd);
 
-    const greenLineDecoration = window.createTextEditorDecorationType({
-      isWholeLine: true,
-      backgroundColor: "rgba(0, 255, 0, 0.1)",
-    });
+    // const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
+    //   editor.setDecorations(decorationType,
+    //     lines.map((line) => {
+    //       let range = new vscode.Range(new vscode.Position(line - 1, 0), new vscode.Position(line - 1, 0));
+    //       return { range };
+    //     })
+    //   );
+    // };
 
-    const redLineDecoration = window.createTextEditorDecorationType({
-      isWholeLine: true,
-      backgroundColor: "rgba(255, 0, 0, 0.1)",
-    });
+    // const greenLineDecoration = window.createTextEditorDecorationType({
+    //   isWholeLine: true,
+    //   backgroundColor: "rgba(0, 255, 0, 0.1)",
+    // });
 
-    this._decorationTypes = [greenLineDecoration, redLineDecoration];
+    // const redLineDecoration = window.createTextEditorDecorationType({
+    //   isWholeLine: true,
+    //   backgroundColor: "rgba(255, 0, 0, 0.1)",
+    // });
 
-    window.visibleTextEditors.forEach((editor) => {
-      const p = editor.document.fileName;
-      if (p in coverage) {
-        decorate(editor, coverage[p].hitLines, greenLineDecoration);
-        decorate(editor, coverage[p].missedLines, redLineDecoration);
-      }
-    });
-  }
+    // this._decorationTypes = [greenLineDecoration, redLineDecoration];
 
-  /**
-   * Loads a JSON-formatted report into the Tyche panel and updates coverage.
-   *
-   * @param jsonString A string containing the JSON of a `Report`.
-   */
-  private _loadJSONReport(newReport: Report) {
-    this._report = mergeReports(this._report, newReport);
-
-    this._panel.webview.postMessage({
-      command: "load-data",
-      report: this._report,
-    });
-
-    this._decorateCoverage();
+    // window.visibleTextEditors.forEach((editor) => {
+    //   const p = editor.document.fileName;
+    //   if (p in coverage) {
+    //     decorate(editor, coverage[p].hitLines, greenLineDecoration);
+    //     decorate(editor, coverage[p].missedLines, redLineDecoration);
+    //   }
+    // });
+    return;
   }
 
   /**
