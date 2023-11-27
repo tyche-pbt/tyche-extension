@@ -27,14 +27,24 @@ export const BucketChart = (props: BucketChartProps) => {
       ]))),
   }];
 
-  const colors = [
-    "#A3BE8C",
-    "#D08770",
-    "#88C0D0",
-    "#BF616A",
-    "#EBCB8B",
-    "#5E81AC",
-  ];
+  const color = (i: number, bucket: string) => {
+    if (bucket === "passed") {
+      return "#A3BE8C";
+    } else if (bucket === "failed") {
+      return "#BF616A";
+    } else if (bucket === "gave_up") {
+      return "#D08770";
+    }
+    const colors = [
+      "#A3BE8C",
+      "#D08770",
+      "#88C0D0",
+      "#BF616A",
+      "#EBCB8B",
+      "#5E81AC",
+    ];
+    return colors[i % colors.length];
+  };
 
   return <div className="BucketChart">
     <div className="chart-title">
@@ -58,7 +68,7 @@ export const BucketChart = (props: BucketChartProps) => {
               <Bar
                 dataKey={bucket}
                 stackId="a"
-                fill={colors[i % colors.length]}
+                fill={color(i, bucket)}
                 onClick={() => props.viewValue(bucket)} />
           )
         }

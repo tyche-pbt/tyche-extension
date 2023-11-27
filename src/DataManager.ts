@@ -50,20 +50,18 @@ export class DataManager {
       properties: {},
     };
     for (const line of data) {
-      const sample = {
+      if (!(line.property in report.properties)) {
+        report.properties[line.property] = { samples: [], coverage: {} }; // TODO: Coverage
+      }
+      report.properties[line.property].samples.push({
         outcome: line.status,
         item: line.representation.toString(),
         features: filterObject(line.features, v => typeof v === "number"),
-        bucketings: filterObject(line.features, v => typeof v === "string"),
-      };
-      if (!(line.property in report.properties)) {
-        report.properties[line.property] = {
-          samples: [sample],
-          coverage: {}, // TODO
-        };
-      } else {
-        report.properties[line.property].samples.push(sample);
-      }
+        bucketings: {
+          outcome: line.status, // NOTE: This adds the outcomes to the buckets
+          ...filterObject(line.features, v => typeof v === "string")
+        },
+      });
     }
     return report;
   }
