@@ -5,6 +5,7 @@ import { FeatureChart } from "./FeatureChart";
 import { BucketChart } from "./BucketChart";
 import { HighLevelStats } from "./HighLevelStats";
 import { CoverageInfo } from "./CoverageInfo";
+import { FailureInfo } from "./FailureInfo";
 
 type ChartPaneProps = {
   dataset: SampleInfo[];
@@ -42,6 +43,12 @@ export const ChartPane = (props: ChartPaneProps) => {
 
   return <div className="ChartPane">
     <HighLevelStats dataset={dataset} />
+    {dataset.some(x => x.outcome === "failed") &&
+      <>
+        <VSCodeDivider />
+        <FailureInfo dataset={dataset} />
+      </>
+    }
     {Object.entries(props.coverage).length > 0
       ?
       <>
