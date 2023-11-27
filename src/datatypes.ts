@@ -29,12 +29,15 @@ export const schemaErrorLine = z.object({
   message: z.string(),
 });
 
-export const schemaDataLine = z.union([schemaTestCaseLine, schemaInfoLine, schemaErrorLine]);
+export const schemaDataLine = z.union([schemaTestCaseLine, schemaInfoLine]);
+
+export const schemaProtoLine = z.union([schemaTestCaseLine, schemaInfoLine, schemaErrorLine]);
 
 export type TestCaseLine = z.infer<typeof schemaTestCaseLine>;
 export type InfoLine = z.infer<typeof schemaInfoLine>;
 export type ErrorLine = z.infer<typeof schemaErrorLine>;
 export type DataLine = z.infer<typeof schemaDataLine>;
+export type ProtoLine = z.infer<typeof schemaProtoLine>;
 
 export function parseDataLines(jsonString: string): DataLine[] | string {
   const dataLines = [];
@@ -44,7 +47,7 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
     }
     try {
       const obj = JSON.parse(line);
-      const parsedLine = schemaDataLine.parse(obj);
+      const parsedLine = schemaProtoLine.parse(obj);
       dataLines.push(parsedLine);
     } catch (e) {
       return ("Tyche: Could not parse JSON report.\n" + e + "\nInvalid Object: " + line);
@@ -56,7 +59,7 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
     return ("Tyche: Encountered unknown failure.\n" + errorLine.message);
   }
 
-  return dataLines;
+  return dataLines as DataLine[];
 }
 
 export const schemaSampleInfo = z.object({

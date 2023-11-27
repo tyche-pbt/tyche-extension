@@ -7,10 +7,22 @@ function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { 
 }
 
 export class DataManager {
-  private _infoLines: InfoLine[] = [];
-  private _testCaseLines: TestCaseLine[] = [];
+  private _dataLines: DataLine[] = [];
+  private _latestRuns: { [property: string]: number } = {};
 
   constructor() { }
+
+  private get _latestLines(): DataLine[] {
+    return this._dataLines.filter(line => line.run_start >= this._latestRuns[line.property] - 1);
+  }
+
+  private get _testCaseLines(): TestCaseLine[] {
+    return this._latestLines.filter(line => line.type === "test_case") as TestCaseLine[];
+  }
+
+  private get _infoLines(): InfoLine[] {
+    return this._latestLines.filter(line => line.type === "info") as InfoLine[];
+  }
 
   public get info(): { property: string, title: string, content: string }[] {
     return this._infoLines.map(line => ({
@@ -21,7 +33,7 @@ export class DataManager {
   }
 
   public get report(): Report {
-    return this._buildReport(this._testCaseLines);
+    return DataManager._buildReport(this._testCaseLines);
   }
 
   public addLines(lines: DataLine[]) {
@@ -29,17 +41,11 @@ export class DataManager {
   }
 
   public addLine(line: DataLine) {
-    switch (line.type) {
-      case "test_case":
-        this._testCaseLines.push(line);
-        break;
-      case "info":
-        this._infoLines.push(line);
-        break;
-    }
+    this._latestRuns[line.property] = Math.max(this._latestRuns[line.property] || 0, line.run_start);
+    this._dataLines.push(line);
   }
 
-  private _buildReport(data: TestCaseLine[]): Report {
+  private static _buildReport(data: TestCaseLine[]): Report {
     const report: Report = {
       properties: {},
     };
@@ -69,5 +75,4 @@ export class DataManager {
     }
     return report;
   }
-
 }
