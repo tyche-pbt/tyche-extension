@@ -21,7 +21,7 @@ export class DataManager {
   }
 
   private get _infoLines(): InfoLine[] {
-    return this._latestLines.filter(line => line.type === "info") as InfoLine[];
+    return this._latestLines.filter(line => line.type === "info" || line.type === "alert") as InfoLine[];
   }
 
   public get info(): { property: string, title: string, content: string }[] {

@@ -7,7 +7,8 @@ export const schemaTestCaseLine = z.object({
   property: z.string(),
   status: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
   status_reason: z.string(),
-  representation: z.union([z.string(), z.record(z.string())]),
+  representation: z.string(),
+  arguments: z.any(),
   how_generated: z.string().optional(),
   features: z.record(z.any()),
   coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info"), z.null()]),
@@ -15,7 +16,7 @@ export const schemaTestCaseLine = z.object({
 });
 
 export const schemaInfoLine = z.object({
-  type: z.literal("info"),
+  type: z.union([z.literal("info"), z.literal("alert")]),
   run_start: z.number(),
   property: z.string(),
   title: z.string(),
