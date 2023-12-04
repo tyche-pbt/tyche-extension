@@ -24,6 +24,11 @@
         "command": "tyche.toggle-coverage",
         "title": "Toggle Coverage Highlighting",
         "category": "Tyche"
+      },
+      {
+        "command": "tyche.load-from-path",
+        "title": "Load From Path",
+        "category": "Tyche"
       }
     ],
     "configuration": {
@@ -33,6 +38,13 @@
           "type": "number",
           "default": 8181,
           "description": "The port to use for the websocket server."
+        },
+        "tyche.observationGlobs": {
+          "type": "array",
+          "default": [
+            "**/.hypothesis/observed/*.jsonl"
+          ],
+          "description": "The directories to search for observations."
         }
       }
     }

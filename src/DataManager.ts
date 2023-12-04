@@ -45,6 +45,11 @@ export class DataManager {
     this._dataLines.push(line);
   }
 
+  public clear() {
+    this._dataLines = [];
+    this._latestRuns = {};
+  }
+
   private static _buildReport(data: TestCaseLine[]): Report {
     const report: Report = {
       properties: {},
