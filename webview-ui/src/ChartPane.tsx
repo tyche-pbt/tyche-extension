@@ -8,6 +8,7 @@ import { CoverageInfo } from "./CoverageInfo";
 import { FailureInfo } from "./FailureInfo";
 
 type ChartPaneProps = {
+  property: string;
   dataset: SampleInfo[];
   coverage: { [key: string]: CoverageItem };
   features: string[];
@@ -16,7 +17,7 @@ type ChartPaneProps = {
 }
 
 export const ChartPane = (props: ChartPaneProps) => {
-  const { dataset, features, bucketings } = props;
+  const { dataset, features, bucketings, property } = props;
 
   const pageElements =
     [...bucketings.map((x) =>
@@ -42,7 +43,7 @@ export const ChartPane = (props: ChartPaneProps) => {
     ]
 
   return <div className="ChartPane">
-    <HighLevelStats dataset={dataset} />
+    <HighLevelStats dataset={dataset} property={property} />
     {dataset.some(x => x.outcome === "failed") &&
       <>
         <VSCodeDivider />

@@ -5,6 +5,7 @@ import { ChartPane } from "./ChartPane";
 import { ExampleView } from "./ExampleView";
 
 type PropertyViewProps = {
+  property: string;
   testInfo: TestInfo;
 };
 
@@ -16,7 +17,7 @@ type PageState =
 const PropertyView = (props: PropertyViewProps) => {
   const [pageView, setPageView] = useState<PageState>({ state: "main" });
 
-  const { testInfo } = props;
+  const { testInfo, property } = props;
 
   const features = Object.keys(testInfo.samples[0].features);
   const bucketings = Object.keys(testInfo.samples[0].bucketings);
@@ -28,7 +29,7 @@ const PropertyView = (props: PropertyViewProps) => {
           style={{ marginRight: "10px" }}
           onClick={() => pageView.state === "main" ? setPageView({ state: "examples" }) : setPageView({ state: "main" })}
         >
-          {pageView.state === "main" ? "See More Examples" : "Back to Overview"}
+          {pageView.state === "main" ? "View Examples" : "View Charts"}
         </VSCodeButton>
       </div>
 
@@ -39,6 +40,7 @@ const PropertyView = (props: PropertyViewProps) => {
           dataset={testInfo.samples}
           features={features}
           bucketings={bucketings}
+          property={property}
         />}
       {pageView.state === "examples" && <ExampleView dataset={testInfo.samples} />}
       {pageView.state === "filtered" && <ExampleView dataset={testInfo.samples} filter={pageView.exampleFilter} />}

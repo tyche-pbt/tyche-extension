@@ -71,7 +71,7 @@ const App = (_props: AppProps) => {
           keys.map((propertyName: string, index: number) => {
             const info = state.report.properties[propertyName];
             return <VSCodePanelView id={`view-${index}`} style={{ width: "100%" }}>
-              <PropertyView testInfo={info} />
+              <PropertyView testInfo={info} property={propertyName} />
             </VSCodePanelView>;
           })
         }

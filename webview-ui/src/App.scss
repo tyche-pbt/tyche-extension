@@ -46,24 +46,6 @@
   }
 }
 
-.HighLevelStats {
-  display: flex;
-  padding: 10px;
-
-  .stat {
-    flex-grow: 1;
-    text-align: left;
-  }
-
-  .stat-title {
-    font-weight: bold;
-  }
-
-  .stat-number {
-    font-size: 2em;
-  }
-}
-
 .CoverageInfo {
   padding: 10px;
 
