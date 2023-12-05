@@ -29,21 +29,20 @@ function launchWebsocketServer(context: ExtensionContext) {
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {
-    dataManager.clear();
-    for (const uri of uris) {
-      if (!uri.path.endsWith(".jsonl")) {
-        continue;
-      }
-      workspace.fs.readFile(uri)
-        .then((buffer) => {
-          const data = parseDataLines(buffer.toString());
-          if (typeof data === "string") {
-            throw new Error(data);
-          }
-          dataManager.addLines(data);
-          TychePanel.getOrCreate(dataManager, context.extensionUri);
-        });
-    }
+    Promise.all(uris.map((uri) => workspace.fs.readFile(uri))).then((buffers) => {
+      const lines = buffers.map((buffer) => {
+        const data = parseDataLines(buffer.toString());
+        if (typeof data === "string") {
+          throw new Error(data);
+        }
+        return data;
+      }).reduce((acc, val) => acc.concat(val), []);
+      dataManager.clear();
+      dataManager.addLines(lines);
+      TychePanel.getOrCreate(dataManager, context.extensionUri);
+    }).catch((e) => {
+      window.showErrorMessage(e);
+    });
   });
 }
 
@@ -73,7 +72,7 @@ export function activate(context: ExtensionContext) {
   }));
 
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
-    workspace.createFileSystemWatcher(glob).onDidChange(() => {
+    workspace.createFileSystemWatcher(glob).onDidChange((e) => {
       visualizeGlob(glob, context);
     });
   });
