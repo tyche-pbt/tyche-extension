@@ -6,18 +6,21 @@ import { BucketChart } from "./BucketChart";
 import { HighLevelStats } from "./HighLevelStats";
 import { CoverageInfo } from "./CoverageInfo";
 import { FailureInfo } from "./FailureInfo";
+import Markdown from "react-markdown";
+import { Drawer } from "./Drawer";
 
 type ChartPaneProps = {
   property: string;
   dataset: SampleInfo[];
   coverage: { [key: string]: CoverageItem };
+  info: { type: string, title: string, content: string }[];
   features: string[];
   bucketings: string[];
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
 
 export const ChartPane = (props: ChartPaneProps) => {
-  const { dataset, features, bucketings, property } = props;
+  const { dataset, features, bucketings, property, info } = props;
 
   const pageElements =
     [...bucketings.map((x) =>
@@ -43,6 +46,21 @@ export const ChartPane = (props: ChartPaneProps) => {
     ]
 
   return <div className="ChartPane">
+    <h3>{property} ({dataset.length} samples)</h3>
+    {
+      info.map((x) =>
+        <>
+          <VSCodeDivider />
+          <div>
+            <i className="codicon codicon-info"></i> {x.title}
+            <Drawer>
+              <Markdown>{x.content}</Markdown>
+            </Drawer>
+          </div>
+        </>
+      )
+    }
+    <VSCodeDivider />
     <HighLevelStats dataset={dataset} property={property} />
     {dataset.some(x => x.outcome === "failed") &&
       <>

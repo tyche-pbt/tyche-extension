@@ -16,24 +16,8 @@ export class DataManager {
     return this._dataLines.filter(line => line.run_start >= this._latestRuns[line.property] - 1);
   }
 
-  private get _testCaseLines(): TestCaseLine[] {
-    return this._latestLines.filter(line => line.type === "test_case") as TestCaseLine[];
-  }
-
-  private get _infoLines(): InfoLine[] {
-    return this._latestLines.filter(line => line.type === "info" || line.type === "alert") as InfoLine[];
-  }
-
-  public get info(): { property: string, title: string, content: string }[] {
-    return this._infoLines.map(line => ({
-      property: line.property,
-      title: line.title,
-      content: line.content,
-    }));
-  }
-
   public get report(): Report {
-    return DataManager._buildReport(this._testCaseLines);
+    return DataManager._buildReport(this._latestLines);
   }
 
   public addLines(lines: DataLine[]) {
@@ -50,23 +34,32 @@ export class DataManager {
     this._latestRuns = {};
   }
 
-  private static _buildReport(data: TestCaseLine[]): Report {
+  private static _buildReport(data: DataLine[]): Report {
     const report: Report = {
       properties: {},
     };
     for (const line of data) {
       if (!(line.property in report.properties)) {
-        report.properties[line.property] = { samples: [], coverage: {} }; // TODO: Coverage
+        report.properties[line.property] = { samples: [], coverage: {}, info: [] }; // TODO: Coverage
       }
-      report.properties[line.property].samples.push({
-        outcome: line.status,
-        item: line.representation.toString(),
-        features: filterObject(line.features, v => typeof v === "number"),
-        bucketings: {
-          outcome: line.status, // NOTE: This adds the outcomes to the buckets
-          ...filterObject(line.features, v => typeof v === "string")
-        },
-      });
+
+      if (line.type === "test_case") {
+        report.properties[line.property].samples.push({
+          outcome: line.status,
+          item: line.representation.toString(),
+          features: filterObject(line.features, v => typeof v === "number"),
+          bucketings: {
+            outcome: line.status, // NOTE: This adds the outcomes to the buckets
+            ...filterObject(line.features, v => typeof v === "string")
+          },
+        });
+      } else {
+        report.properties[line.property].info.push({
+          type: line.type,
+          title: line.title,
+          content: line.content,
+        });
+      }
     }
     return report;
   }

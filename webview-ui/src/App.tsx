@@ -56,6 +56,7 @@ const App = (_props: AppProps) => {
   }
 
   const keys = Object.keys(state.report.properties).sort();
+  console.log(state.report);
 
   return (
     <div className="App">
@@ -69,9 +70,9 @@ const App = (_props: AppProps) => {
         }
         {
           keys.map((propertyName: string, index: number) => {
-            const info = state.report.properties[propertyName];
+            const testInfo = state.report.properties[propertyName];
             return <VSCodePanelView id={`view-${index}`} style={{ width: "100%" }}>
-              <PropertyView testInfo={info} property={propertyName} />
+              <PropertyView testInfo={testInfo} property={propertyName} />
             </VSCodePanelView>;
           })
         }

@@ -19,8 +19,8 @@ const PropertyView = (props: PropertyViewProps) => {
 
   const { testInfo, property } = props;
 
-  const features = Object.keys(testInfo.samples[0].features);
-  const bucketings = Object.keys(testInfo.samples[0].bucketings);
+  const features = testInfo.samples.map(sample => Object.keys(sample.features)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const bucketings = testInfo.samples.map(sample => Object.keys(sample.bucketings)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return (
     <div className="PropertyView">
@@ -38,6 +38,7 @@ const PropertyView = (props: PropertyViewProps) => {
           setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
           coverage={testInfo.coverage}
           dataset={testInfo.samples}
+          info={testInfo.info}
           features={features}
           bucketings={bucketings}
           property={property}

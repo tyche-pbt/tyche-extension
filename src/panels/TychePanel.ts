@@ -157,6 +157,7 @@ export class TychePanel {
    */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     // The CSS file from the React build output
+    const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
     const stylesUri = getUri(webview, extensionUri, [
       "webview-ui",
       "build",
@@ -182,6 +183,7 @@ export class TychePanel {
           <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
           <meta name="theme-color" content="#000000">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
+          <link href="${codiconsUri}" rel="stylesheet" />
           <title>Generator Visualizer</title>
         </head>
         <body>

@@ -78,6 +78,7 @@ export const schemaCoverageItem = z.object({
 export const schemaTestInfo = z.object({
   samples: z.array(schemaSampleInfo),
   coverage: z.record(schemaCoverageItem),
+  info: z.array(z.object({ type: z.string(), title: z.string(), content: z.string() })),
 });
 
 export const schemaReport = z.object({
