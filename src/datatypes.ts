@@ -68,6 +68,7 @@ export const schemaSampleInfo = z.object({
   item: z.string(),
   features: z.record(z.number()),
   bucketings: z.record(z.string()),
+  metadata: z.any(),
 });
 
 export const schemaCoverageItem = z.object({

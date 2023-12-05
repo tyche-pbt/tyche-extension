@@ -29,7 +29,7 @@ const PropertyView = (props: PropertyViewProps) => {
           style={{ marginRight: "10px" }}
           onClick={() => pageView.state === "main" ? setPageView({ state: "examples" }) : setPageView({ state: "main" })}
         >
-          {pageView.state === "main" ? "View Examples" : "View Charts"}
+          {pageView.state === "main" ? <i className="codicon codicon-list-ordered" /> : <i className="codicon codicon-graph" />}
         </VSCodeButton>
       </div>
 

@@ -52,6 +52,7 @@ export class DataManager {
             outcome: line.status, // NOTE: This adds the outcomes to the buckets
             ...filterObject(line.features, v => typeof v === "string")
           },
+          metadata: line.metadata,
         });
       } else {
         report.properties[line.property].info.push({
