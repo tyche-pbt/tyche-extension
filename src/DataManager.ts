@@ -54,6 +54,16 @@ export class DataManager {
           },
           metadata: line.metadata,
         });
+        if (line.coverage !== "no_coverage_info") {
+          // TODO: This is gross. Implement merging elegantly.
+          for (const [file, lines] of Object.entries(line.coverage)) {
+            if (!(file in report.properties[line.property].coverage)) {
+              report.properties[line.property].coverage[file] = [];
+            }
+            report.properties[line.property].coverage[file] =
+              Array.from(new Set([...report.properties[line.property].coverage[file], ...lines]));
+          }
+        }
       } else {
         report.properties[line.property].info.push({
           type: line.type,

@@ -1,10 +1,9 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
-import { CoverageItem, ExampleFilter, SampleInfo } from "../../src/datatypes";
+import { ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { ExtremeExamples } from "./ExtremeExamples";
 import { FeatureChart } from "./FeatureChart";
 import { BucketChart } from "./BucketChart";
 import { HighLevelStats } from "./HighLevelStats";
-import { CoverageInfo } from "./CoverageInfo";
 import { FailureInfo } from "./FailureInfo";
 import Markdown from "react-markdown";
 import { Drawer } from "./Drawer";
@@ -12,7 +11,7 @@ import { Drawer } from "./Drawer";
 type ChartPaneProps = {
   property: string;
   dataset: SampleInfo[];
-  coverage: { [key: string]: CoverageItem };
+  coverage: { [key: string]: number[] };
   info: { type: string, title: string, content: string }[];
   features: string[];
   bucketings: string[];
@@ -68,13 +67,6 @@ export const ChartPane = (props: ChartPaneProps) => {
         <FailureInfo dataset={dataset} />
       </>
     }
-    {Object.entries(props.coverage).length > 0
-      ?
-      <>
-        <VSCodeDivider />
-        <CoverageInfo coverage={props.coverage}></CoverageInfo>
-      </>
-      : <></>}
     {pageElements.flatMap(x => [<VSCodeDivider />, x])}
   </div>;
 }

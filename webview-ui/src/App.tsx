@@ -56,7 +56,6 @@ const App = (_props: AppProps) => {
   }
 
   const keys = Object.keys(state.report.properties).sort();
-  console.log(state.report);
 
   return (
     <div className="App">

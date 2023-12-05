@@ -11,7 +11,7 @@ export const schemaTestCaseLine = z.object({
   arguments: z.any(),
   how_generated: z.string().optional(),
   features: z.record(z.any()),
-  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info"), z.null()]),
+  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info")]),
   metadata: z.record(z.any()).optional(),
 });
 
@@ -71,14 +71,9 @@ export const schemaSampleInfo = z.object({
   metadata: z.any(),
 });
 
-export const schemaCoverageItem = z.object({
-  hitLines: z.array(z.number()),
-  missedLines: z.array(z.number()),
-});
-
 export const schemaTestInfo = z.object({
   samples: z.array(schemaSampleInfo),
-  coverage: z.record(schemaCoverageItem),
+  coverage: z.record(z.array(z.number())),
   info: z.array(z.object({ type: z.string(), title: z.string(), content: z.string() })),
 });
 
@@ -87,8 +82,6 @@ export const schemaReport = z.object({
 });
 
 export type SampleInfo = z.infer<typeof schemaSampleInfo>;
-
-export type CoverageItem = z.infer<typeof schemaCoverageItem>;
 
 export type TestInfo = z.infer<typeof schemaTestInfo>;
 
