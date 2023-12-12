@@ -3,11 +3,12 @@ import { ReactNode, useState } from "react";
 type DrawerState = "open" | "closed";
 
 type DrawerProps = {
+  open?: boolean;
   children: ReactNode;
 };
 
 export const Drawer = (props: DrawerProps) => {
-  const [drawerState, setDrawerState] = useState<DrawerState>("closed");
+  const [drawerState, setDrawerState] = useState<DrawerState>(props.open ? "open" : "closed");
 
   if (drawerState === "closed") {
     return <span onClick={() => setDrawerState("open")}>

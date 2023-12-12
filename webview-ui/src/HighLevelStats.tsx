@@ -1,5 +1,6 @@
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { SampleInfo } from "../../src/datatypes";
+import { Drawer } from "./Drawer";
 
 type HighLevelStatsProps = {
   property: string;
@@ -16,29 +17,31 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
   }];
 
   return <div className="HighLevelStats">
-    <ResponsiveContainer width="100%" height={120}>
-      <BarChart
-        width={800}
-        height={100}
-        layout="vertical"
-        data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <XAxis type="number" domain={[0, props.dataset.length]} />
-        <YAxis type="category" dataKey="name" hide={true} />
-        <Tooltip />
-        <Legend />
-        <Bar
-          dataKey="unique"
-          stackId="a"
-          fill="#D08770"
-        />
-        <Bar
-          dataKey="duplicates"
-          stackId="a"
-          fill="#A3BE8C"
-        />
-      </BarChart>
-    </ResponsiveContainer>
+    Categorized by <code>unique</code><Drawer open>
+      <ResponsiveContainer width="100%" height={120}>
+        <BarChart
+          width={800}
+          height={100}
+          layout="vertical"
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <XAxis type="number" domain={[0, props.dataset.length]} />
+          <YAxis type="category" dataKey="name" hide={true} />
+          <Tooltip />
+          <Legend />
+          <Bar
+            dataKey="unique"
+            stackId="a"
+            fill="#D08770"
+          />
+          <Bar
+            dataKey="duplicates"
+            stackId="a"
+            fill="#A3BE8C"
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </Drawer>
   </div>;
 }

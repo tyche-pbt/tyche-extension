@@ -35,18 +35,6 @@ export const ChartPane = (props: ChartPaneProps) => {
           dataset={dataset}
           viewValue={(value) => props.setFilteredView({ feature: x, value })}
         />,
-        <ExtremeExamples
-          key={`min-${x}`}
-          feature={x}
-          dataset={dataset}
-          end="min"
-        />,
-        <ExtremeExamples
-          key={`max-${x}`}
-          feature={x}
-          dataset={dataset}
-          end="max"
-        />,
       ]),
     ]
 

@@ -8,6 +8,7 @@ import {
   Bar
 } from 'recharts';
 import { SampleInfo } from "../../src/datatypes";
+import { Drawer } from "./Drawer";
 
 type BucketChartProps = {
   bucketing: string;
@@ -47,33 +48,33 @@ export const BucketChart = (props: BucketChartProps) => {
   };
 
   return <div className="BucketChart">
-    <div className="chart-title">
-      Categorized by <code>{props.bucketing}</code>
-    </div>
-    <ResponsiveContainer width="100%" height={120}>
-      <BarChart
-        width={800}
-        height={100}
-        data={bucketedData}
-        layout="vertical"
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <XAxis type="number" domain={[0, props.dataset.length]} />
-        <YAxis type="category" dataKey="name" hide={true} />
-        <Tooltip />
-        <Legend />
-        {
-          buckets.map(
-            (bucket, i) =>
-              <Bar
-                key={bucket}
-                dataKey={bucket}
-                stackId="a"
-                fill={color(i, bucket)}
-                onClick={() => props.viewValue(bucket)} />
-          )
-        }
-      </BarChart>
-    </ResponsiveContainer>
+    Categorized by <code>{props.bucketing}</code>
+    <Drawer open>
+      <ResponsiveContainer width="100%" height={120}>
+        <BarChart
+          width={800}
+          height={100}
+          data={bucketedData}
+          layout="vertical"
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <XAxis type="number" domain={[0, props.dataset.length]} />
+          <YAxis type="category" dataKey="name" hide={true} />
+          <Tooltip />
+          <Legend />
+          {
+            buckets.map(
+              (bucket, i) =>
+                <Bar
+                  key={bucket}
+                  dataKey={bucket}
+                  stackId="a"
+                  fill={color(i, bucket)}
+                  onClick={() => props.viewValue(bucket)} />
+            )
+          }
+        </BarChart>
+      </ResponsiveContainer>
+    </Drawer>
   </div>;
 }

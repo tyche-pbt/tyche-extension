@@ -7,6 +7,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { SampleInfo } from "../../src/datatypes";
+import { Drawer } from "./Drawer";
 
 type FeatureChartProps = {
   feature: string;
@@ -37,17 +38,19 @@ export const FeatureChart = (props: FeatureChartProps) => {
 
   return (
     <div className="FeatureChart">
-      <div className="chart-title">
-        Distribution of <code>{feature}</code>
-      </div>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={featureData}>
-          <XAxis dataKey="label" />
-          <YAxis />
-          <Tooltip />
-          <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill="#B48EAD" />
-        </BarChart>
-      </ResponsiveContainer>
+      Distribution of <code>{feature}</code>
+      <Drawer open>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={featureData}
+            margin={{ top: 20, right: 20 }}
+          >
+            <XAxis dataKey="label" />
+            <YAxis />
+            <Tooltip />
+            <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill="#B48EAD" />
+          </BarChart>
+        </ResponsiveContainer>
+      </Drawer>
     </div>
   );
 }
