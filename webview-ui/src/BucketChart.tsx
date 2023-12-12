@@ -66,6 +66,7 @@ export const BucketChart = (props: BucketChartProps) => {
           buckets.map(
             (bucket, i) =>
               <Bar
+                key={bucket}
                 dataKey={bucket}
                 stackId="a"
                 fill={color(i, bucket)}

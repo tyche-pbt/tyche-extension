@@ -53,7 +53,7 @@ export class DataManager {
             ...filterObject(line.features, v => typeof v === "string")
           },
           coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
-          metadata: line.metadata,
+          metadata: { howGenerated: line.how_generated, metadata: line.metadata },
         });
       } else {
         report.properties[line.property].info.push({

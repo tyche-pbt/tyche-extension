@@ -21,7 +21,8 @@ type AppState = {
 };
 
 const App = (_props: AppProps) => {
-  const [state, setState] = useState<AppState>({ state: "loading" });
+  // const [state, setState] = useState<AppState>({ state: "loading" });
+  const [state, setState] = useState<AppState>({ state: "ready", report: require("./report.json") });
 
   const loadData = (command: LoadDataCommand) => {
     setState({
@@ -62,7 +63,7 @@ const App = (_props: AppProps) => {
       <VSCodePanels style={{ width: "100%" }}>
         {
           keys.map((propertyName: string, index: number) =>
-            <VSCodePanelTab id={`tab-${index}`}>
+            <VSCodePanelTab key={`tab-${index}`} id={`tab-${index}`}>
               {propertyName}
             </VSCodePanelTab>
           )
@@ -70,7 +71,7 @@ const App = (_props: AppProps) => {
         {
           keys.map((propertyName: string, index: number) => {
             const testInfo = state.report.properties[propertyName];
-            return <VSCodePanelView id={`view-${index}`} style={{ width: "100%" }}>
+            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} style={{ width: "100%" }}>
               <PropertyView testInfo={testInfo} property={propertyName} />
             </VSCodePanelView>;
           })

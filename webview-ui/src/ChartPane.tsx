@@ -22,20 +22,27 @@ export const ChartPane = (props: ChartPaneProps) => {
 
   const pageElements =
     [...bucketings.map((x) =>
-      <BucketChart bucketing={x} dataset={dataset} viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />),
+      <BucketChart
+        key={`bucket-${x}`}
+        bucketing={x}
+        dataset={dataset}
+        viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />),
     ...features.flatMap((x) =>
       [
         <FeatureChart
+          key={`feature-${x}`}
           feature={x}
           dataset={dataset}
           viewValue={(value) => props.setFilteredView({ feature: x, value })}
         />,
         <ExtremeExamples
+          key={`min-${x}`}
           feature={x}
           dataset={dataset}
           end="min"
         />,
         <ExtremeExamples
+          key={`max-${x}`}
           feature={x}
           dataset={dataset}
           end="max"
@@ -46,16 +53,16 @@ export const ChartPane = (props: ChartPaneProps) => {
   return <div className="ChartPane">
     <h3>{property} ({dataset.length} samples)</h3>
     {
-      info.map((x) =>
-        <>
+      info.map((x, i) =>
+        <div key={`info-${i}`}>
           <VSCodeDivider />
-          <div>
-            <i className="codicon codicon-info"></i> {x.title}
+          <div style={{ margin: "10px 0" }}>
+            <i className="codicon codicon-info icon-blue"></i> {x.title}
             <Drawer>
               <Markdown>{x.content}</Markdown>
             </Drawer>
           </div>
-        </>
+        </div>
       )
     }
     <VSCodeDivider />
@@ -66,6 +73,6 @@ export const ChartPane = (props: ChartPaneProps) => {
         <FailureInfo dataset={dataset} />
       </>
     }
-    {pageElements.flatMap(x => [<VSCodeDivider />, x])}
+    {pageElements.flatMap((x, i) => [<VSCodeDivider key={`divider-${i}`} />, x])}
   </div>;
 }

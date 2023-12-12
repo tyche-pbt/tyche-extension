@@ -1,3 +1,7 @@
+html {
+  background-color: #2E3440;
+}
+
 .App {
   margin: 0;
   padding: 0;
@@ -69,6 +73,7 @@
 }
 
 .PrettyExample {
+  position: relative;
 
   pre {
     // white-space: pre-wrap;
@@ -100,4 +105,12 @@
 
 .icon-click {
   cursor: pointer;
+}
+
+.codicon {
+  vertical-align: text-bottom;
+}
+
+.icon-blue {
+  color: #88C0D0;
 }

@@ -8,8 +8,10 @@ type PrettyExampleProps = {
 export const PrettyExample = (props: PrettyExampleProps) => {
   return <div className="PrettyExample">
     <pre>{props.example.item}</pre>
-    See Metadata <Drawer>
-      <pre>{JSON.stringify(props.example.metadata, null, 2)}</pre>
-    </Drawer>
+    <div style={{ margin: "10px 0" }}>
+      See more <Drawer>
+        <pre>{JSON.stringify(props.example.metadata, null, 2)}</pre>
+      </Drawer>
+    </div>
   </div>;
 };
