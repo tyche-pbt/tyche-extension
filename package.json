@@ -21,11 +21,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "tyche.toggle-coverage",
-        "title": "Toggle Coverage Highlighting",
-        "category": "Tyche"
-      },
-      {
         "command": "tyche.load-from-path",
         "title": "Load From Path",
         "category": "Tyche"

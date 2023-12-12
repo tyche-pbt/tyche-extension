@@ -26,7 +26,6 @@ export const FeatureChart = (props: FeatureChartProps) => {
       }, new Map<number, number>()))
       .map(([k, v]) => ({ label: k, freq: v }));
 
-  // TODO Clean this up
   const maxLabel = Math.max(...featureData.map((x) => x.label));
   const minLabel = Math.min(...featureData.map((x) => x.label));
   for (let i = minLabel; i <= maxLabel; i++) {

@@ -33,7 +33,6 @@ export class CoverageDecorator {
   private _decorations: TextEditorDecorationType[] = [];
 
   public decorateCoverage(dataManager: DataManager) {
-    // TODO Make local to property
     this._decorations.forEach((decoration) => decoration.dispose());
     this._decorations = [];
 
