@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { Report } from "../datatypes";
 import { DataManager } from "../DataManager";
 
 /**
@@ -11,7 +10,6 @@ export class TychePanel {
   public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _shouldShowCoverage: boolean = false;
 
   private constructor(panel: WebviewPanel, extensionUri: Uri) {
     this._panel = panel;
@@ -45,6 +43,14 @@ export class TychePanel {
     this._panel.webview.postMessage({
       command: "load-data",
       report: dataManager.report,
+    });
+    this._panel.onDidChangeViewState((e) => {
+      if (e.webviewPanel.visible) {
+        this._panel.webview.postMessage({
+          command: "load-data",
+          report: dataManager.report,
+        });
+      }
     });
   }
 

@@ -41,7 +41,6 @@ export class CoverageDecorator {
         for (const property in dataManager.report.properties) {
           const sus = Tarantula.suspiciousness(dataManager, property, editor.document.fileName, line);
           if (sus > 0) {
-            console.log(line, property, sus);
             const decoration = redLineDecoration(sus);
             editor.setDecorations(decoration, [new Range(new Position(line - 1, 0), new Position(line - 1, 0))]);
             this._decorations.push(decoration);
