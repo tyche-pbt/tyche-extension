@@ -4,8 +4,10 @@ import { HypothesisCodelensProvider } from "./lenses/HypothesisCodelensProvider"
 import { WebSocketServer } from "ws";
 import { parseDataLines } from "./datatypes";
 import { DataManager } from "./DataManager";
+import { CoverageDecorator } from "./CoverageDecorator";
 
 const dataManager = new DataManager();
+const coverageDecorator = new CoverageDecorator();
 
 function launchWebsocketServer(context: ExtensionContext) {
   const server = new WebSocketServer({
@@ -40,15 +42,18 @@ export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
       dataManager.clear();
       dataManager.addLines(lines);
       TychePanel.getOrCreate(dataManager, context.extensionUri);
+      coverageDecorator.decorateCoverage(dataManager);
     }).catch((e) => {
       window.showErrorMessage(e);
+      console.error(e);
     });
   });
 }
 
 export function activate(context: ExtensionContext) {
   context.subscriptions.push(commands.registerCommand("tyche.toggle-coverage", () => {
-    TychePanel.toggleCoverage(dataManager);
+    // coverageDecorator.toggleCoverage(dataManager);
+    // FIXME
   }));
 
   context.subscriptions.push(commands.registerCommand("tyche.load-from-path", () => {
@@ -68,7 +73,10 @@ export function activate(context: ExtensionContext) {
       } else {
         visualizeGlob(`**/${workspace.asRelativePath(uris[0].path)}/**/*.jsonl`, context);
       }
-    }, (e) => window.showErrorMessage(e));
+    }, (e) => {
+      window.showErrorMessage(e);
+      console.error(e);
+    });
   }));
 
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
@@ -79,7 +87,7 @@ export function activate(context: ExtensionContext) {
 
   // Re-renders coverage highlights when the user switches documents.
   window.onDidChangeVisibleTextEditors(() => {
-    TychePanel.decorateCoverage(dataManager);
+    coverageDecorator.decorateCoverage(dataManager);
   });
 
   // Set up the websocket server that listens for reports.

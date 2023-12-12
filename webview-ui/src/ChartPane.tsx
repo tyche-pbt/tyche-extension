@@ -11,7 +11,6 @@ import { Drawer } from "./Drawer";
 type ChartPaneProps = {
   property: string;
   dataset: SampleInfo[];
-  coverage: { [key: string]: number[] };
   info: { type: string, title: string, content: string }[];
   features: string[];
   bucketings: string[];

@@ -1,4 +1,4 @@
-import { DataLine, InfoLine, Report, TestCaseLine } from './datatypes';
+import { DataLine, Report } from './datatypes';
 
 function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {
   return Object.entries(obj)
@@ -40,7 +40,7 @@ export class DataManager {
     };
     for (const line of data) {
       if (!(line.property in report.properties)) {
-        report.properties[line.property] = { samples: [], coverage: {}, info: [] }; // TODO: Coverage
+        report.properties[line.property] = { samples: [], info: [] };
       }
 
       if (line.type === "test_case") {
@@ -52,18 +52,9 @@ export class DataManager {
             outcome: line.status, // NOTE: This adds the outcomes to the buckets
             ...filterObject(line.features, v => typeof v === "string")
           },
+          coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
           metadata: line.metadata,
         });
-        if (line.coverage !== "no_coverage_info") {
-          // TODO: This is gross. Implement merging elegantly.
-          for (const [file, lines] of Object.entries(line.coverage)) {
-            if (!(file in report.properties[line.property].coverage)) {
-              report.properties[line.property].coverage[file] = [];
-            }
-            report.properties[line.property].coverage[file] =
-              Array.from(new Set([...report.properties[line.property].coverage[file], ...lines]));
-          }
-        }
       } else {
         report.properties[line.property].info.push({
           type: line.type,

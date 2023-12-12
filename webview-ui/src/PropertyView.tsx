@@ -36,7 +36,6 @@ const PropertyView = (props: PropertyViewProps) => {
       {pageView.state === "main" &&
         <ChartPane
           setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
-          coverage={testInfo.coverage}
           dataset={testInfo.samples}
           info={testInfo.info}
           features={features}

@@ -8,11 +8,11 @@ export const schemaTestCaseLine = z.object({
   status: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
   status_reason: z.string(),
   representation: z.string(),
-  arguments: z.any(),
+  arguments: z.any().optional(),
   how_generated: z.string().optional(),
   features: z.record(z.any()),
-  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info")]),
-  metadata: z.record(z.any()).optional(),
+  coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info"), z.null()]),
+  metadata: z.any()
 });
 
 export const schemaInfoLine = z.object({
@@ -68,12 +68,12 @@ export const schemaSampleInfo = z.object({
   item: z.string(),
   features: z.record(z.number()),
   bucketings: z.record(z.string()),
+  coverage: z.record(z.array(z.number())),
   metadata: z.any(),
 });
 
 export const schemaTestInfo = z.object({
   samples: z.array(schemaSampleInfo),
-  coverage: z.record(z.array(z.number())),
   info: z.array(z.object({ type: z.string(), title: z.string(), content: z.string() })),
 });
 

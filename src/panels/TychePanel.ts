@@ -11,7 +11,6 @@ export class TychePanel {
   public static currentPanel: TychePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
-  private _decorationTypes: vscode.TextEditorDecorationType[] = [];
   private _shouldShowCoverage: boolean = false;
 
   private constructor(panel: WebviewPanel, extensionUri: Uri) {
@@ -63,91 +62,6 @@ export class TychePanel {
     }
   }
 
-  /**
-   * Toggles coverage highlighting and re-renders coverage highlights.
-   */
-  public static toggleCoverage(dataManager: DataManager) {
-    if (!TychePanel.currentPanel) {
-      return;
-    }
-
-    let panel = TychePanel.currentPanel;
-    panel._shouldShowCoverage = !panel._shouldShowCoverage;
-    panel._decorateCoverage(dataManager.report);
-  }
-
-  /**
-   * Re-renders coverage highlights.
-   *
-   * Used when the user switches documents.
-   */
-  public static decorateCoverage(dataManager: DataManager) {
-    if (!TychePanel.currentPanel) {
-      return;
-    }
-
-    const panel = TychePanel.currentPanel;
-    panel._decorateCoverage(dataManager.report);
-  }
-
-  /**
-   * Decorates the current document with coverage highlighting, based on the stored report.
-   */
-  private _decorateCoverage(_report: Report) {
-    // TODO: Bring this back
-    // const report = dataManager.report;
-
-    // this._decorationTypes.forEach((decorationType) => {
-    //   decorationType.dispose();
-    // });
-    // this._decorationTypes = [];
-
-    // if (!this._shouldShowCoverage) {
-    //   return;
-    // }
-
-    // let infos: SuccessTestInfo[] =
-    //   Object.values(report.properties).filter((info) => info.outcome === "propertyPassed") as SuccessTestInfo[];
-
-    // if (infos.length === 0) {
-    //   return;
-    // }
-
-    // const hd = infos[0].coverage;
-    // const tl = infos.slice(1);
-
-    // const coverage = tl.reduce((acc, cur) => mergeCoverage(acc, cur.coverage), hd);
-
-    // const decorate = (editor: vscode.TextEditor, lines: number[], decorationType: vscode.TextEditorDecorationType) => {
-    //   editor.setDecorations(decorationType,
-    //     lines.map((line) => {
-    //       let range = new vscode.Range(new vscode.Position(line - 1, 0), new vscode.Position(line - 1, 0));
-    //       return { range };
-    //     })
-    //   );
-    // };
-
-    // const greenLineDecoration = window.createTextEditorDecorationType({
-    //   isWholeLine: true,
-    //   backgroundColor: "rgba(0, 255, 0, 0.1)",
-    // });
-
-    // const redLineDecoration = window.createTextEditorDecorationType({
-    //   isWholeLine: true,
-    //   backgroundColor: "rgba(255, 0, 0, 0.1)",
-    // });
-
-    // this._decorationTypes = [greenLineDecoration, redLineDecoration];
-
-    // window.visibleTextEditors.forEach((editor) => {
-    //   const p = editor.document.fileName;
-    //   if (p in coverage) {
-    //     decorate(editor, coverage[p].hitLines, greenLineDecoration);
-    //     decorate(editor, coverage[p].missedLines, redLineDecoration);
-    //   }
-    // });
-    return;
-  }
 
   /**
    * Gets the HTML content of the Tyche panel. (Provided by VSCode example.)
