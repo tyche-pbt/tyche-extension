@@ -16,8 +16,20 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
     duplicates: props.dataset.length - unique,
   }];
 
+  const heuristicAlert = (() => {
+    if (unique / props.dataset.length < 0.66) {
+      return <span className="tooltip">
+        <i className="codicon codicon-alert icon-yellow tooltip" style={{ marginRight: "4px" }}></i>
+        <div className="tooltip-text">
+          This property has a high ratio of duplicate samples.
+        </div>
+      </span>
+    }
+  })();
+
   return <div className="HighLevelStats">
-    Categorized by <code>unique</code><Drawer open>
+    {heuristicAlert} Categorized by <code>unique</code>
+    <Drawer open>
       <ResponsiveContainer width="100%" height={120}>
         <BarChart
           width={800}
