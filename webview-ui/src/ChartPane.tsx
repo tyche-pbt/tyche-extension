@@ -44,7 +44,7 @@ export const ChartPane = (props: ChartPaneProps) => {
         <div key={`info-${i}`}>
           <VSCodeDivider />
           <div style={{ margin: "10px 0" }}>
-            <i className="codicon codicon-info icon-blue"></i> {x.title}
+            <i className="codicon codicon-info icon-blue" style={{ marginRight: "4px" }}></i> {x.title}
             <Drawer>
               <Markdown>{x.content}</Markdown>
             </Drawer>
