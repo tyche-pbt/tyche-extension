@@ -73,9 +73,17 @@ export function activate(context: ExtensionContext) {
     });
   }));
 
+  let lastStamp: { [key: string]: number } = {};
+
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
-    workspace.createFileSystemWatcher(glob).onDidChange((e) => {
-      visualizeGlob(glob, context);
+    workspace.createFileSystemWatcher(glob).onDidChange(() => {
+      const changeStamp = Date.now();
+      lastStamp[glob] = changeStamp;
+      setTimeout(() => {
+        if (lastStamp[glob] === changeStamp) {
+          visualizeGlob(glob, context);
+        }
+      }, 600);
     });
   });
 
