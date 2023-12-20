@@ -1,4 +1,8 @@
-import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
+import {
+  VSCodePanelTab,
+  VSCodePanelView,
+  VSCodePanels
+} from "@vscode/webview-ui-toolkit/react";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { useState } from "react";
 import { ChartPane } from "./ChartPane";
@@ -9,15 +13,17 @@ type PropertyViewProps = {
   testInfo: TestInfo;
 };
 
-type PageState = ExampleFilter | undefined;
-
 const PropertyView = (props: PropertyViewProps) => {
-  const [state, setState] = useState<PageState>(undefined);
+  const [filter, setFilter] = useState<ExampleFilter | undefined>(undefined);
 
   const { testInfo, property } = props;
 
-  const numerical = testInfo.samples.map(sample => Object.keys(sample.features.numerical)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
-  const categorical = testInfo.samples.map(sample => Object.keys(sample.features.categorical)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const numerical = testInfo.samples
+    .map(sample => Object.keys(sample.features.numerical))
+    .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const categorical = testInfo.samples
+    .map(sample => Object.keys(sample.features.categorical))
+    .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return (
     <div className="PropertyView w-full">
@@ -29,19 +35,19 @@ const PropertyView = (props: PropertyViewProps) => {
           All Examples
         </VSCodePanelTab>
         {
-          state &&
+          filter &&
           <VSCodePanelTab id="filtered-examples">
-            Filtered: &nbsp;<code>{"numerical" in state ? state.numerical : state.categorical} = {state.value}</code>
+            Filtered: &nbsp;<code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code>
             <i
               className="codicon codicon-close ml-2"
-              onClick={() => setState(undefined)}
+              onClick={() => setFilter(undefined)}
             />
           </VSCodePanelTab>
         }
 
         <VSCodePanelView id="main" className="w-full">
           <ChartPane
-            setFilteredView={(f) => setState(f)}
+            setFilteredView={(f) => setFilter(f)}
             dataset={testInfo.samples}
             info={testInfo.info}
             features={{ numerical, categorical }}
@@ -52,9 +58,9 @@ const PropertyView = (props: PropertyViewProps) => {
           <ExampleView dataset={testInfo.samples} />
         </VSCodePanelView>
         {
-          state &&
+          filter &&
           <VSCodePanelView id="filtered-examples">
-            <ExampleView dataset={testInfo.samples} filter={state} />
+            <ExampleView dataset={testInfo.samples} filter={filter} />
           </VSCodePanelView>
         }
       </VSCodePanels>
