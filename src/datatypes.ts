@@ -80,6 +80,7 @@ export const schemaTestInfo = z.object({
 });
 
 export const schemaReport = z.object({
+  timestamp: z.number(),
   properties: z.record(schemaTestInfo),
 });
 

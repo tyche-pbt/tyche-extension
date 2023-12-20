@@ -58,6 +58,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <div className="text-xs text-right mr-1">{new Date(state.report.timestamp * 1000).toLocaleString()}</div>
       <VSCodePanels className="w-full">
         {
           keys.map((propertyName: string, index: number) =>

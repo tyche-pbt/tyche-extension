@@ -36,9 +36,14 @@ export class DataManager {
 
   private static _buildReport(data: DataLine[]): Report {
     const report: Report = {
+      timestamp: 0,
       properties: {},
     };
     for (const line of data) {
+      if (report.timestamp === 0) {
+        report.timestamp = line.run_start;
+      }
+
       if (!(line.property in report.properties)) {
         report.properties[line.property] = { samples: [], info: [] };
       }
