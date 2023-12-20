@@ -1,4 +1,4 @@
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { useState } from "react";
 import { ChartPane } from "./ChartPane";
@@ -9,13 +9,10 @@ type PropertyViewProps = {
   testInfo: TestInfo;
 };
 
-type PageState =
-  { state: "main" }
-  | { state: "examples" }
-  | { state: "filtered", exampleFilter: ExampleFilter };
+type PageState = ExampleFilter[];
 
 const PropertyView = (props: PropertyViewProps) => {
-  const [pageView, setPageView] = useState<PageState>({ state: "main" });
+  const [pageView, setPageView] = useState<PageState>([]);
 
   const { testInfo, property } = props;
 
@@ -24,25 +21,50 @@ const PropertyView = (props: PropertyViewProps) => {
 
   return (
     <div className="PropertyView w-full">
-      <div className="absolute top-1 right-1">
-        <VSCodeButton
-          onClick={() => pageView.state === "main" ? setPageView({ state: "examples" }) : setPageView({ state: "main" })}
-        >
-          {pageView.state === "main" ? <i className="codicon codicon-list-ordered" /> : <i className="codicon codicon-graph" />}
-        </VSCodeButton>
-      </div>
+      <VSCodePanels className="w-full">
+        <VSCodePanelTab id="main">
+          Charts
+        </VSCodePanelTab>
+        <VSCodePanelTab id="examples">
+          All Examples
+        </VSCodePanelTab>
+        {
+          pageView.map((f, i) =>
+            <VSCodePanelTab id={`examples-${i}`} key={`examples-${i}`}>
+              <code>{"feature" in f ? f.feature : f.bucketing} = {f.value}</code>
+              <i
+                className="codicon codicon-close ml-2"
+                onClick={() => setPageView(pageView.filter((g) =>
+                  JSON.stringify(f) !== JSON.stringify(g)
+                ))}
+              />
+            </VSCodePanelTab>)
+        }
 
-      {pageView.state === "main" &&
-        <ChartPane
-          setFilteredView={(f) => setPageView({ state: "filtered", exampleFilter: f })}
-          dataset={testInfo.samples}
-          info={testInfo.info}
-          features={features}
-          bucketings={bucketings}
-          property={property}
-        />}
-      {pageView.state === "examples" && <ExampleView dataset={testInfo.samples} />}
-      {pageView.state === "filtered" && <ExampleView dataset={testInfo.samples} filter={pageView.exampleFilter} />}
+        <VSCodePanelView id="main" className="w-full">
+          <ChartPane
+            setFilteredView={(f) => {
+              if (pageView.find((g) => JSON.stringify(f) === JSON.stringify(g)) === undefined) {
+                setPageView([...pageView, f]);
+              }
+            }}
+            dataset={testInfo.samples}
+            info={testInfo.info}
+            features={features}
+            bucketings={bucketings}
+            property={property}
+          />
+        </VSCodePanelView>
+        <VSCodePanelView id="examples" className="w-full">
+          <ExampleView dataset={testInfo.samples} />
+        </VSCodePanelView>
+        {
+          pageView.map((f, i) =>
+            <VSCodePanelView id={`examples-${i}`} key={`examples-${i}`} >
+              <ExampleView dataset={testInfo.samples} filter={f} />
+            </VSCodePanelView>)
+        }
+      </VSCodePanels>
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
-import { VSCodeButton, VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import { PrettyExample } from "./PrettyExample";
 import { useState } from "react";
+import { Divider } from "./Divider";
 
 type ExampleViewProps = {
   dataset: SampleInfo[];
@@ -26,9 +27,9 @@ export const ExampleView = (props: ExampleViewProps) => {
     {filter &&
       <>
         <em>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></em>
-        <VSCodeDivider className="mb-4" />
+        <Divider />
       </>}
-    {dataset.slice(page, page + PAGE_LEN).flatMap((x, i) => [<VSCodeDivider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}
+    {dataset.slice(page, page + PAGE_LEN).flatMap((x, i) => [<Divider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}
     <div className="fixed bottom-1 right-1">
       <VSCodeButton onClick={() => setPage(page < PAGE_LEN ? dataset.length - PAGE_LEN : page - PAGE_LEN)}>
         <i className="codicon codicon-triangle-left"></i>

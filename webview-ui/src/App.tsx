@@ -11,8 +11,6 @@ type LoadDataCommand = {
   report: Report;
 };
 
-type AppProps = {};
-
 type AppState = {
   state: "loading"
 } | {
@@ -20,7 +18,7 @@ type AppState = {
   report: Report;
 };
 
-const App = (_props: AppProps) => {
+const App = () => {
   // const [state, setState] = useState<AppState>({ state: "loading" });
   const [state, setState] = useState<AppState>({ state: "ready", report: require("./report.json") });
 
