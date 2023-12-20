@@ -23,7 +23,7 @@ export const ExampleView = (props: ExampleViewProps) => {
     )
     : props.dataset;
 
-  return (<div className="ExampleView">
+  return <div className="ExampleView w-full">
     {filter &&
       <>
         <em>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></em>
@@ -38,5 +38,5 @@ export const ExampleView = (props: ExampleViewProps) => {
         <i className="codicon codicon-triangle-right"></i>
       </VSCodeButton>
     </div>
-  </div>);
+  </div>;
 };

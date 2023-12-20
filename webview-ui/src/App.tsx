@@ -69,7 +69,7 @@ const App = () => {
         {
           keys.map((propertyName: string, index: number) => {
             const testInfo = state.report.properties[propertyName];
-            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} className="w-full">
+            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} className="w-full p-0">
               <PropertyView testInfo={testInfo} property={propertyName} />
             </VSCodePanelView>;
           })

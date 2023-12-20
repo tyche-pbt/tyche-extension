@@ -9,10 +9,10 @@ type PropertyViewProps = {
   testInfo: TestInfo;
 };
 
-type PageState = ExampleFilter[];
+type PageState = ExampleFilter | undefined;
 
 const PropertyView = (props: PropertyViewProps) => {
-  const [pageView, setPageView] = useState<PageState>([]);
+  const [state, setState] = useState<PageState>(undefined);
 
   const { testInfo, property } = props;
 
@@ -29,25 +29,19 @@ const PropertyView = (props: PropertyViewProps) => {
           All Examples
         </VSCodePanelTab>
         {
-          pageView.map((f, i) =>
-            <VSCodePanelTab id={`examples-${i}`} key={`examples-${i}`}>
-              <code>{"feature" in f ? f.feature : f.bucketing} = {f.value}</code>
-              <i
-                className="codicon codicon-close ml-2"
-                onClick={() => setPageView(pageView.filter((g) =>
-                  JSON.stringify(f) !== JSON.stringify(g)
-                ))}
-              />
-            </VSCodePanelTab>)
+          state &&
+          <VSCodePanelTab id="filtered-examples">
+            Filtered: &nbsp;<code>{"feature" in state ? state.feature : state.bucketing} = {state.value}</code>
+            <i
+              className="codicon codicon-close ml-2"
+              onClick={() => setState(undefined)}
+            />
+          </VSCodePanelTab>
         }
 
         <VSCodePanelView id="main" className="w-full">
           <ChartPane
-            setFilteredView={(f) => {
-              if (pageView.find((g) => JSON.stringify(f) === JSON.stringify(g)) === undefined) {
-                setPageView([...pageView, f]);
-              }
-            }}
+            setFilteredView={(f) => setState(f)}
             dataset={testInfo.samples}
             info={testInfo.info}
             features={features}
@@ -59,10 +53,9 @@ const PropertyView = (props: PropertyViewProps) => {
           <ExampleView dataset={testInfo.samples} />
         </VSCodePanelView>
         {
-          pageView.map((f, i) =>
-            <VSCodePanelView id={`examples-${i}`} key={`examples-${i}`} >
-              <ExampleView dataset={testInfo.samples} filter={f} />
-            </VSCodePanelView>)
+          <VSCodePanelView id="filtered-examples">
+            <ExampleView dataset={testInfo.samples} filter={state} />
+          </VSCodePanelView>
         }
       </VSCodePanels>
     </div>
