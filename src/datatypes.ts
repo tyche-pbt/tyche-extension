@@ -66,8 +66,10 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
 export const schemaSampleInfo = z.object({
   outcome: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
   item: z.string(),
-  features: z.record(z.number()),
-  bucketings: z.record(z.string()),
+  features: z.object({
+    numerical: z.record(z.number()),
+    categorical: z.record(z.string()),
+  }),
   coverage: z.record(z.array(z.number())),
   metadata: z.any(),
 });
@@ -88,9 +90,9 @@ export type TestInfo = z.infer<typeof schemaTestInfo>;
 export type Report = z.infer<typeof schemaReport>;
 
 export type ExampleFilter = {
-  feature: string;
+  numerical: string;
   value: number;
 } | {
-  bucketing: string,
+  categorical: string,
   value: string
 };

@@ -11,27 +11,27 @@ import { SampleInfo } from "../../src/datatypes";
 import { Drawer } from "./Drawer";
 
 type BucketChartProps = {
-  bucketing: string;
+  feature: string;
   dataset: SampleInfo[];
   viewValue: (v: string) => void;
 };
 
 export const BucketChart = (props: BucketChartProps) => {
-  const buckets = Array.from(new Set(props.dataset.map((x) => x.bucketings[props.bucketing])));
+  const buckets = Array.from(new Set(props.dataset.map((x) => x.features.categorical[props.feature])));
 
   const bucketMap = Object.fromEntries(buckets.map(
     (bucket) => ([
       `${bucket}`,
-      props.dataset.filter((y) => y.bucketings[props.bucketing] === bucket).length,
+      props.dataset.filter((y) => y.features.categorical[props.feature] === bucket).length,
     ])));
 
   const bucketedData = [{
-    name: props.bucketing,
+    name: props.feature,
     ...bucketMap,
   }];
 
   const heuristicAlert = (() => {
-    if (props.bucketing === "outcome" && bucketMap["failed"] > 0) {
+    if (props.feature === "outcome" && bucketMap["failed"] > 0) {
       return <span className="tooltip">
         <i className="codicon codicon-error tooltip mr-1"></i>
         <div className="tooltip-text">
@@ -39,7 +39,7 @@ export const BucketChart = (props: BucketChartProps) => {
         </div>
       </span>
     }
-    if (props.bucketing === "outcome" && (bucketMap["gave_up"] / props.dataset.length) > 0.33) {
+    if (props.feature === "outcome" && (bucketMap["gave_up"] / props.dataset.length) > 0.33) {
       return <span className="tooltip">
         <i className="codicon codicon-alert tooltip mr-1"></i>
         <div className="tooltip-text">
@@ -71,7 +71,7 @@ export const BucketChart = (props: BucketChartProps) => {
 
   return <div className="BucketChart">
     {heuristicAlert}
-    Categorized by <code>{props.bucketing}</code>
+    Categorized by <code>{props.feature}</code>
     <Drawer open>
       <ResponsiveContainer width="100%" height={120}>
         <BarChart

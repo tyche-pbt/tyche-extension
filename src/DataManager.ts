@@ -47,10 +47,12 @@ export class DataManager {
         report.properties[line.property].samples.push({
           outcome: line.status,
           item: line.representation.toString(),
-          features: filterObject(line.features, v => typeof v === "number"),
-          bucketings: {
-            outcome: line.status, // NOTE: This adds the outcomes to the buckets
-            ...filterObject(line.features, v => typeof v === "string")
+          features: {
+            numerical: filterObject(line.features, v => typeof v === "number"),
+            categorical: {
+              outcome: line.status, // NOTE: This adds the outcomes to the buckets
+              ...filterObject(line.features, v => typeof v === "string")
+            }
           },
           coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
           metadata: { howGenerated: line.how_generated, metadata: line.metadata },

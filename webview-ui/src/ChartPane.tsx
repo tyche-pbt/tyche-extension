@@ -11,28 +11,30 @@ type ChartPaneProps = {
   property: string;
   dataset: SampleInfo[];
   info: { type: string, title: string, content: string }[];
-  features: string[];
-  bucketings: string[];
+  features: {
+    numerical: string[];
+    categorical: string[];
+  };
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
 
 export const ChartPane = (props: ChartPaneProps) => {
-  const { dataset, features, bucketings, property, info } = props;
+  const { dataset, features, property, info } = props;
 
   const pageElements =
-    [...bucketings.map((x) =>
+    [...features.categorical.map((x) =>
       <BucketChart
         key={`bucket-${x}`}
-        bucketing={x}
+        feature={x}
         dataset={dataset}
-        viewValue={(value) => props.setFilteredView({ bucketing: x, value })} />),
-    ...features.flatMap((x) =>
+        viewValue={(value) => props.setFilteredView({ categorical: x, value })} />),
+    ...features.numerical.flatMap((x) =>
       [
         <FeatureChart
           key={`feature-${x}`}
           feature={x}
           dataset={dataset}
-          viewValue={(value) => props.setFilteredView({ feature: x, value })}
+          viewValue={(value) => props.setFilteredView({ numerical: x, value })}
         />,
       ]),
     ]

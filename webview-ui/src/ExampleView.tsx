@@ -12,14 +12,14 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   const dataset = filter
     ? props.dataset.filter((x) =>
-      ("feature" in filter && x.features[filter.feature] === filter.value) ||
-      ("bucketing" in filter && x.bucketings[filter.bucketing] === filter.value)
+      ("numerical" in filter && x.features.numerical[filter.numerical] === filter.value) ||
+      ("categorical" in filter && x.features.categorical[filter.categorical] === filter.value)
     )
     : props.dataset;
 
   return <div className="ExampleView w-full h-lvh overflow-scroll">
     {filter
-      ? <>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></>
+      ? <>Examples where <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
       : <>All Examples</>
     } ({dataset.length})
     {dataset.map((x, i) => [<Divider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}

@@ -16,8 +16,8 @@ const PropertyView = (props: PropertyViewProps) => {
 
   const { testInfo, property } = props;
 
-  const features = testInfo.samples.map(sample => Object.keys(sample.features)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
-  const bucketings = testInfo.samples.map(sample => Object.keys(sample.bucketings)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const numerical = testInfo.samples.map(sample => Object.keys(sample.features.numerical)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const categorical = testInfo.samples.map(sample => Object.keys(sample.features.categorical)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return (
     <div className="PropertyView w-full">
@@ -31,7 +31,7 @@ const PropertyView = (props: PropertyViewProps) => {
         {
           state &&
           <VSCodePanelTab id="filtered-examples">
-            Filtered: &nbsp;<code>{"feature" in state ? state.feature : state.bucketing} = {state.value}</code>
+            Filtered: &nbsp;<code>{"numerical" in state ? state.numerical : state.categorical} = {state.value}</code>
             <i
               className="codicon codicon-close ml-2"
               onClick={() => setState(undefined)}
@@ -44,8 +44,7 @@ const PropertyView = (props: PropertyViewProps) => {
             setFilteredView={(f) => setState(f)}
             dataset={testInfo.samples}
             info={testInfo.info}
-            features={features}
-            bucketings={bucketings}
+            features={{ numerical, categorical }}
             property={property}
           />
         </VSCodePanelView>
