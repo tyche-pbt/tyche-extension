@@ -19,7 +19,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
   const heuristicAlert = (() => {
     if (unique / props.dataset.length < 0.66) {
       return <span className="tooltip">
-        <i className="codicon codicon-alert icon-yellow tooltip" style={{ marginRight: "4px" }}></i>
+        <i className="codicon codicon-alert tooltip mr-1"></i>
         <div className="tooltip-text">
           This property has a high ratio of duplicate samples.
         </div>

@@ -26,10 +26,10 @@ export const ExampleView = (props: ExampleViewProps) => {
     {filter &&
       <>
         <em>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></em>
-        <VSCodeDivider style={{ marginBottom: "20px" }} />
+        <VSCodeDivider className="mb-4" />
       </>}
     {dataset.slice(page, page + PAGE_LEN).flatMap((x, i) => [<VSCodeDivider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}
-    <div className="page-buttons">
+    <div className="fixed bottom-1 right-1">
       <VSCodeButton onClick={() => setPage(page < PAGE_LEN ? dataset.length - PAGE_LEN : page - PAGE_LEN)}>
         <i className="codicon codicon-triangle-left"></i>
       </VSCodeButton>

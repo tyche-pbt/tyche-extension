@@ -12,12 +12,12 @@ export const Drawer = (props: DrawerProps) => {
 
   if (drawerState === "closed") {
     return <span onClick={() => setDrawerState("open")}>
-      &nbsp;<i className="codicon codicon-chevron-right icon-click" />
+      &nbsp;<i className="codicon codicon-chevron-right cursor-pointer" />
     </span>;
   } else {
     return <>
       <span onClick={() => setDrawerState("closed")}>
-        &nbsp;<i className="codicon codicon-chevron-down icon-click" />
+        &nbsp;<i className="codicon codicon-chevron-down cursor-pointer" />
       </span>
       {props.children}
     </>;

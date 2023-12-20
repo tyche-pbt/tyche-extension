@@ -33,7 +33,7 @@ export const BucketChart = (props: BucketChartProps) => {
   const heuristicAlert = (() => {
     if (props.bucketing === "outcome" && bucketMap["failed"] > 0) {
       return <span className="tooltip">
-        <i className="codicon codicon-error icon-red tooltip" style={{ marginRight: "4px" }}></i>
+        <i className="codicon codicon-error tooltip mr-1"></i>
         <div className="tooltip-text">
           This property has at least one <code>failed</code> sample.
         </div>
@@ -41,7 +41,7 @@ export const BucketChart = (props: BucketChartProps) => {
     }
     if (props.bucketing === "outcome" && (bucketMap["gave_up"] / props.dataset.length) > 0.33) {
       return <span className="tooltip">
-        <i className="codicon codicon-alert icon-yellow tooltip" style={{ marginRight: "4px" }}></i>
+        <i className="codicon codicon-alert tooltip mr-1"></i>
         <div className="tooltip-text">
           This property has a high ratio of <code>gave_up</code> samples.
         </div>

@@ -21,8 +21,8 @@ type AppState = {
 };
 
 const App = (_props: AppProps) => {
-  const [state, setState] = useState<AppState>({ state: "loading" });
-  // const [state, setState] = useState<AppState>({ state: "ready", report: require("./report.json") });
+  // const [state, setState] = useState<AppState>({ state: "loading" });
+  const [state, setState] = useState<AppState>({ state: "ready", report: require("./report.json") });
 
   const loadData = (command: LoadDataCommand) => {
     setState({
@@ -51,8 +51,8 @@ const App = (_props: AppProps) => {
   });
 
   if (state.state === "loading") {
-    return <div className="App">
-      <VSCodeProgressRing style={{ margin: "100px auto" }} />
+    return <div className="App w-full m-0 p-0 relative">
+      <VSCodeProgressRing className="mt-64 my-auto" />
     </div>;
   }
 
@@ -60,7 +60,7 @@ const App = (_props: AppProps) => {
 
   return (
     <div className="App">
-      <VSCodePanels style={{ width: "100%" }}>
+      <VSCodePanels className="w-full">
         {
           keys.map((propertyName: string, index: number) =>
             <VSCodePanelTab key={`tab-${index}`} id={`tab-${index}`}>
@@ -71,7 +71,7 @@ const App = (_props: AppProps) => {
         {
           keys.map((propertyName: string, index: number) => {
             const testInfo = state.report.properties[propertyName];
-            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} style={{ width: "100%" }}>
+            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} className="w-full">
               <PropertyView testInfo={testInfo} property={propertyName} />
             </VSCodePanelView>;
           })

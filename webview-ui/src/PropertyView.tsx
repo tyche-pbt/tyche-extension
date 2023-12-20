@@ -23,10 +23,9 @@ const PropertyView = (props: PropertyViewProps) => {
   const bucketings = testInfo.samples.map(sample => Object.keys(sample.bucketings)).reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return (
-    <div className="PropertyView">
-      <div className="top-buttons">
+    <div className="PropertyView w-full">
+      <div className="absolute top-1 right-1">
         <VSCodeButton
-          style={{ marginRight: "10px" }}
           onClick={() => pageView.state === "main" ? setPageView({ state: "examples" }) : setPageView({ state: "main" })}
         >
           {pageView.state === "main" ? <i className="codicon codicon-list-ordered" /> : <i className="codicon codicon-graph" />}
