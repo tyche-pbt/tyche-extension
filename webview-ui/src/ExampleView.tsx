@@ -19,9 +19,9 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   return <div className="ExampleView w-full h-lvh overflow-scroll">
     {filter
-      ? <em>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></em>
-      : <em>All Examples</em>
-    }
+      ? <>Examples where <code>{"feature" in filter ? filter.feature : filter.bucketing} = {filter.value}</code></>
+      : <>All Examples</>
+    } ({dataset.length})
     {dataset.map((x, i) => [<Divider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}
   </div>;
 };
