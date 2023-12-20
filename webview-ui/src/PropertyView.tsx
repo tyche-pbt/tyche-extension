@@ -53,6 +53,7 @@ const PropertyView = (props: PropertyViewProps) => {
           <ExampleView dataset={testInfo.samples} />
         </VSCodePanelView>
         {
+          state &&
           <VSCodePanelView id="filtered-examples">
             <ExampleView dataset={testInfo.samples} filter={state} />
           </VSCodePanelView>

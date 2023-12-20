@@ -11,8 +11,8 @@ export const PrettyExample = (props: PrettyExampleProps) => {
       {props.example.item}
     </pre>
     <div className="my-2 mx-0 w-full">
-      See more <Drawer>
-        <pre>{JSON.stringify(props.example.metadata, null, 2)}</pre>
+      Details <Drawer>
+        <pre className="w-full break-words whitespace-pre-wrap">{JSON.stringify(props.example.metadata, null, 2)}</pre>
       </Drawer>
     </div>
   </div>;
