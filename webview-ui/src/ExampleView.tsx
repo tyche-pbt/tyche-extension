@@ -17,7 +17,7 @@ export const ExampleView = (props: ExampleViewProps) => {
     )
     : props.dataset;
 
-  return <div className="ExampleView w-full h-lvh overflow-scroll">
+  return <div className="ExampleView w-full">
     {filter
       ? <>Examples where <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
       : <>All Examples</>

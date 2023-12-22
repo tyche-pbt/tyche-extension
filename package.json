@@ -72,6 +72,7 @@
     "vscode-test": "^1.5.0"
   },
   "dependencies": {
+    "@headlessui/tailwindcss": "^0.2.0",
     "@vscode/codicons": "^0.0.35",
     "path": "^0.12.7",
     "react": "^18.2.0",

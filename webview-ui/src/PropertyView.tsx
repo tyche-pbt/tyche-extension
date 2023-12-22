@@ -1,12 +1,8 @@
-import {
-  VSCodePanelTab,
-  VSCodePanelView,
-  VSCodePanels
-} from "@vscode/webview-ui-toolkit/react";
 import { ExampleFilter, TestInfo } from "../../src/datatypes";
 import { useState } from "react";
 import { ChartPane } from "./ChartPane";
 import { ExampleView } from "./ExampleView";
+import { Tab } from "@headlessui/react";
 
 type PropertyViewProps = {
   property: string;
@@ -27,43 +23,48 @@ const PropertyView = (props: PropertyViewProps) => {
 
   return (
     <div className="PropertyView w-full">
-      <VSCodePanels className="w-full">
-        <VSCodePanelTab id="main">
-          Charts
-        </VSCodePanelTab>
-        <VSCodePanelTab id="examples">
-          All Examples
-        </VSCodePanelTab>
-        {
-          filter &&
-          <VSCodePanelTab id="filtered-examples">
-            Filtered: &nbsp;<code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code>
-            <i
-              className="codicon codicon-close ml-2"
-              onClick={() => setFilter(undefined)}
-            />
-          </VSCodePanelTab>
-        }
+      <Tab.Group>
+        <Tab.List>
 
-        <VSCodePanelView id="main" className="w-full">
-          <ChartPane
-            setFilteredView={(f) => setFilter(f)}
-            dataset={testInfo.samples}
-            info={testInfo.info}
-            features={{ numerical, categorical }}
-            property={property}
-          />
-        </VSCodePanelView>
-        <VSCodePanelView id="examples" className="w-full">
-          <ExampleView dataset={testInfo.samples} />
-        </VSCodePanelView>
-        {
-          filter &&
-          <VSCodePanelView id="filtered-examples">
-            <ExampleView dataset={testInfo.samples} filter={filter} />
-          </VSCodePanelView>
-        }
-      </VSCodePanels>
+          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+            Charts
+          </Tab>
+          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+            All Examples
+          </Tab>
+          {
+            filter &&
+            <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+              Filtered: &nbsp;<code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code>
+              <i
+                className="codicon codicon-close ml-2"
+                onClick={() => setFilter(undefined)}
+              />
+            </Tab>
+          }
+        </Tab.List>
+
+        <Tab.Panels>
+          <Tab.Panel className="w-full">
+            <ChartPane
+              setFilteredView={(f) => setFilter(f)}
+              dataset={testInfo.samples}
+              info={testInfo.info}
+              features={{ numerical, categorical }}
+              property={property}
+            />
+          </Tab.Panel>
+          <Tab.Panel>
+            <ExampleView dataset={testInfo.samples} />
+          </Tab.Panel>
+          {
+            filter &&
+            <Tab.Panel>
+              <ExampleView dataset={testInfo.samples} filter={filter} />
+            </Tab.Panel>
+          }
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   );
 };

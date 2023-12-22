@@ -3,9 +3,10 @@ import "./App.scss";
 import { Report } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
-import { VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react";
 
 import PropertyView from "./PropertyView";
+import Overview from "./Overview";
 
 type LoadDataCommand = {
   report: Report;
@@ -14,17 +15,21 @@ type LoadDataCommand = {
 type AppState = {
   state: "loading"
 } | {
-  state: "ready";
+  state: "overview";
   report: Report;
+} | {
+  state: "selected";
+  report: Report;
+  property: string;
 };
 
 const App = () => {
   // const [state, setState] = useState<AppState>({ state: "loading" });
-  const [state, setState] = useState<AppState>({ state: "ready", report: require("./report.json") });
+  const [state, setState] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_valid" });
 
   const loadData = (command: LoadDataCommand) => {
     setState({
-      state: "ready",
+      state: "overview",
       report: command.report,
     });
   };
@@ -54,29 +59,27 @@ const App = () => {
     </div>;
   }
 
-  const keys = Object.keys(state.report.properties).sort();
-
   return (
     <div className="App">
-      <div className="text-xs text-right mr-1">{new Date(state.report.timestamp * 1000).toLocaleString()}</div>
-      <VSCodePanels className="w-full">
-        {
-          keys.map((propertyName: string, index: number) =>
-            <VSCodePanelTab key={`tab-${index}`} id={`tab-${index}`}>
-              {propertyName}
-            </VSCodePanelTab>
-          )
+      <div className="fixed top-0 right-0 left-0 bg-slate-500 p-1 h-10 flex justify-between items-center">
+        {state.state === "selected" ?
+          <button onClick={() => setState({ state: "overview", report: state.report })}>
+            <i className="codicon codicon-arrow-left text-white" />
+          </button> :
+          <div></div>
         }
-        {
-          keys.map((propertyName: string, index: number) => {
-            const testInfo = state.report.properties[propertyName];
-            return <VSCodePanelView key={`view-${index}`} id={`view-${index}`} className="w-full p-0">
-              <PropertyView testInfo={testInfo} property={propertyName} />
-            </VSCodePanelView>;
-          })
+        <span className="text-sm text-white">
+          {new Date(state.report.timestamp * 1000).toLocaleString()}
+        </span>
+      </div>
+      <div className="p-1 mt-10">
+        {state.state === "overview" &&
+          <Overview report={state.report} selectProperty={(property) => setState({ state: "selected", report: state.report, property })} />}
+        {state.state === "selected" &&
+          <PropertyView testInfo={state.report.properties[state.property]} property={state.property} />
         }
-      </VSCodePanels>
-    </div>
+      </div>
+    </div >
   );
 }
 
