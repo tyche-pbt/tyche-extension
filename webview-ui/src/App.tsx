@@ -25,7 +25,7 @@ type AppState = {
 
 const App = () => {
   // const [state, setState] = useState<AppState>({ state: "loading" });
-  const [state, setState] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_valid" });
+  const [state, setState] = useState<AppState>({ state: "overview", report: require("./report.json") }); //, property: "bst_tests.py::test_insert_valid" });
 
   const loadData = (command: LoadDataCommand) => {
     setState({
@@ -61,7 +61,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="fixed top-0 right-0 left-0 bg-slate-500 p-1 h-10 flex justify-between items-center">
+      <div className="fixed top-0 right-0 left-0 bg-slate-500 py-2 px-3 h-10 flex justify-between items-center">
         {state.state === "selected" ?
           <button onClick={() => setState({ state: "overview", report: state.report })}>
             <i className="codicon codicon-arrow-left text-white" />
@@ -69,7 +69,7 @@ const App = () => {
           <div></div>
         }
         <span className="text-sm text-white">
-          {new Date(state.report.timestamp * 1000).toLocaleString()}
+          Run: {new Date(state.report.timestamp * 1000).toLocaleString()}
         </span>
       </div>
       <div className="p-1 mt-10">

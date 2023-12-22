@@ -45,10 +45,13 @@ export class DataManager {
       }
 
       if (!(line.property in report.properties)) {
-        report.properties[line.property] = { samples: [], info: [] };
+        report.properties[line.property] = { status: "success", samples: [], info: [] };
       }
 
       if (line.type === "test_case") {
+        if (line.status === "failed") {
+          report.properties[line.property].status = "failure";
+        }
         report.properties[line.property].samples.push({
           outcome: line.status,
           item: line.representation.toString(),

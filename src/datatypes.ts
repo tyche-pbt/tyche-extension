@@ -75,6 +75,7 @@ export const schemaSampleInfo = z.object({
 });
 
 export const schemaTestInfo = z.object({
+  status: z.union([z.literal("success"), z.literal("warning"), z.literal("failure")]),
   samples: z.array(schemaSampleInfo),
   info: z.array(z.object({ type: z.string(), title: z.string(), content: z.string() })),
 });
