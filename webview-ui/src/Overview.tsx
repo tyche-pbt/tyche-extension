@@ -12,13 +12,13 @@ const Overview = (props: OverviewProps) => {
         {
           Object.keys(props.report.properties).map((property) =>
             <tr
-              className="hover:bg-gray-200 cursor-pointer"
+              className="hover:bg-foreground hover:text-background cursor-pointer"
               onClick={() => props.selectProperty(property)}
               key={property}>
-              <td>
+              <td className="pl-2">
                 {property}
               </td>
-              <td>
+              <td className="text-right pr-2">
                 {props.report.properties[property].status === "failure"
                   ? <i className="codicon codicon-x" />
                   : <i className="codicon codicon-check" />

@@ -26,15 +26,15 @@ const PropertyView = (props: PropertyViewProps) => {
       <Tab.Group>
         <Tab.List>
 
-          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+          <Tab className="px-2 py-1 mr-2 border rounded  ui-selected:border-primary hover:bg-primary hover:text-background" >
             Charts
           </Tab>
-          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:border-primary hover:bg-primary hover:text-background" >
             All Examples
           </Tab>
           {
             filter &&
-            <Tab className="px-2 py-1 mr-2 border rounded ui-selected:text-blue-500 ui-selected:border-blue-500 hover:bg-slate-300" >
+            <Tab className="px-2 py-1 mr-2 border rounded  ui-selected:border-primary hover:bg-primary hover:text-background" >
               Filtered: &nbsp;<code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code>
               <i
                 className="codicon codicon-close ml-2"

@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply bg-background text-foreground;
+}
+
 .codicon {
-  vertical-align: text-bottom;
+  @apply align-middle h-5;
 }
 
 .markdown {
@@ -21,7 +25,7 @@
   }
 
   a {
-    @apply text-blue-400;
+    @apply text-accent;
   }
 
   ul {
@@ -43,7 +47,7 @@
   }
 
   blockquote {
-    @apply my-1 mx-2 text-gray-600;
+    @apply my-1 mx-2;
   }
 
 }

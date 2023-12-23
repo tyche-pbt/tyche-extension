@@ -1,6 +1,7 @@
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { SampleInfo } from "../../src/datatypes";
 import { Drawer } from "./Drawer";
+import { THEME_COLORS } from "./colors";
 
 type HighLevelStatsProps = {
   property: string;
@@ -18,12 +19,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
 
   const heuristicAlert = (() => {
     if (unique / props.dataset.length < 0.66) {
-      return <span className="tooltip">
-        <i className="codicon codicon-alert tooltip mr-1"></i>
-        <div className="tooltip-text">
-          This property has a high ratio of duplicate samples.
-        </div>
-      </span>
+      return <i className="codicon codicon-alert text-warning mr-1" />;
     }
   })();
 
@@ -45,12 +41,12 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
           <Bar
             dataKey="unique"
             stackId="a"
-            fill="#D08770"
+            fill={THEME_COLORS.success}
           />
           <Bar
             dataKey="duplicates"
             stackId="a"
-            fill="#A3BE8C"
+            fill={THEME_COLORS.warning}
           />
         </BarChart>
       </ResponsiveContainer>

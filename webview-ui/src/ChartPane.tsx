@@ -46,7 +46,8 @@ export const ChartPane = (props: ChartPaneProps) => {
         <div key={`info-${i}`}>
           <Divider />
           <div className="my-2 mx-0">
-            <i className="codicon codicon-info mr-1"></i> {x.title}
+            <i className="codicon codicon-info text-primary mr-1"></i>
+            {x.title}
             <Drawer>
               <Markdown className="markdown">{x.content}</Markdown>
             </Drawer>

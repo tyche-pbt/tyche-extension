@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { SampleInfo } from "../../src/datatypes";
 import { Drawer } from "./Drawer";
+import { THEME_COLORS } from "./colors";
 
 type BucketChartProps = {
   feature: string;
@@ -32,39 +33,25 @@ export const BucketChart = (props: BucketChartProps) => {
 
   const heuristicAlert = (() => {
     if (props.feature === "outcome" && bucketMap["failed"] > 0) {
-      return <span className="tooltip">
-        <i className="codicon codicon-error tooltip mr-1"></i>
-        <div className="tooltip-text">
-          This property has at least one <code>failed</code> sample.
-        </div>
-      </span>
+      return <i className="codicon codicon-error text-error mr-1" />;
     }
     if (props.feature === "outcome" && (bucketMap["gave_up"] / props.dataset.length) > 0.33) {
-      return <span className="tooltip">
-        <i className="codicon codicon-alert tooltip mr-1"></i>
-        <div className="tooltip-text">
-          This property has a high ratio of <code>gave_up</code> samples.
-        </div>
-      </span>;
+      return <i className="codicon codicon-alert text-warning mr-1" />;
     }
   })();
 
   const color = (i: number, bucket: string) => {
     switch (bucket) {
       case "passed":
-        return "#A3BE8C";
+        return THEME_COLORS.success;
       case "failed":
-        return "#BF616A";
+        return THEME_COLORS.error;
       case "gave_up":
-        return "#D08770";
+        return THEME_COLORS.warning;
     }
     const colors = [
-      "#A3BE8C",
-      "#D08770",
-      "#88C0D0",
-      "#BF616A",
-      "#EBCB8B",
-      "#5E81AC",
+      THEME_COLORS.primary,
+      THEME_COLORS.accent,
     ];
     return colors[i % colors.length];
   };

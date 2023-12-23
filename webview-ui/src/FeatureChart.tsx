@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { SampleInfo } from "../../src/datatypes";
 import { Drawer } from "./Drawer";
+import { THEME_COLORS } from "./colors";
 
 type FeatureChartProps = {
   feature: string;
@@ -47,7 +48,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
             <XAxis dataKey="label" />
             <YAxis />
             <Tooltip />
-            <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill="#B48EAD" />
+            <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill={THEME_COLORS.primary} />
           </BarChart>
         </ResponsiveContainer>
       </Drawer>
