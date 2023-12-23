@@ -1,8 +1,9 @@
-import { ExampleFilter, TestInfo } from "../../src/datatypes";
-import { useState } from "react";
-import { ChartPane } from "./ChartPane";
-import { ExampleView } from "./ExampleView";
-import { Tab } from "@headlessui/react";
+import Markdown from "react-markdown";
+import { TestInfo } from "../../src/datatypes";
+import { Charts } from "./panes/Charts";
+import { Drawer } from "./ui/Drawer";
+import { HighLevelStats } from "./panes/HighLevelStats";
+import { FailureInfo } from "./panes/FailureInfo";
 
 type PropertyViewProps = {
   property: string;
@@ -10,8 +11,6 @@ type PropertyViewProps = {
 };
 
 const PropertyView = (props: PropertyViewProps) => {
-  const [filter, setFilter] = useState<ExampleFilter | undefined>(undefined);
-
   const { testInfo, property } = props;
 
   const numerical = testInfo.samples
@@ -21,52 +20,31 @@ const PropertyView = (props: PropertyViewProps) => {
     .map(sample => Object.keys(sample.features.categorical))
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
-  return (
-    <div className="PropertyView w-full">
-      <Tab.Group>
-        <Tab.List>
+  return <>
 
-          <Tab className="px-2 py-1 mr-2 border rounded  ui-selected:border-primary hover:bg-primary hover:text-background" >
-            Charts
-          </Tab>
-          <Tab className="px-2 py-1 mr-2 border rounded ui-selected:border-primary hover:bg-primary hover:text-background" >
-            All Examples
-          </Tab>
-          {
-            filter &&
-            <Tab className="px-2 py-1 mr-2 border rounded  ui-selected:border-primary hover:bg-primary hover:text-background" >
-              Filtered: &nbsp;<code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code>
-              <i
-                className="codicon codicon-close ml-2"
-                onClick={() => setFilter(undefined)}
-              />
-            </Tab>
-          }
-        </Tab.List>
-
-        <Tab.Panels>
-          <Tab.Panel className="w-full">
-            <ChartPane
-              setFilteredView={(f) => setFilter(f)}
-              dataset={testInfo.samples}
-              info={testInfo.info}
-              features={{ numerical, categorical }}
-              property={property}
-            />
-          </Tab.Panel>
-          <Tab.Panel>
-            <ExampleView dataset={testInfo.samples} />
-          </Tab.Panel>
-          {
-            filter &&
-            <Tab.Panel>
-              <ExampleView dataset={testInfo.samples} filter={filter} />
-            </Tab.Panel>
-          }
-        </Tab.Panels>
-      </Tab.Group>
-    </div>
-  );
+    {
+      testInfo.info.map((x, i) =>
+        <div key={`info-${i}`}>
+          <div className="my-2 mx-0">
+            <i className="codicon codicon-info text-primary mr-1"></i>
+            {x.title}
+            <Drawer>
+              <Markdown className="markdown">{x.content}</Markdown>
+            </Drawer>
+          </div>
+        </div>
+      )
+    }
+    <HighLevelStats dataset={testInfo.samples} property={property} />
+    {testInfo.samples.some(x => x.outcome === "failed") &&
+      <FailureInfo dataset={testInfo.samples} />
+    }
+    <Charts
+      setFilteredView={() => { }}
+      dataset={testInfo.samples}
+      features={{ numerical, categorical }}
+    />
+  </>;
 };
 
 export default PropertyView;

@@ -67,11 +67,11 @@ const App = () => {
       <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center">
         {state.state === "selected" ?
           <button onClick={() => setState({ state: "overview", report: state.report })}>
-            <i className="codicon codicon-arrow-left text-white" />
+            <i className="codicon codicon-arrow-left text-background" />
           </button> :
           <div></div>
         }
-        <span className="text-sm text-white">
+        <span className="text-sm text-background">
           Run: {new Date(state.report.timestamp * 1000).toLocaleString()}
         </span>
       </div>
@@ -79,8 +79,7 @@ const App = () => {
         {state.state === "overview" &&
           <Overview report={state.report} selectProperty={(property) => setState({ state: "selected", report: state.report, property })} />}
         {state.state === "selected" &&
-          <PropertyView testInfo={state.report.properties[state.property]} property={state.property} />
-        }
+          <PropertyView testInfo={state.report.properties[state.property]} property={state.property} />}
       </div>
     </div >
   );

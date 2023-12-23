@@ -1,5 +1,5 @@
-import { SampleInfo } from "../../src/datatypes";
-import { PrettyExample } from "./PrettyExample";
+import { SampleInfo } from "../../../src/datatypes";
+import { PrettyExample } from "../PrettyExample";
 
 type FailureInfoProps = {
   dataset: SampleInfo[];

@@ -1,6 +1,5 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { PrettyExample } from "./PrettyExample";
-import { Divider } from "./ui/Divider";
 
 type ExampleViewProps = {
   dataset: SampleInfo[];
@@ -22,6 +21,6 @@ export const ExampleView = (props: ExampleViewProps) => {
       ? <>Examples where <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
       : <>All Examples</>
     } ({dataset.length})
-    {dataset.map((x, i) => [<Divider key={`divider-${i}`} />, <PrettyExample key={`example-${i}`} example={x} />]).slice(1)}
+    {dataset.map((x, i) => <PrettyExample key={`example-${i}`} example={x} />)}
   </div>;
 };
