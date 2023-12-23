@@ -38,10 +38,12 @@ export const FeatureChart = (props: FeatureChartProps) => {
 
   return (
     <div className="FeatureChart">
-      Distribution of <code>{feature}</code>
-      <ResponsiveContainer width="100%" height={200}>
+      <div>
+        <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
+      </div>
+      <ResponsiveContainer width="100%" height={150}>
         <BarChart data={featureData}
-          margin={{ top: 20, right: 20 }}
+          margin={{ top: 20, right: 0, left: -20 }}
         >
           <XAxis dataKey="label" />
           <YAxis />
