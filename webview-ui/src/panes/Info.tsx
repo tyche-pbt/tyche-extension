@@ -12,7 +12,7 @@ type InfoProps = {
 };
 
 const Info = (props: InfoProps) => {
-  return <div className="flex"><Card>
+  return <div className="flex w-full"><Card className="flex-1">
     <div className="mb-2">
       {props.status === "success"
         ? <>

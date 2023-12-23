@@ -6,6 +6,14 @@ body {
   @apply bg-background text-foreground;
 }
 
+.vega-embed {
+  width: 100%;
+
+  svg {
+    width: 100%;
+  }
+}
+
 .codicon {
   @apply align-middle h-5;
 }

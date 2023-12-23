@@ -35,7 +35,9 @@ const PropertyView = (props: PropertyViewProps) => {
     }
     <HighLevelStats testInfo={testInfo} property={property} />
     <Charts
-      setFilteredView={() => { }}
+      setFilteredView={(v) => {
+        console.log(v);
+      }}
       dataset={testInfo.samples}
       features={{ numerical, categorical }}
     />

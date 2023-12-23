@@ -1,13 +1,8 @@
-import {
-  BarChart,
-  XAxis,
-  YAxis,
-  Bar,
-  Tooltip,
-  ResponsiveContainer
-} from "recharts";
 import { SampleInfo } from "../../../src/datatypes";
 import { THEME_COLORS } from "../utilities/colors";
+import { SignalListeners, Vega } from "react-vega";
+import { Handler } from "vega-tooltip";
+import * as vl from "vega-lite";
 
 type FeatureChartProps = {
   feature: string;
@@ -27,30 +22,43 @@ export const FeatureChart = (props: FeatureChartProps) => {
       }, new Map<number, number>()))
       .map(([k, v]) => ({ label: k, freq: v }));
 
-  const maxLabel = Math.max(...featureData.map((x) => x.label));
-  const minLabel = Math.min(...featureData.map((x) => x.label));
-  for (let i = minLabel; i <= maxLabel; i++) {
-    if (!featureData.find((x) => x.label === i)) {
-      featureData.push({ label: i, freq: 0 });
+  const liteSpec: vl.TopLevelSpec = {
+    width: "container",
+    height: 150,
+    mark: "bar",
+    encoding: {
+      x: { field: "label", type: "quantitative", bin: true, axis: { title: null } },
+      y: { field: "freq", type: "quantitative", axis: { title: "Samples" } },
+      color: { value: THEME_COLORS.primary }
+    },
+    data: { name: "table", values: featureData }
+  };
+
+  const spec = vl.compile(liteSpec).spec;
+  spec.signals = [...spec.signals || [], {
+    name: "filter",
+    value: {},
+    on: [
+      { events: "rect:mousedown", update: "datum" },
+    ]
+  }];
+
+  const listeners: SignalListeners = {
+    filter: (_name, value) => {
+      viewValue((value as { label: number }).label)
     }
-  }
-  featureData.sort((x, y) => x.label - y.label);
+  };
 
   return (
-    <div className="FeatureChart">
+    <div className="w-full">
       <div>
         <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
       </div>
-      <ResponsiveContainer width="100%" height={150}>
-        <BarChart data={featureData}
-          margin={{ top: 20, right: 0, left: -20 }}
-        >
-          <XAxis dataKey="label" />
-          <YAxis />
-          <Tooltip />
-          <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill={THEME_COLORS.primary} />
-        </BarChart>
-      </ResponsiveContainer>
+      <Vega
+        renderer="svg"
+        signalListeners={listeners}
+        spec={spec}
+        tooltip={new Handler().call} />
     </div>
   );
 }

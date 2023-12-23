@@ -19,7 +19,11 @@
     "react-json-view": "^1.21.3",
     "react-markdown": "^9.0.1",
     "react-use-measure": "^2.1.1",
-    "recharts": "^2.1.16"
+    "react-vega": "^7.6.0",
+    "recharts": "^2.1.16",
+    "vega": "^5.26.1",
+    "vega-lite": "^5.16.3",
+    "vega-tooltip": "^0.34.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
