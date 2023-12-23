@@ -1,12 +1,13 @@
 import { SampleInfo } from "../../../src/datatypes";
 import { PrettyExample } from "../PrettyExample";
 
-type FailureInfoProps = {
+type FailingCasesProps = {
   dataset: SampleInfo[];
 }
 
-export const FailureInfo = (props: FailureInfoProps) => {
+export const FailingCases = (props: FailingCasesProps) => {
   const failures = props.dataset.filter(x => x.outcome === "failed");
+  console.log(failures);
 
   return <div className="FailureInfo">
     <p>
