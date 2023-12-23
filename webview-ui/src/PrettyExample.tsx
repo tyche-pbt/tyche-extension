@@ -1,5 +1,5 @@
 import { SampleInfo } from "../../src/datatypes";
-import { Drawer } from "./Drawer";
+import { Drawer } from "./ui/Drawer";
 
 type PrettyExampleProps = {
   example: SampleInfo;

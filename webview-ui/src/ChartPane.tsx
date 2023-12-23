@@ -1,11 +1,11 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
-import { FeatureChart } from "./FeatureChart";
-import { BucketChart } from "./BucketChart";
-import { HighLevelStats } from "./HighLevelStats";
+import { FeatureChart } from "./visualization/FeatureChart";
+import { BucketChart } from "./visualization/BucketChart";
+import { HighLevelStats } from "./panes/HighLevelStats";
 import { FailureInfo } from "./FailureInfo";
 import Markdown from "react-markdown";
-import { Drawer } from "./Drawer";
-import { Divider } from "./Divider";
+import { Drawer } from "./ui/Drawer";
+import { Divider } from "./ui/Divider";
 
 type ChartPaneProps = {
   property: string;

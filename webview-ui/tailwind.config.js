@@ -1,4 +1,4 @@
-import { THEME_COLORS } from "./src/colors";
+import { THEME_COLORS } from "./src/utilities/colors";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

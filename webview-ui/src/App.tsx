@@ -1,5 +1,3 @@
-import "./App.scss";
-
 import { Report } from "../../src/datatypes";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";

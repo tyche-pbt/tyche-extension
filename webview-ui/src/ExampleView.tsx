@@ -1,6 +1,6 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
 import { PrettyExample } from "./PrettyExample";
-import { Divider } from "./Divider";
+import { Divider } from "./ui/Divider";
 
 type ExampleViewProps = {
   dataset: SampleInfo[];

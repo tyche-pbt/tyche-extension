@@ -1,7 +1,7 @@
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { SampleInfo } from "../../src/datatypes";
-import { Drawer } from "./Drawer";
-import { THEME_COLORS } from "./colors";
+import { SampleInfo } from "../../../src/datatypes";
+import { Drawer } from "../ui/Drawer";
+import { THEME_COLORS } from "../utilities/colors";
 
 type HighLevelStatsProps = {
   property: string;

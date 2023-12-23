@@ -24,6 +24,5 @@
   "include": [
     "src",
     "../src/datatypes.ts",
-    "src/colors.ts"
   ]
 }
