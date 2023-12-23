@@ -27,7 +27,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
     height: 150,
     mark: "bar",
     encoding: {
-      x: { field: "label", type: "quantitative", bin: true, axis: { title: null } },
+      x: { field: "label", type: "ordinal", bin: true, axis: { title: null } },
       y: { field: "freq", type: "quantitative", axis: { title: "Samples" } },
       color: { value: THEME_COLORS.primary }
     },
@@ -49,16 +49,14 @@ export const FeatureChart = (props: FeatureChartProps) => {
     }
   };
 
-  return (
-    <div className="w-full">
-      <div>
-        <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
-      </div>
-      <Vega
-        renderer="svg"
-        signalListeners={listeners}
-        spec={spec}
-        tooltip={new Handler().call} />
+  return <div className="w-full">
+    <div>
+      <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
     </div>
-  );
+    <Vega
+      renderer="svg"
+      signalListeners={listeners}
+      spec={spec}
+      tooltip={new Handler().call} />
+  </div>;
 }

@@ -29,6 +29,7 @@ const App = () => {
       state: "overview",
       report: command.report,
     });
+    console.log(JSON.stringify(command.report, undefined, 2));
   };
 
   const clearData = () => {

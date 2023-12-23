@@ -1,14 +1,8 @@
-import {
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  XAxis,
-  YAxis,
-  Legend,
-  Bar
-} from 'recharts';
 import { SampleInfo } from "../../../src/datatypes";
 import { THEME_COLORS } from "../utilities/colors";
+import { SignalListeners, Vega } from "react-vega";
+import { Handler } from "vega-tooltip";
+import * as vl from "vega-lite";
 
 type BucketChartProps = {
   feature: string;
@@ -17,71 +11,49 @@ type BucketChartProps = {
 };
 
 export const BucketChart = (props: BucketChartProps) => {
-  const buckets = Array.from(new Set(props.dataset.map((x) => x.features.categorical[props.feature])));
+  const buckets = Array.from(new Set(props.dataset.map((x) => x.features.categorical[props.feature]))).filter(x => x !== undefined);
 
-  const bucketMap = Object.fromEntries(buckets.map(
-    (bucket) => ([
-      `${bucket}`,
-      props.dataset.filter((y) => y.features.categorical[props.feature] === bucket).length,
-    ])));
+  const bucketedData: { label: string, freq: number }[] = buckets.map(
+    (bucket) => ({
+      label: bucket,
+      freq: props.dataset.filter((y) => y.features.categorical[props.feature] === bucket).length / props.dataset.length,
+    }));
 
-  const bucketedData = [{
-    name: props.feature,
-    ...bucketMap,
-  }];
-
-  const heuristicAlert = (() => {
-    if (props.feature === "outcome" && bucketMap["failed"] > 0) {
-      return <i className="codicon codicon-error text-error mr-1" />;
-    }
-    if (props.feature === "outcome" && (bucketMap["gave_up"] / props.dataset.length) > 0.33) {
-      return <i className="codicon codicon-alert text-warning mr-1" />;
-    }
-  })();
-
-  const color = (i: number, bucket: string) => {
-    switch (bucket) {
-      case "passed":
-        return THEME_COLORS.success;
-      case "failed":
-        return THEME_COLORS.error;
-      case "gave_up":
-        return THEME_COLORS.warning;
-    }
-    const colors = [
-      THEME_COLORS.primary,
-      THEME_COLORS.accent,
-    ];
-    return colors[i % colors.length];
+  const liteSpec: vl.TopLevelSpec = {
+    width: "container",
+    height: 150,
+    mark: "bar",
+    encoding: {
+      x: { field: "label", type: "nominal", axis: { title: null } },
+      y: { field: "freq", type: "quantitative", axis: { title: "Samples" } },
+      color: { value: THEME_COLORS.primary }
+    },
+    data: { name: "table", values: bucketedData }
   };
 
-  return <div className="BucketChart">
-    {heuristicAlert}
-    Categorized by <code>{props.feature}</code>
-    <ResponsiveContainer width="100%" height={120}>
-      <BarChart
-        width={800}
-        height={100}
-        data={bucketedData}
-        layout="vertical"
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <XAxis type="number" domain={[0, props.dataset.length]} />
-        <YAxis type="category" dataKey="name" hide={true} />
-        <Tooltip />
-        <Legend />
-        {
-          buckets.map(
-            (bucket, i) =>
-              <Bar
-                key={bucket}
-                dataKey={bucket}
-                stackId="a"
-                fill={color(i, bucket)}
-                onClick={() => props.viewValue(bucket)} />
-          )
-        }
-      </BarChart>
-    </ResponsiveContainer>
+  const spec = vl.compile(liteSpec).spec;
+  spec.signals = [...spec.signals || [], {
+    name: "filter",
+    value: {},
+    on: [
+      { events: "rect:mousedown", update: "datum" },
+    ]
+  }];
+
+  const listeners: SignalListeners = {
+    filter: (_name, value) => {
+      props.viewValue((value as { label: string }).label)
+    }
+  };
+
+  return <div className="w-full">
+    <div>
+      <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{props.feature}</span>
+    </div>
+    <Vega
+      renderer="svg"
+      signalListeners={listeners}
+      spec={spec}
+      tooltip={new Handler().call} />
   </div>;
 }

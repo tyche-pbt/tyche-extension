@@ -15,24 +15,24 @@ type ChartsProps = {
 export const Charts = (props: ChartsProps) => {
   const { dataset, features } = props;
 
-  return <div className="w-full flex">
-    <Card className="flex-1 min-w-0">
-      {[...features.categorical.map((x) =>
+  return <div className="w-full grid grid-cols-1">
+    {[...features.categorical.map((x) =>
+      <Card key={`bucket-${x}`}>
         <BucketChart
-          key={`bucket-${x}`}
           feature={x}
           dataset={dataset}
-          viewValue={(value) => props.setFilteredView({ categorical: x, value })} />),
-      ...features.numerical.flatMap((x) =>
-        [
+          viewValue={(value) => props.setFilteredView({ categorical: x, value })} />
+      </Card>
+    ),
+    ...features.numerical.flatMap((x) =>
+      [
+        <Card key={`feature-${x}`}>
           <FeatureChart
-            key={`feature-${x}`}
             feature={x}
             dataset={dataset}
             viewValue={(value) => props.setFilteredView({ numerical: x, value })}
-          />,
-        ]),
-      ]}
-    </Card>
-  </div>;
+          /></Card>,
+      ]),
+    ]}
+  </div >;
 }
