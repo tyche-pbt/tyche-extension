@@ -1,5 +1,5 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
-import { PrettyExample } from "./PrettyExample";
+import { PrettyExample } from "./ui/PrettyExample";
 
 type ExampleViewProps = {
   dataset: SampleInfo[];

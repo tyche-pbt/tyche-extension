@@ -1,5 +1,6 @@
 import { SampleInfo } from "../../../src/datatypes";
-import { PrettyExample } from "../PrettyExample";
+import Card from "../ui/Card";
+import { PrettyExample } from "../ui/PrettyExample";
 
 type FailingCasesProps = {
   dataset: SampleInfo[];
@@ -7,15 +8,11 @@ type FailingCasesProps = {
 
 export const FailingCases = (props: FailingCasesProps) => {
   const failures = props.dataset.filter(x => x.outcome === "failed");
-  console.log(failures);
 
-  return <div className="FailureInfo">
-    <p>
-      <strong>Important: This test failed on {failures.length} examples.</strong>&nbsp;
-      Use the bucket chart below to inspect the failing and passing examples.
-      <br />
-      This is one failing example:
-    </p>
-    <PrettyExample example={failures[0]} />
-  </div>;
+  return <Card>
+    <div className="mb-2">
+      <div className="font-bold">Counter-examples</div>
+    </div>
+    <PrettyExample example={failures[failures.length - 1]} />
+  </Card>;
 };

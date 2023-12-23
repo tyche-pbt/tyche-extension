@@ -20,7 +20,7 @@ const PropertyView = (props: PropertyViewProps) => {
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return <>
-    <Info info={testInfo.info} />
+    <Info status={testInfo.status === "failure" ? "failure" : "success"} info={testInfo.info} />
     {testInfo.status === "failure" &&
       <FailingCases dataset={testInfo.samples} />
     }

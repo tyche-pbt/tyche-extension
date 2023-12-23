@@ -1,9 +1,10 @@
+import { Disclosure } from "@headlessui/react";
 import Markdown from "react-markdown";
-import { Drawer } from "../ui/Drawer";
+import Card from "../ui/Card";
 
 type InfoProps = {
-  info:
-  {
+  status: "success" | "failure";
+  info: {
     title: string;
     content: string;
     type: string;
@@ -11,18 +12,31 @@ type InfoProps = {
 };
 
 const Info = (props: InfoProps) => {
-  return <>
+  return <Card>
+    <div className="mb-2">
+      {props.status === "success"
+        ? <>
+          <div className="text-success font-bold">Test Passed</div> But there may still be issues. Make sure to look carefully at the visualizations below.
+        </>
+        : <>
+          <div className="text-error font-bold">Test Failed</div> See below for a list of counter-examples.
+        </>
+      }
+    </div>
     {props.info.map((x, i) =>
-      <div key={`info-${i}`}>
-        <div className="my-2 mx-0">
-          <i className="codicon codicon-info text-primary mr-1"></i>
-          {x.title}
-          <Drawer>
+      <Disclosure key={`info-${i}`}>
+        {({ open }) => (<>
+          <Disclosure.Button>
+            <i className="codicon codicon-info text-primary mr-1" />
+            {x.title}
+            <i className={`codicon codicon-chevron-right ${open ? "transform rotate-90" : ""}`} />
+          </Disclosure.Button>
+          <Disclosure.Panel>
             <Markdown className="markdown">{x.content}</Markdown>
-          </Drawer>
-        </div>
-      </div>
-    )}</>
+          </Disclosure.Panel>
+        </>)}
+      </Disclosure >
+    )}</Card>;
 }
 
 export default Info;

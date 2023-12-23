@@ -7,7 +7,6 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { SampleInfo } from "../../../src/datatypes";
-import { Drawer } from "../ui/Drawer";
 import { THEME_COLORS } from "../utilities/colors";
 
 type FeatureChartProps = {
@@ -40,18 +39,16 @@ export const FeatureChart = (props: FeatureChartProps) => {
   return (
     <div className="FeatureChart">
       Distribution of <code>{feature}</code>
-      <Drawer open>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={featureData}
-            margin={{ top: 20, right: 20 }}
-          >
-            <XAxis dataKey="label" />
-            <YAxis />
-            <Tooltip />
-            <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill={THEME_COLORS.primary} />
-          </BarChart>
-        </ResponsiveContainer>
-      </Drawer>
+      <ResponsiveContainer width="100%" height={200}>
+        <BarChart data={featureData}
+          margin={{ top: 20, right: 20 }}
+        >
+          <XAxis dataKey="label" />
+          <YAxis />
+          <Tooltip />
+          <Bar onClick={(data) => viewValue(data.label)} dataKey="freq" fill={THEME_COLORS.primary} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
