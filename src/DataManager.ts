@@ -39,26 +39,36 @@ export class DataManager {
       timestamp: 0,
       properties: {},
     };
+    let seen: string[] = [];
+
     for (const line of data) {
       if (report.timestamp === 0) {
         report.timestamp = line.run_start;
       }
 
       if (!(line.property in report.properties)) {
-        report.properties[line.property] = { status: "success", samples: [], info: [] };
+        report.properties[line.property] = { status: "success", samples: [], info: [], discards: 0, duplicates: 0 };
       }
 
       if (line.type === "test_case") {
+        if (seen.includes(line.representation.toString())) {
+          report.properties[line.property].duplicates += 1;
+        }
+        seen.push(line.representation.toString());
+
         if (line.status === "failed") {
           report.properties[line.property].status = "failure";
         }
+        if (line.status === "gave_up") {
+          report.properties[line.property].discards += 1;
+        }
+
         report.properties[line.property].samples.push({
           outcome: line.status,
           item: line.representation.toString(),
           features: {
             numerical: filterObject(line.features, v => typeof v === "number"),
             categorical: {
-              outcome: line.status, // NOTE: This adds the outcomes to the buckets
               ...filterObject(line.features, v => typeof v === "string")
             }
           },

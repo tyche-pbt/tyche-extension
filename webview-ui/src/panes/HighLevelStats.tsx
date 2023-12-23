@@ -1,52 +1,32 @@
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { SampleInfo } from "../../../src/datatypes";
-import { THEME_COLORS } from "../utilities/colors";
+import { TestInfo } from "../../../src/datatypes";
+import Card from "../ui/Card";
 
 type HighLevelStatsProps = {
   property: string;
-  dataset: SampleInfo[];
+  testInfo: TestInfo;
 };
 
 export const HighLevelStats = (props: HighLevelStatsProps) => {
-  const unique = new Set(props.dataset.map((x) => x.item.toString())).size;
-
-  const data = [{
-    name: "unique",
-    unique,
-    duplicates: props.dataset.length - unique,
-  }];
-
-  const heuristicAlert = (() => {
-    if (unique / props.dataset.length < 0.66) {
-      return <i className="codicon codicon-alert text-warning mr-1" />;
-    }
-  })();
-
-  return <div className="HighLevelStats">
-    {heuristicAlert} Categorized by <code>unique</code>
-    <ResponsiveContainer width="100%" height={120}>
-      <BarChart
-        width={800}
-        height={100}
-        layout="vertical"
-        data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <XAxis type="number" domain={[0, props.dataset.length]} />
-        <YAxis type="category" dataKey="name" hide={true} />
-        <Tooltip />
-        <Legend />
-        <Bar
-          dataKey="unique"
-          stackId="a"
-          fill={THEME_COLORS.success}
-        />
-        <Bar
-          dataKey="duplicates"
-          stackId="a"
-          fill={THEME_COLORS.warning}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+  return <div className="flex w-full">
+    <Card className="flex-1">
+      <div className="flex flex-row-reverse">
+        <div className="text-xs text-background rounded-lg font-bold bg-warning px-1">
+          {Math.round(props.testInfo.discards / props.testInfo.samples.length * 100)}%
+        </div>
+      </div>
+      <span className="text-3xl">
+        {props.testInfo.discards}
+      </span> discards
+    </Card>
+    <Card className="flex-1">
+      <div className="flex flex-row-reverse">
+        <div className="text-xs text-background rounded-lg bg-success font-bold px-1">
+          {Math.round(props.testInfo.duplicates / props.testInfo.samples.length * 100)}%
+        </div>
+      </div>
+      <span className="text-3xl">
+        {props.testInfo.duplicates}
+      </span> duplicates
+    </Card>
   </div>;
-}
+};

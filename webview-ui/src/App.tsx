@@ -22,7 +22,7 @@ type AppState = {
 
 const App = () => {
   // const [state, setState] = useState<AppState>({ state: "loading" });
-  const [state, setState] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_valid" });
+  const [state, setState] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_post" });
 
   const loadData = (command: LoadDataCommand) => {
     setState({

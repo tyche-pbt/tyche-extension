@@ -24,7 +24,7 @@ const PropertyView = (props: PropertyViewProps) => {
     {testInfo.status === "failure" &&
       <FailingCases dataset={testInfo.samples} />
     }
-    <HighLevelStats dataset={testInfo.samples} property={property} />
+    <HighLevelStats testInfo={testInfo} property={property} />
     <Charts
       setFilteredView={() => { }}
       dataset={testInfo.samples}
