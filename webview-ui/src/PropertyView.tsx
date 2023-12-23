@@ -3,6 +3,7 @@ import { Charts } from "./panes/Charts";
 import { HighLevelStats } from "./panes/HighLevelStats";
 import { FailingCases } from "./panes/FailingCases";
 import Info from "./panes/Info";
+import Card from "./ui/Card";
 
 type PropertyViewProps = {
   property: string;
@@ -20,6 +21,14 @@ const PropertyView = (props: PropertyViewProps) => {
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return <>
+    <Card>
+      <div className="text-lg font-bold">
+        Tyche Output
+      </div>
+      <span className="font-mono text-sm">
+        {property}
+      </span>
+    </Card>
     <Info status={testInfo.status === "failure" ? "failure" : "success"} info={testInfo.info} />
     {testInfo.status === "failure" &&
       <FailingCases dataset={testInfo.samples} />

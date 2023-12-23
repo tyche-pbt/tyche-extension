@@ -12,14 +12,18 @@ type InfoProps = {
 };
 
 const Info = (props: InfoProps) => {
-  return <Card>
+  return <div className="flex"><Card>
     <div className="mb-2">
       {props.status === "success"
         ? <>
-          <div className="text-success font-bold">Test Passed</div> But there may still be issues. Make sure to look carefully at the visualizations below.
+          <div className="text-success font-bold">
+            Test Passed
+          </div> But there may still be issues. Make sure to look carefully at the visualizations below.
         </>
         : <>
-          <div className="text-error font-bold">Test Failed</div> See below for a list of counter-examples.
+          <div className="text-error font-bold">
+            Test Failed
+          </div> See below for a list of counter-examples.
         </>
       }
     </div>
@@ -36,7 +40,7 @@ const Info = (props: InfoProps) => {
           </Disclosure.Panel>
         </>)}
       </Disclosure >
-    )}</Card>;
+    )}</Card></div>;
 }
 
 export default Info;
