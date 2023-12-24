@@ -64,9 +64,7 @@ export class DataManager {
           item: line.representation.toString(),
           features: {
             numerical: filterObject(line.features, v => typeof v === "number"),
-            categorical: {
-              ...filterObject(line.features, v => typeof v === "string")
-            }
+            categorical: filterObject(line.features, v => typeof v === "string")
           },
           coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
           metadata: { howGenerated: line.how_generated, metadata: line.metadata },

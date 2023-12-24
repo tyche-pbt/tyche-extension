@@ -44,14 +44,6 @@ export class TychePanel {
       command: "load-data",
       report: dataManager.report,
     });
-    this._panel.onDidChangeViewState((e) => {
-      if (e.webviewPanel.visible) {
-        this._panel.webview.postMessage({
-          command: "load-data",
-          report: dataManager.report,
-        });
-      }
-    });
   }
 
   /**

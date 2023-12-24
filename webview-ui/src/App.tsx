@@ -32,10 +32,6 @@ const App = () => {
     console.log(JSON.stringify(command.report, undefined, 2));
   };
 
-  const clearData = () => {
-    setState({ state: "loading" });
-  };
-
   useEffect(() => {
     // NOTE: This `return` is critical. It tells React to clean up the listener on re-renders.
     return vscode.onMessage((event) => {
@@ -43,9 +39,6 @@ const App = () => {
       switch (message.command) {
         case "load-data":
           loadData(message);
-          break;
-        case "clear-data":
-          clearData();
           break;
       }
     });

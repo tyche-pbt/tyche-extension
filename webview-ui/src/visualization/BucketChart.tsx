@@ -11,7 +11,12 @@ type BucketChartProps = {
 };
 
 export const BucketChart = (props: BucketChartProps) => {
-  const buckets = Array.from(new Set(props.dataset.map((x) => x.features.categorical[props.feature]))).filter(x => x !== undefined);
+  const buckets = Array.from(new Set(props.dataset.flatMap((x) => {
+    if (!(props.feature in x.features.categorical)) {
+      return [];
+    }
+    return [x.features.categorical[props.feature]];
+  })));
 
   const bucketedData: { label: string, freq: number }[] = buckets.map(
     (bucket) => ({
