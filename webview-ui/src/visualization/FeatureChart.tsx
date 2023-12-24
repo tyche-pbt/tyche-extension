@@ -25,11 +25,19 @@ export const FeatureChart = (props: FeatureChartProps) => {
   const liteSpec: vl.TopLevelSpec = {
     width: "container",
     height: 150,
-    mark: "bar",
+    mark: { type: "bar", cursor: "pointer" },
+    params: [{
+      name: "highlight",
+      select: { type: "point", on: "mouseover", clear: "mouseout" },
+    }],
     encoding: {
       x: { field: "label", type: "ordinal", bin: true, axis: { title: null } },
       y: { field: "freq", type: "quantitative", axis: { title: "# of Samples" } },
-      color: { value: THEME_COLORS.primary }
+      color: { value: THEME_COLORS.primary },
+      fillOpacity: {
+        condition: { param: "highlight", empty: false, value: 0.7 },
+        value: 1
+      }
     },
     data: { name: "table", values: featureData }
   };
@@ -54,9 +62,12 @@ export const FeatureChart = (props: FeatureChartProps) => {
       <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
     </div>
     <Vega
+      className="w-full"
       renderer="svg"
       signalListeners={listeners}
       spec={spec}
-      tooltip={new Handler().call} />
+      tooltip={new Handler().call}
+      actions={false}
+    />
   </div>;
 }

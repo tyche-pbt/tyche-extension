@@ -29,13 +29,21 @@ export const BucketChart = (props: BucketChartProps) => {
     height: 20,
     data: { name: "table", values: bucketedData },
     layer: [{
-      mark: "bar",
+      mark: { type: "bar", cursor: "pointer" },
+      params: [{
+        name: "highlight",
+        select: { type: "point", on: "mouseover", clear: "mouseout" },
+      }],
       encoding: {
         x: {
           aggregate: "sum",
           field: "freq",
           stack: "normalize",
           title: "% of Samples",
+        },
+        fillOpacity: {
+          condition: { param: "highlight", empty: false, value: 0.7 },
+          value: 1
         },
         color: {
           field: "label",
@@ -73,7 +81,8 @@ export const BucketChart = (props: BucketChartProps) => {
     name: "filter",
     value: {},
     on: [
-      { events: "*:mousedown", update: "datum" },
+      { events: "rect:mousedown", update: "datum" },
+      { events: "text:mousedown", update: "datum" },
     ]
   }];
 
@@ -88,9 +97,12 @@ export const BucketChart = (props: BucketChartProps) => {
       <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{props.feature}</span>
     </div>
     <Vega
+      className="w-full"
       renderer="svg"
       signalListeners={listeners}
       spec={spec}
-      tooltip={new Handler().call} />
+      tooltip={new Handler().call}
+      actions={false}
+    />
   </div>;
 }
