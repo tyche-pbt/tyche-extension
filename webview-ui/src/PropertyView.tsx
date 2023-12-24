@@ -5,7 +5,6 @@ import { FailingCases } from "./panes/FailingCases";
 import Info from "./panes/Info";
 import Card from "./ui/Card";
 import { useState } from "react";
-import { Dialog } from "@headlessui/react";
 import { ExampleView } from "./ExampleView";
 
 type PropertyViewProps = {

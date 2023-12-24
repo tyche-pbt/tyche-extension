@@ -21,16 +21,31 @@ type AppState = {
 };
 
 const App = () => {
-  // const [state, setState] = useState<AppState>({ state: "loading" });
-  const [state, setState] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_post" });
+  const [state, setStateRaw] = useState<AppState>({ state: "loading" });
+  // const [state, setStateRaw] = useState<AppState>({ state: "selected", report: require("./report.json"), property: "bst_tests.py::test_insert_post" });
+
+  const setState = (newState: AppState) => {
+    setStateRaw(newState);
+    if (vscode.isVSCode()) {
+      vscode.setState(newState);
+    }
+  };
 
   const loadData = (command: LoadDataCommand) => {
     setState({
       state: "overview",
       report: command.report,
     });
-    console.log(JSON.stringify(command.report, undefined, 2));
   };
+
+  useEffect(() => {
+    if (vscode.isVSCode()) {
+      const state = vscode.getState();
+      if (state) {
+        setStateRaw(state as AppState);
+      }
+    }
+  }, [state]);
 
   useEffect(() => {
     // NOTE: This `return` is critical. It tells React to clean up the listener on re-renders.
