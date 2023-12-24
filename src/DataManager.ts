@@ -47,24 +47,20 @@ export class DataManager {
       }
 
       if (!(line.property in report.properties)) {
-        report.properties[line.property] = { status: "success", samples: [], info: [], discards: 0, duplicates: 0 };
+        report.properties[line.property] = { status: "success", samples: [], info: [] };
       }
 
       if (line.type === "test_case") {
-        if (seen.includes(line.representation.toString())) {
-          report.properties[line.property].duplicates += 1;
-        }
+        const duplicate = seen.includes(line.representation.toString());
         seen.push(line.representation.toString());
 
         if (line.status === "failed") {
           report.properties[line.property].status = "failure";
         }
-        if (line.status === "gave_up") {
-          report.properties[line.property].discards += 1;
-        }
 
         report.properties[line.property].samples.push({
           outcome: line.status,
+          duplicate,
           item: line.representation.toString(),
           features: {
             numerical: filterObject(line.features, v => typeof v === "number"),

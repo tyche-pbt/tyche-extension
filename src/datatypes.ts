@@ -66,6 +66,7 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
 export const schemaSampleInfo = z.object({
   outcome: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
   item: z.string(),
+  duplicate: z.boolean(),
   features: z.object({
     numerical: z.record(z.number()),
     categorical: z.record(z.string()),
@@ -76,8 +77,6 @@ export const schemaSampleInfo = z.object({
 
 export const schemaTestInfo = z.object({
   status: z.union([z.literal("success"), z.literal("failure")]),
-  discards: z.number(),
-  duplicates: z.number(),
   samples: z.array(schemaSampleInfo),
   info: z.array(z.object({ type: z.string(), title: z.string(), content: z.string() })),
 });
