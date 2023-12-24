@@ -20,9 +20,12 @@ export const ExampleView = (props: ExampleViewProps) => {
   return <div className="w-full">
     <Card>
       {filter
-        ? <><span className="font-bold">Examples where</span> <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
+        ? <>
+          <div className="font-bold text-lg">Examples</div>
+          <span className="font-mono text-sm">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>
+        </>
         : <>All Examples</>
-      } ({dataset.length})
+      }
     </Card>
     {dataset.map((x, i) =>
       <Card key={`example-${i}`} className="mt-2">

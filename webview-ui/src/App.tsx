@@ -66,12 +66,10 @@ const App = () => {
   return (
     <div className="App">
       <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center">
-        {state.state === "selected" ?
+        {state.state === "selected" &&
           <button onClick={() => setState({ state: "overview", report: state.report })}>
             <i className="codicon codicon-arrow-left text-background" />
-          </button> :
-          <div></div>
-        }
+          </button>}
         <span className="text-sm text-background">
           Run: {new Date(state.report.timestamp * 1000).toLocaleString()}
         </span>

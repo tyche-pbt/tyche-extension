@@ -26,29 +26,36 @@ const PropertyView = (props: PropertyViewProps) => {
 
   return <>
     <Dialog open={exampleFilter !== undefined} onClose={() => setExampleFilter(undefined)}>
-      <Dialog.Panel className="fixed top-0 left-0 right-0 bottom-0 bg-background p-3 overflow-scroll">
-        <button onClick={() => setExampleFilter(undefined)}>Close</button>
+      <Dialog.Panel className="fixed top-12 left-0 right-0 bottom-0 bg-background px-3 overflow-scroll z-10">
+        <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center">
+          <button onClick={() => setExampleFilter(undefined)}>
+            <i className="codicon codicon-close text-background" />
+          </button>
+        </div>
         <ExampleView filter={exampleFilter} dataset={testInfo.samples} />
       </Dialog.Panel>
     </Dialog>
-    <Card>
-      <div className="text-lg font-bold">
-        Tyche Output
-      </div>
-      <span className="font-mono text-sm">
-        {property}
-      </span>
-    </Card>
-    <Info status={testInfo.status === "failure" ? "failure" : "success"} info={testInfo.info} />
-    {testInfo.status === "failure" &&
-      <FailingCases dataset={testInfo.samples} />
+    {exampleFilter ? <></> : <>
+      <Card>
+        <div className="text-lg font-bold">
+          Tyche Analysis
+        </div>
+        <span className="font-mono text-sm">
+          {property}
+        </span>
+      </Card>
+      <Info status={testInfo.status === "failure" ? "failure" : "success"} info={testInfo.info} />
+      {testInfo.status === "failure" &&
+        <FailingCases dataset={testInfo.samples} />
+      }
+      <HighLevelStats testInfo={testInfo} property={property} />
+      <Charts
+        setFilteredView={setExampleFilter}
+        dataset={testInfo.samples}
+        features={{ numerical, categorical }}
+      />
+    </>
     }
-    <HighLevelStats testInfo={testInfo} property={property} />
-    <Charts
-      setFilteredView={setExampleFilter}
-      dataset={testInfo.samples}
-      features={{ numerical, categorical }}
-    />
   </>;
 };
 
