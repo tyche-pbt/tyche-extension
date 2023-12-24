@@ -1,4 +1,5 @@
 import { ExampleFilter, SampleInfo } from "../../src/datatypes";
+import Card from "./ui/Card";
 import { PrettyExample } from "./ui/PrettyExample";
 
 type ExampleViewProps = {
@@ -16,11 +17,17 @@ export const ExampleView = (props: ExampleViewProps) => {
     )
     : props.dataset;
 
-  return <div className="ExampleView w-full">
-    {filter
-      ? <>Examples where <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
-      : <>All Examples</>
-    } ({dataset.length})
-    {dataset.map((x, i) => <PrettyExample key={`example-${i}`} example={x} />)}
+  return <div className="w-full">
+    <Card>
+      {filter
+        ? <><span className="font-bold">Examples where</span> <code>{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</code></>
+        : <>All Examples</>
+      } ({dataset.length})
+    </Card>
+    {dataset.map((x, i) =>
+      <Card key={`example-${i}`} className="mt-2">
+        <PrettyExample example={x} />
+      </Card>
+    )}
   </div>;
 };
