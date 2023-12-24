@@ -14,7 +14,7 @@ type PropertyViewProps = {
 
 const PropertyView = (props: PropertyViewProps) => {
   const { testInfo, property } = props;
-  const [exampleFilter, setExampleFilter] = useState<ExampleFilter | undefined>(undefined);
+  const [exampleFilter, setExampleFilter] = useState<ExampleFilter | "all" | undefined>(undefined);
 
   const numerical = testInfo.samples
     .map(sample => Object.keys(sample.features.numerical))
@@ -31,7 +31,7 @@ const PropertyView = (props: PropertyViewProps) => {
             <i className="codicon codicon-close text-background" />
           </button>
         </div>
-        <ExampleView filter={exampleFilter} dataset={testInfo.samples} />
+        <ExampleView filter={exampleFilter === "all" ? undefined : exampleFilter} dataset={testInfo.samples} />
       </>
     }
     {exampleFilter === undefined &&
@@ -49,6 +49,13 @@ const PropertyView = (props: PropertyViewProps) => {
           <FailingCases dataset={testInfo.samples} />
         }
         <HighLevelStats testInfo={testInfo} property={property} />
+        <Card>
+          <button
+            className="text-sm text-center w-full hover:text-primary"
+            onClick={() => setExampleFilter("all")} >
+            See All Examples
+          </button>
+        </Card>
         <Charts
           setFilteredView={setExampleFilter}
           dataset={testInfo.samples}

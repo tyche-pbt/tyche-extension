@@ -19,13 +19,9 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   return <div className="w-full">
     <Card>
-      {filter
-        ? <>
-          <div className="font-bold text-lg">Examples</div>
-          <span className="font-mono text-sm">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>
-        </>
-        : <>All Examples</>
-      }
+      <div className="font-bold text-lg">Examples</div>
+      {filter &&
+        <span className="font-mono text-sm">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>}
     </Card>
     {dataset.map((x, i) =>
       <Card key={`example-${i}`} className="mt-2">
