@@ -21,7 +21,7 @@ const Overview = (props: OverviewProps) => {
               </td>
               <td className="text-right pr-2 py-1 rounded-e-md">
                 {props.report.properties[property].status === "failure" &&
-                  <i className="codicon codicon-x text-failure" />}
+                  <i className="codicon codicon-x text-error" />}
                 {props.report.properties[property].status === "success" &&
                   <i className="codicon codicon-check text-success" />}
                 {props.report.properties[property].status === "warning" &&

@@ -32,11 +32,17 @@ const App = () => {
   };
 
   const loadData = (command: LoadDataCommand) => {
+    if (state.state === "selected" && command.report.properties[state.property]) {
+      setState({
+        state: "selected",
+        report: command.report,
+        property: state.property,
+      });
+    }
     setState({
       state: "overview",
       report: command.report,
     });
-    console.log(JSON.stringify(command.report, null, 2));
   };
 
   useEffect(() => {
