@@ -31,7 +31,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         <div className="opacity-60 text-xs flex-1">Discarded</div>
         {
           discardPercent > 33 &&
-          <div className="text-xs text-white rounded-lg font-bold px-2 bg-warning">
+          <div className="text-xs text-white rounded-full font-bold px-2 bg-warning">
             High
           </div>
         }
@@ -45,7 +45,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         <div className="opacity-60 text-xs flex-1">Revisited</div>
         {
           duplicatePercent > 33 &&
-          <div className="text-xs text-white rounded-lg font-bold px-2 bg-warning">
+          <div className="text-xs text-white rounded-full font-bold px-2 bg-warning">
             High
           </div>
         }

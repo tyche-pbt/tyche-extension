@@ -44,14 +44,14 @@ const PropertyView = (props: PropertyViewProps) => {
             {property}
           </span>
         </Card>
-        <Info status={testInfo.status === "failure" ? "failure" : "success"} info={testInfo.info} />
+        <Info status={testInfo.status} info={testInfo.info} />
         {testInfo.status === "failure" &&
           <FailingCases dataset={testInfo.samples} />
         }
         <HighLevelStats testInfo={testInfo} property={property} />
         <Card>
           <button
-            className="text-sm text-center rounded-lg w-full hover:bg-primary hover:bg-opacity-25 py-1"
+            className="text-sm text-center rounded-md w-full hover:bg-primary hover:bg-opacity-25 py-1"
             onClick={() => setExampleFilter("all")} >
             See All Examples
           </button>

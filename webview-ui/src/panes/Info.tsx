@@ -3,7 +3,7 @@ import Markdown from "react-markdown";
 import Card from "../ui/Card";
 
 type InfoProps = {
-  status: "success" | "failure";
+  status: "success" | "failure" | "warning";
   info: {
     title: string;
     content: string;
@@ -14,25 +14,33 @@ type InfoProps = {
 const Info = (props: InfoProps) => {
   return <div className="flex w-full"><Card className="flex-1">
     <div className="mb-2">
-      {props.status === "success"
-        ? <>
+      {props.status === "success" &&
+        <>
           <div className="text-success font-bold">
             Test Passed
-          </div> But there may still be issues. Make sure to look carefully at the visualizations below.
-        </>
-        : <>
+          </div> We did not find any issues with your tests, but you may still want to evaluate the
+          distributions below.
+        </>}
+      {props.status === "failure" &&
+        <>
           <div className="text-error font-bold">
             Test Failed
           </div> See below for a list of counter-examples.
-        </>
-      }
+        </>}
+      {props.status === "warning" &&
+        <>
+          <div className="text-warning font-bold">
+            Test Passed with Warnings
+          </div> No counter-examples were found, but there is a high proportion of invalid or
+          duplicate samples.
+        </>}
     </div>
     {props.info.map((x, i) =>
       <div className="my-1" key={`info-${i}`}>
         <Disclosure>
           {({ open }) => (<>
             <Disclosure.Button
-              className={"bg-primary text-white hover:bg-opacity-70 w-full flex items-center " + (open ? "rounded-t-lg" : "rounded-lg")} >
+              className={"bg-primary text-white hover:bg-opacity-70 w-full flex items-center " + (open ? "rounded-t-md" : "rounded-md")} >
               <div className="px-2 py-1">
                 <i className="codicon codicon-info " />
               </div>
@@ -41,7 +49,7 @@ const Info = (props: InfoProps) => {
                 <i className={"codicon codicon-chevron-right " + (open ? "transform rotate-90" : "")} />
               </div>
             </Disclosure.Button>
-            <Disclosure.Panel className="p-2 border border-primary rounded-b-lg">
+            <Disclosure.Panel className="p-2 border border-primary rounded-b-md">
               <Markdown className="markdown text-sm">{x.content}</Markdown>
             </Disclosure.Panel>
           </>)}

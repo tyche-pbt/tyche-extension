@@ -77,6 +77,16 @@ export class DataManager {
         });
       }
     }
+
+    for (const property in report.properties) {
+      const discards = report.properties[property].samples.filter(sample => sample.outcome === "gave_up").length;
+      const duplicates = report.properties[property].samples.filter(sample => sample.duplicate).length;
+      const samples = report.properties[property].samples.length;
+      if (discards / samples > 0.33 || duplicates / samples > 0.33) {
+        report.properties[property].status = "warning";
+      }
+    }
+
     return report;
   }
 }
