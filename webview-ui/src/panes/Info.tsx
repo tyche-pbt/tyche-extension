@@ -32,16 +32,16 @@ const Info = (props: InfoProps) => {
         <Disclosure>
           {({ open }) => (<>
             <Disclosure.Button
-              className={"bg-primary bg-opacity-25 w-full flex items-center " + (open ? "rounded-t-lg" : "rounded-lg")} >
-              <div className="px-2">
-                <i className="codicon codicon-info text-primary" />
+              className={"bg-primary text-white hover:bg-opacity-70 w-full flex items-center " + (open ? "rounded-t-lg" : "rounded-lg")} >
+              <div className="px-2 py-1">
+                <i className="codicon codicon-info " />
               </div>
               <div className="bg-flex-none">{x.title}</div>
               <div className="flex-auto text-right pr-2">
                 <i className={"codicon codicon-chevron-right " + (open ? "transform rotate-90" : "")} />
               </div>
             </Disclosure.Button>
-            <Disclosure.Panel className="p-2 border border-primary border-opacity-25 rounded-b-lg">
+            <Disclosure.Panel className="p-2 border border-primary rounded-b-lg">
               <Markdown className="markdown text-sm">{x.content}</Markdown>
             </Disclosure.Panel>
           </>)}
