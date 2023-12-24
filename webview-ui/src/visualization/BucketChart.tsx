@@ -34,6 +34,7 @@ export const BucketChart = (props: BucketChartProps) => {
         },
         color: {
           field: "label",
+          title: "Category",
           scale: {
             range: [
               THEME_COLORS.primary,
@@ -43,7 +44,6 @@ export const BucketChart = (props: BucketChartProps) => {
               THEME_COLORS.accent,
             ],
           },
-          legend: null,
         }
       },
     }, {
