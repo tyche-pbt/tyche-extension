@@ -28,18 +28,25 @@ const Info = (props: InfoProps) => {
       }
     </div>
     {props.info.map((x, i) =>
-      <Disclosure key={`info-${i}`}>
-        {({ open }) => (<>
-          <Disclosure.Button>
-            <i className="codicon codicon-info text-primary mr-1" />
-            {x.title}
-            <i className={`codicon codicon-chevron-right ${open ? "transform rotate-90" : ""}`} />
-          </Disclosure.Button>
-          <Disclosure.Panel>
-            <Markdown className="markdown">{x.content}</Markdown>
-          </Disclosure.Panel>
-        </>)}
-      </Disclosure >
+      <div className="my-1" key={`info-${i}`}>
+        <Disclosure>
+          {({ open }) => (<>
+            <Disclosure.Button
+              className={"bg-primary bg-opacity-25 w-full flex items-center " + (open ? "rounded-t-lg" : "rounded-lg")} >
+              <div className="px-2">
+                <i className="codicon codicon-info text-primary" />
+              </div>
+              <div className="bg-flex-none">{x.title}</div>
+              <div className="flex-auto text-right pr-2">
+                <i className={"codicon codicon-chevron-right " + (open ? "transform rotate-90" : "")} />
+              </div>
+            </Disclosure.Button>
+            <Disclosure.Panel className="p-2 border border-primary border-opacity-25 rounded-b-lg">
+              <Markdown className="markdown text-sm">{x.content}</Markdown>
+            </Disclosure.Panel>
+          </>)}
+        </Disclosure >
+      </div>
     )}</Card></div>;
 }
 
