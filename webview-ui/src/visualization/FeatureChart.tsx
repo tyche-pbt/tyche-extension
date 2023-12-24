@@ -28,7 +28,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
     mark: "bar",
     encoding: {
       x: { field: "label", type: "ordinal", bin: true, axis: { title: null } },
-      y: { field: "freq", type: "quantitative", axis: { title: "Samples" } },
+      y: { field: "freq", type: "quantitative", axis: { title: "# of Samples" } },
       color: { value: THEME_COLORS.primary }
     },
     data: { name: "table", values: featureData }

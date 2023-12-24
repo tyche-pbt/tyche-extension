@@ -21,14 +21,46 @@ export const BucketChart = (props: BucketChartProps) => {
 
   const liteSpec: vl.TopLevelSpec = {
     width: "container",
-    height: 150,
-    mark: "bar",
-    encoding: {
-      x: { field: "label", type: "nominal", axis: { title: null } },
-      y: { field: "freq", type: "quantitative", axis: { title: "Samples" } },
-      color: { value: THEME_COLORS.primary }
+    height: 20,
+    data: { name: "table", values: bucketedData },
+    layer: [{
+      mark: "bar",
+      encoding: {
+        x: {
+          aggregate: "sum",
+          field: "freq",
+          stack: "normalize",
+          title: "% of Samples",
+        },
+        color: {
+          field: "label",
+          scale: {
+            range: [
+              THEME_COLORS.primary,
+              THEME_COLORS.success,
+              THEME_COLORS.warning,
+              THEME_COLORS.error,
+              THEME_COLORS.accent,
+            ],
+          },
+          legend: null,
+        }
+      },
+    }, {
+      mark: { type: "text", color: "white" },
+      encoding: {
+        x: {
+          aggregate: "sum",
+          field: "freq",
+          stack: "normalize",
+          bandPosition: 0.5,
+        },
+        text: {
+          field: "label",
+        },
+      }
     },
-    data: { name: "table", values: bucketedData }
+    ]
   };
 
   const spec = vl.compile(liteSpec).spec;
@@ -36,7 +68,7 @@ export const BucketChart = (props: BucketChartProps) => {
     name: "filter",
     value: {},
     on: [
-      { events: "rect:mousedown", update: "datum" },
+      { events: "*:mousedown", update: "datum" },
     ]
   }];
 
