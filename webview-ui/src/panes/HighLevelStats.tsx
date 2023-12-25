@@ -38,7 +38,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
       </div>
       <span className="text-3xl">
         {discards}
-      </span> invalid tests.
+      </span> invalid samples.
     </Card>
     <Card className="col-span-1">
       <div className="flex">

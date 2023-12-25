@@ -9,10 +9,13 @@ type FailingCasesProps = {
 export const FailingCases = (props: FailingCasesProps) => {
   const failures = props.dataset.filter(x => x.outcome === "failed");
 
-  return <Card>
+  return <Card className="mt-2">
     <div className="mb-2">
       <div className="font-bold">Counter-examples</div>
     </div>
-    <PrettyExample example={failures[failures.length - 1]} />
+    {failures.reverse().slice(0, 5).map((x, i) =>
+      <div className="my-1" key={`example-${i}`}>
+        <PrettyExample example={x} />
+      </div>)}
   </Card>;
 };

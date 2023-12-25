@@ -51,7 +51,7 @@ const PropertyView = (props: PropertyViewProps) => {
           <button
             className="text-center rounded-md w-full hover:bg-primary hover:bg-opacity-25 py-1"
             onClick={() => setExampleFilter("all")} >
-            See All Examples <i className="codicon codicon-arrow-right ml-1" />
+            See All Samples <i className="codicon codicon-arrow-right ml-1" />
           </button>
         </Card>
         <Charts

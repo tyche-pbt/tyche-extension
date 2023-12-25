@@ -19,7 +19,7 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   return <div className="w-full">
     <Card>
-      <div className="font-bold text-lg">Examples</div>
+      <div className="font-bold text-lg">Samples</div>
       {filter &&
         <span className="font-mono">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>}
     </Card>

@@ -100,7 +100,7 @@ const App = () => {
                   or failing (<i className="codicon codicon-x text-error" />).
                 </>
                 : <>
-                  This page shows detailed information about examples that were used to test
+                  This page shows detailed information about the samples that were used to test
                   <span className="text-accent"> {state.property}</span>.
                   High level statistics are always shown. If you want to visualize
                   more granular distribution information, you can collect
