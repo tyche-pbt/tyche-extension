@@ -15,7 +15,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
   const dataset = props.dataset;
 
   const featureData: { label: number; freq: number; }[] =
-    Array.from(dataset.filter(x => x.features.numerical[feature] !== undefined).map((x) => Math.round(x.features.numerical[feature]))
+    Array.from(dataset.filter(x => x.features.ordinal[feature] !== undefined).map((x) => Math.round(x.features.ordinal[feature]))
       .reduce((acc, curr) => {
         return (acc.get(curr) ? acc.set(curr, acc.get(curr)! + 1) : acc.set(curr, 1), acc);
       }, new Map<number, number>()))

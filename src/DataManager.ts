@@ -63,8 +63,8 @@ export class DataManager {
           duplicate,
           item: line.representation.toString(),
           features: {
-            numerical: filterObject(line.features, v => typeof v === "number"),
-            categorical: filterObject(line.features, v => typeof v === "string")
+            ordinal: filterObject(line.features, v => typeof v === "number"),
+            nominal: filterObject(line.features, v => typeof v === "string")
           },
           coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
           metadata: { howGenerated: line.how_generated, metadata: line.metadata },

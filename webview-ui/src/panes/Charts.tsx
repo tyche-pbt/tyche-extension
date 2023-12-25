@@ -7,8 +7,8 @@ import { UniqueTimeChart } from "../visualization/UniqueTimeChart";
 type ChartsProps = {
   dataset: SampleInfo[];
   features: {
-    numerical: string[];
-    categorical: string[];
+    ordinal: string[];
+    nominal: string[];
   };
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 }
@@ -22,21 +22,21 @@ export const Charts = (props: ChartsProps) => {
         dataset={dataset}
       />
     </Card>
-    {[...features.categorical.map((x) =>
+    {[...features.nominal.map((x) =>
       <Card key={`bucket-${x}`}>
         <BucketChart
           feature={x}
           dataset={dataset}
-          viewValue={(value) => props.setFilteredView({ categorical: x, value })} />
+          viewValue={(value) => props.setFilteredView({ nominal: x, value })} />
       </Card>
     ),
-    ...features.numerical.flatMap((x) =>
+    ...features.ordinal.flatMap((x) =>
       [
         <Card key={`feature-${x}`}>
           <FeatureChart
             feature={x}
             dataset={dataset}
-            viewValue={(value) => props.setFilteredView({ numerical: x, value })} />
+            viewValue={(value) => props.setFilteredView({ ordinal: x, value })} />
         </Card>,
       ]),
     ]}

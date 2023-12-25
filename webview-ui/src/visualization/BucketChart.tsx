@@ -11,14 +11,14 @@ type BucketChartProps = {
 
 export const BucketChart = (props: BucketChartProps) => {
   const buckets = Array.from(new Set(props.dataset.flatMap((x) => {
-    if (!(props.feature in x.features.categorical)) { return []; }
-    return [x.features.categorical[props.feature]];
+    if (!(props.feature in x.features.nominal)) { return []; }
+    return [x.features.nominal[props.feature]];
   })));
 
   const bucketedData: { label: string, freq: number }[] = buckets.map(
     (bucket) => ({
       label: bucket,
-      freq: props.dataset.filter((y) => y.features.categorical[props.feature] === bucket).length / props.dataset.length,
+      freq: props.dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
     }));
 
   const binsSpec: VisualizationSpec = {

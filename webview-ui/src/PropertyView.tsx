@@ -22,11 +22,11 @@ const PropertyView = (props: PropertyViewProps) => {
     props.setShouldShowExplainer(filter === undefined);
   }
 
-  const numerical = testInfo.samples
-    .map(sample => Object.keys(sample.features.numerical))
+  const ordinal = testInfo.samples
+    .map(sample => Object.keys(sample.features.ordinal))
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
-  const categorical = testInfo.samples
-    .map(sample => Object.keys(sample.features.categorical))
+  const nominal = testInfo.samples
+    .map(sample => Object.keys(sample.features.nominal))
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return <>
@@ -57,7 +57,7 @@ const PropertyView = (props: PropertyViewProps) => {
         <Charts
           setFilteredView={setExampleFilter}
           dataset={testInfo.samples}
-          features={{ numerical, categorical }}
+          features={{ ordinal, nominal }}
         />
       </>
     }

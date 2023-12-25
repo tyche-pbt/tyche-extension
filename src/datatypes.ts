@@ -68,8 +68,8 @@ export const schemaSampleInfo = z.object({
   item: z.string(),
   duplicate: z.boolean(),
   features: z.object({
-    numerical: z.record(z.number()),
-    categorical: z.record(z.string()),
+    ordinal: z.record(z.number()),
+    nominal: z.record(z.string()),
   }),
   coverage: z.record(z.array(z.number())),
   metadata: z.any(),
@@ -93,9 +93,9 @@ export type TestInfo = z.infer<typeof schemaTestInfo>;
 export type Report = z.infer<typeof schemaReport>;
 
 export type ExampleFilter = {
-  numerical: string;
+  ordinal: string;
   value: number;
 } | {
-  categorical: string,
+  nominal: string,
   value: string
 };

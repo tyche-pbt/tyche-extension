@@ -12,8 +12,8 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   const dataset = filter
     ? props.dataset.filter((x) =>
-      ("numerical" in filter && x.features.numerical[filter.numerical] === filter.value) ||
-      ("categorical" in filter && x.features.categorical[filter.categorical] === filter.value)
+      ("ordinal" in filter && x.features.ordinal[filter.ordinal] === filter.value) ||
+      ("nominal" in filter && x.features.nominal[filter.nominal] === filter.value)
     )
     : props.dataset;
 
@@ -21,7 +21,7 @@ export const ExampleView = (props: ExampleViewProps) => {
     <Card>
       <div className="font-bold text-lg">Samples</div>
       {filter &&
-        <span className="font-mono">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>}
+        <span className="font-mono">{"ordinal" in filter ? filter.ordinal : filter.nominal} = {filter.value}</span>}
     </Card>
     {dataset.map((x, i) =>
       <Card key={`example-${i}`} className="mt-2">
