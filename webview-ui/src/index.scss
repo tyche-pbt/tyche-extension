@@ -7,8 +7,7 @@ html {
 }
 
 body {
-  @apply bg-background text-foreground;
-  @apply font-sans;
+  @apply bg-background text-foreground font-sans m-0 p-0;
 }
 
 .vega-embed {
