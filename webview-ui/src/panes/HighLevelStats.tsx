@@ -15,24 +15,24 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
 
   return <div className="grid grid-cols-2 w-full">
     <Card className="col-span-1">
-      <div className="opacity-60 text-xs">Tested</div>
+      <div className="opacity-60 text-sm">Tested</div>
       <span className="text-3xl">
         {props.testInfo.samples.filter((x) => x.outcome === "passed" && !x.duplicate).length}
       </span> unique cases.
     </Card>
     <Card className="col-span-1">
-      <div className="opacity-60 text-xs">Generated</div>
+      <div className="opacity-60 text-sm">Generated</div>
       <span className="text-3xl">
         {props.testInfo.samples.length}
       </span> samples.
     </Card>
     <Card className="col-span-1">
       <div className="flex">
-        <div className="opacity-60 text-xs flex-1">Discarded</div>
+        <div className="opacity-60 text-sm flex-1">Discarded</div>
         {
           discardPercent > 33 &&
-          <div className="text-xs text-white rounded-full font-bold px-2 bg-warning">
-            High
+          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning">
+            {">33%"}
           </div>
         }
       </div>
@@ -42,11 +42,11 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
     </Card>
     <Card className="col-span-1">
       <div className="flex">
-        <div className="opacity-60 text-xs flex-1">Revisited</div>
+        <div className="opacity-60 text-sm flex-1">Revisited</div>
         {
           duplicatePercent > 33 &&
-          <div className="text-xs text-white rounded-full font-bold px-2 bg-warning">
-            High
+          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning">
+            {">33%"}
           </div>
         }
       </div>

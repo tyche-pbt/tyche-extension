@@ -26,6 +26,16 @@ export const FeatureChart = (props: FeatureChartProps) => {
     width: "container",
     height: 150,
     mark: { type: "bar", cursor: "pointer" },
+    config: {
+      axis: {
+        labelFont: "Tahoma, sans-serif",
+        titleFont: "Tahoma, sans-serif",
+      },
+      legend: {
+        labelFont: "Tahoma, sans-serif",
+        titleFont: "Tahoma, sans-serif",
+      }
+    },
     params: [{
       name: "highlight",
       select: { type: "point", on: "mouseover", clear: "mouseout" },
@@ -58,8 +68,8 @@ export const FeatureChart = (props: FeatureChartProps) => {
   };
 
   return <div className="w-full">
-    <div>
-      <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{feature}</span>
+    <div className="mb-1">
+      <span className="font-bold">Distribution of</span> <span className="font-mono">{feature}</span>
     </div>
     <Vega
       className="w-full"

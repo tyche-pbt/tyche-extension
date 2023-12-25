@@ -40,8 +40,8 @@ const PropertyView = (props: PropertyViewProps) => {
           <div className="text-lg font-bold">
             Tyche Analysis
           </div>
-          <span className="font-mono text-sm">
-            {property}
+          <span className="">
+            for {property}.
           </span>
         </Card>
         <Info status={testInfo.status} info={testInfo.info} />

@@ -27,6 +27,16 @@ export const BucketChart = (props: BucketChartProps) => {
   const liteSpec: vl.TopLevelSpec = {
     width: "container",
     height: 20,
+    config: {
+      axis: {
+        labelFont: "Tahoma, sans-serif",
+        titleFont: "Tahoma, sans-serif",
+      },
+      legend: {
+        labelFont: "Tahoma, sans-serif",
+        titleFont: "Tahoma, sans-serif",
+      }
+    },
     data: { name: "table", values: bucketedData },
     layer: [{
       mark: { type: "bar", cursor: "pointer" },
@@ -60,7 +70,7 @@ export const BucketChart = (props: BucketChartProps) => {
         }
       },
     }, {
-      mark: { type: "text", color: "white" },
+      mark: { type: "text", color: "white", font: "Tahoma, sans-serif" },
       encoding: {
         x: {
           aggregate: "sum",
@@ -93,8 +103,10 @@ export const BucketChart = (props: BucketChartProps) => {
   };
 
   return <div className="w-full">
-    <div>
-      <span className="font-bold">Distribution of</span> <span className="text-sm font-mono">{props.feature}</span>
+    <div className="flex mb-1">
+      <div>
+        <span className="font-bold">Distribution of</span> <span className="font-mono">{props.feature}</span>
+      </div>
     </div>
     <Vega
       className="w-full"

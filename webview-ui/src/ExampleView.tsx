@@ -21,7 +21,7 @@ export const ExampleView = (props: ExampleViewProps) => {
     <Card>
       <div className="font-bold text-lg">Examples</div>
       {filter &&
-        <span className="font-mono text-sm">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>}
+        <span className="font-mono">{"numerical" in filter ? filter.numerical : filter.categorical} = {filter.value}</span>}
     </Card>
     {dataset.map((x, i) =>
       <Card key={`example-${i}`} className="mt-2">
