@@ -1,6 +1,6 @@
 import { ExampleFilter, SampleInfo } from "../../../src/datatypes";
-import { FeatureChart } from "../visualization/FeatureChart";
-import { BucketChart } from "../visualization/BucketChart";
+import { OrdinalChart } from "../visualization/OrdinalChart";
+import { NominalChart } from "../visualization/NominalChart";
 import Card from "../ui/Card";
 import { UniqueTimeChart } from "../visualization/UniqueTimeChart";
 
@@ -24,7 +24,7 @@ export const Charts = (props: ChartsProps) => {
     </Card>
     {[...features.nominal.map((x) =>
       <Card key={`bucket-${x}`}>
-        <BucketChart
+        <NominalChart
           feature={x}
           dataset={dataset}
           viewValue={(value) => props.setFilteredView({ nominal: x, value })} />
@@ -33,7 +33,7 @@ export const Charts = (props: ChartsProps) => {
     ...features.ordinal.flatMap((x) =>
       [
         <Card key={`feature-${x}`}>
-          <FeatureChart
+          <OrdinalChart
             feature={x}
             dataset={dataset}
             viewValue={(value) => props.setFilteredView({ ordinal: x, value })} />
