@@ -19,8 +19,8 @@ type AppState = {
 };
 
 const App = () => {
-  const [state, setStateRaw] = useState<AppState>({ state: "loading" });
-  // const [state, setStateRaw] = useState<AppState>({ state: "ready", report: require("./report.json"), property: null /*"bst_tests.py::test_insert_post"*/ });
+  // const [state, setStateRaw] = useState<AppState>({ state: "loading" });
+  const [state, setStateRaw] = useState<AppState>({ state: "ready", report: require("./report.json"), property: null /*"bst_tests.py::test_insert_post"*/ });
   const [shouldShowExplainer, setShouldShowExplainer] = useState<boolean>(true);
 
   const setState = (newState: AppState) => {

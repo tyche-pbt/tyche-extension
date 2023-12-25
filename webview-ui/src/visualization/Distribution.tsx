@@ -1,3 +1,4 @@
+import { Popover } from "@headlessui/react";
 import VegaLite from "../utilities/VegaLite";
 import { SignalListeners, VisualizationSpec } from "react-vega";
 
@@ -26,7 +27,7 @@ const Distribution = (props: DistributionProps) => {
       <div>
         <span className="font-bold">Distribution of</span> <span className="font-mono">{filter}</span>
       </div>
-      {/* <div className="flex-auto flex flex-row-reverse">
+      <div className="flex-auto flex flex-row-reverse">
         <Popover className="relative">
           <Popover.Button className="mr-2">
             <i className="codicon codicon-menu" />
@@ -41,18 +42,15 @@ const Distribution = (props: DistributionProps) => {
                   }}>
                   Copy Vega-Lite Spec
                 </button>
-                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
-                  onClick={() => {
-                    window.open("https://vega.github.io/editor/#/custom/vega-lite");
-                    close();
-                  }}>
+                <a className="inline-block w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
+                  href="https://vega.github.io/editor">
                   Open Vega Editor
-                </button>
+                </a>
               </>
             }
           </Popover.Panel>
         </Popover>
-      </div> */}
+      </div>
     </div>
     <VegaLite
       className="w-full"
