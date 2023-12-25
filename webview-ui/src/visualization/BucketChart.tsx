@@ -1,9 +1,7 @@
 import { SampleInfo } from "../../../src/datatypes";
 import { THEME_COLORS } from "../utilities/colors";
-import { SignalListeners, Vega } from "react-vega";
-import { Handler } from "vega-tooltip";
-import * as vl from "vega-lite";
-import { Popover } from "@headlessui/react";
+import { SignalListeners, VisualizationSpec } from "react-vega";
+import Distribution, { vegaConfig } from "./Distribution";
 
 type BucketChartProps = {
   feature: string;
@@ -13,9 +11,7 @@ type BucketChartProps = {
 
 export const BucketChart = (props: BucketChartProps) => {
   const buckets = Array.from(new Set(props.dataset.flatMap((x) => {
-    if (!(props.feature in x.features.categorical)) {
-      return [];
-    }
+    if (!(props.feature in x.features.categorical)) { return []; }
     return [x.features.categorical[props.feature]];
   })));
 
@@ -25,26 +21,26 @@ export const BucketChart = (props: BucketChartProps) => {
       freq: props.dataset.filter((y) => y.features.categorical[props.feature] === bucket).length / props.dataset.length,
     }));
 
-  const liteSpec: vl.TopLevelSpec = {
+  const binsSpec: VisualizationSpec = {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    config: vegaConfig,
+    data: { name: "table", values: bucketedData },
     width: "container",
     height: 20,
-    config: {
-      axis: {
-        labelFont: "Tahoma, sans-serif",
-        titleFont: "Tahoma, sans-serif",
-      },
-      legend: {
-        labelFont: "Tahoma, sans-serif",
-        titleFont: "Tahoma, sans-serif",
-      }
-    },
-    data: { name: "table", values: bucketedData },
+    signals: [{
+      name: "filter",
+      value: {},
+      on: [
+        { events: "rect:mousedown", update: "datum" },
+        { events: "text:mousedown", update: "datum" },
+      ]
+    }],
     layer: [{
-      mark: { type: "bar", cursor: "pointer" },
       params: [{
         name: "highlight",
         select: { type: "point", on: "mouseover", clear: "mouseout" },
       }],
+      mark: { type: "bar", cursor: "pointer" },
       encoding: {
         x: {
           aggregate: "sum",
@@ -62,10 +58,10 @@ export const BucketChart = (props: BucketChartProps) => {
           scale: {
             range: [
               THEME_COLORS.primary,
-              THEME_COLORS.success,
-              THEME_COLORS.warning,
-              THEME_COLORS.error,
               THEME_COLORS.accent,
+              THEME_COLORS.accent2,
+              THEME_COLORS.accent3,
+              THEME_COLORS.accent4,
             ],
           },
         }
@@ -87,15 +83,37 @@ export const BucketChart = (props: BucketChartProps) => {
     ]
   };
 
-  const spec = vl.compile(liteSpec).spec;
-  spec.signals = [...spec.signals || [], {
-    name: "filter",
-    value: {},
-    on: [
-      { events: "rect:mousedown", update: "datum" },
-      { events: "text:mousedown", update: "datum" },
-    ]
-  }];
+  const histSpec: VisualizationSpec = {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    config: vegaConfig,
+    data: { name: "table", values: bucketedData },
+    width: "container",
+    height: 150,
+    signals: [{
+      name: "filter",
+      value: {},
+      on: [
+        { events: "rect:mousedown", update: "datum" },
+        { events: "text:mousedown", update: "datum" },
+      ]
+    }],
+    params: [{
+      name: "highlight",
+      select: { type: "point", on: "mouseover", clear: "mouseout" },
+    }],
+    mark: { type: "bar", cursor: "pointer" },
+    encoding: {
+      x: { field: "label", type: "nominal", axis: { title: null } },
+      y: { field: "freq", type: "quantitative", axis: { title: "# of Samples" } },
+      color: { value: THEME_COLORS.primary },
+      fillOpacity: {
+        condition: { param: "highlight", empty: false, value: 0.7 },
+        value: 1
+      }
+    },
+  };
+
+  const spec = buckets.length <= 5 ? binsSpec : histSpec;
 
   const listeners: SignalListeners = {
     filter: (_name, value) => {
@@ -103,48 +121,9 @@ export const BucketChart = (props: BucketChartProps) => {
     }
   };
 
-  return <div className="w-full">
-    <div className="flex mb-1">
-      <div>
-        <span className="font-bold">Distribution of</span> <span className="font-mono">{props.feature}</span>
-      </div>
-      <div className="flex-auto flex flex-row-reverse">
-        <Popover className="relative">
-          <Popover.Button className="mr-2">
-            <i className="codicon codicon-menu" />
-          </Popover.Button>
-          <Popover.Panel className="absolute w-44 right-2 top-8 z-10 bg-white border border-black border-opacity-25 rounded-md">
-            {({ close }) =>
-              <>
-                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
-                  onClick={() => {
-                    const exportSpec = liteSpec;
-                    exportSpec["$schema"] = "https://vega.github.io/schema/vega-lite/v5.json";
-                    navigator.clipboard.writeText(JSON.stringify(exportSpec, null, 2));
-                    close();
-                  }}>
-                  Copy Vega-Lite Spec
-                </button>
-                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
-                  onClick={() => {
-                    window.open("https://vega.github.io/editor/#/custom/vega-lite");
-                    close();
-                  }}>
-                  Open Vega Editor
-                </button>
-              </>
-            }
-          </Popover.Panel>
-        </Popover>
-      </div>
-    </div>
-    <Vega
-      className="w-full"
-      renderer="svg"
-      signalListeners={listeners}
-      spec={spec}
-      tooltip={new Handler().call}
-      actions={false}
-    />
-  </div>;
+  return <Distribution
+    filter={props.feature}
+    spec={spec}
+    listeners={listeners}
+  />;
 }

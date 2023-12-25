@@ -1,9 +1,7 @@
 import { SampleInfo } from "../../../src/datatypes";
 import { THEME_COLORS } from "../utilities/colors";
-import { SignalListeners, Vega } from "react-vega";
-import { Handler } from "vega-tooltip";
-import * as vl from "vega-lite";
-import { Popover } from "@headlessui/react";
+import { SignalListeners, VisualizationSpec } from "react-vega";
+import Distribution, { vegaConfig } from "./Distribution";
 
 type FeatureChartProps = {
   feature: string;
@@ -23,24 +21,22 @@ export const FeatureChart = (props: FeatureChartProps) => {
       }, new Map<number, number>()))
       .map(([k, v]) => ({ label: k, freq: v }));
 
-  const liteSpec: vl.TopLevelSpec = {
+  const spec: VisualizationSpec = {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    config: vegaConfig,
+    data: { name: "table", values: featureData },
     width: "container",
     height: 150,
-    mark: { type: "bar", cursor: "pointer" },
-    config: {
-      axis: {
-        labelFont: "Tahoma, sans-serif",
-        titleFont: "Tahoma, sans-serif",
-      },
-      legend: {
-        labelFont: "Tahoma, sans-serif",
-        titleFont: "Tahoma, sans-serif",
-      }
-    },
+    signals: [{
+      name: "filter",
+      value: {},
+      on: [{ events: "rect:mousedown", update: "datum" }]
+    }],
     params: [{
       name: "highlight",
       select: { type: "point", on: "mouseover", clear: "mouseout" },
     }],
+    mark: { type: "bar", cursor: "pointer" },
     encoding: {
       x: { field: "label", type: "ordinal", bin: true, axis: { title: null } },
       y: { field: "freq", type: "quantitative", axis: { title: "# of Samples" } },
@@ -50,17 +46,7 @@ export const FeatureChart = (props: FeatureChartProps) => {
         value: 1
       }
     },
-    data: { name: "table", values: featureData }
   };
-
-  const spec = vl.compile(liteSpec).spec;
-  spec.signals = [...spec.signals || [], {
-    name: "filter",
-    value: {},
-    on: [
-      { events: "rect:mousedown", update: "datum" },
-    ]
-  }];
 
   const listeners: SignalListeners = {
     filter: (_name, value) => {
@@ -68,48 +54,9 @@ export const FeatureChart = (props: FeatureChartProps) => {
     }
   };
 
-  return <div className="w-full">
-    <div className="flex mb-1">
-      <div>
-        <span className="font-bold">Distribution of</span> <span className="font-mono">{feature}</span>
-      </div>
-      <div className="flex-auto flex flex-row-reverse">
-        <Popover className="relative">
-          <Popover.Button className="mr-2">
-            <i className="codicon codicon-menu" />
-          </Popover.Button>
-          <Popover.Panel className="absolute w-44 right-2 top-8 z-10 bg-white border border-black border-opacity-25 rounded-md">
-            {({ close }) =>
-              <>
-                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
-                  onClick={() => {
-                    const exportSpec = liteSpec;
-                    exportSpec["$schema"] = "https://vega.github.io/schema/vega-lite/v5.json";
-                    navigator.clipboard.writeText(JSON.stringify(exportSpec, null, 2));
-                    close();
-                  }}>
-                  Copy Vega-Lite Spec
-                </button>
-                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
-                  onClick={() => {
-                    window.open("https://vega.github.io/editor/#/custom/vega-lite");
-                    close();
-                  }}>
-                  Open Vega Editor
-                </button>
-              </>
-            }
-          </Popover.Panel>
-        </Popover>
-      </div>
-    </div>
-    <Vega
-      className="w-full"
-      renderer="svg"
-      signalListeners={listeners}
-      spec={spec}
-      tooltip={new Handler().call}
-      actions={false}
-    />
-  </div>;
+  return <Distribution
+    filter={feature}
+    spec={spec}
+    listeners={listeners}
+  />;
 }

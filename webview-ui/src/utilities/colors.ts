@@ -5,5 +5,8 @@ export const THEME_COLORS = {
   success: '#7da35c',
   warning: '#D08770',
   error: '#BF616A',
-  accent: '#B48EAD'
+  accent: '#B48EAD',
+  accent2: '#8FBCBB',
+  accent3: '#EBCB8B',
+  accent4: '#88C0D0'
 };
