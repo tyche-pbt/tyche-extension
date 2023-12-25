@@ -10,11 +10,17 @@ import { ExampleView } from "./ExampleView";
 type PropertyViewProps = {
   property: string;
   testInfo: TestInfo;
+  setShouldShowExplainer: (shouldShowExplainer: boolean) => void;
 };
 
 const PropertyView = (props: PropertyViewProps) => {
   const { testInfo, property } = props;
-  const [exampleFilter, setExampleFilter] = useState<ExampleFilter | "all" | undefined>(undefined);
+  const [exampleFilter, setExampleFilterRaw] = useState<ExampleFilter | "all" | undefined>(undefined);
+
+  const setExampleFilter = (filter: ExampleFilter | "all" | undefined) => {
+    setExampleFilterRaw(filter);
+    props.setShouldShowExplainer(filter === undefined);
+  }
 
   const numerical = testInfo.samples
     .map(sample => Object.keys(sample.features.numerical))
@@ -36,14 +42,6 @@ const PropertyView = (props: PropertyViewProps) => {
     }
     {exampleFilter === undefined &&
       <>
-        <Card>
-          <div className="text-lg font-bold">
-            Tyche Analysis
-          </div>
-          <span className="">
-            for {property}.
-          </span>
-        </Card>
         <Info status={testInfo.status} info={testInfo.info} />
         {testInfo.status === "failure" &&
           <FailingCases dataset={testInfo.samples} />

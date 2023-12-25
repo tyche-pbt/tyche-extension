@@ -7,7 +7,7 @@ type OverviewProps = {
 }
 
 const Overview = (props: OverviewProps) => {
-  return <Card>
+  return <Card className="mt-2">
     <table className="w-full">
       <tbody>
         {

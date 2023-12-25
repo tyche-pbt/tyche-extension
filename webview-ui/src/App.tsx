@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import PropertyView from "./PropertyView";
 import Overview from "./Overview";
+import Card from "./ui/Card";
 
 type LoadDataCommand = {
   report: Report;
@@ -19,7 +20,8 @@ type AppState = {
 
 const App = () => {
   const [state, setStateRaw] = useState<AppState>({ state: "loading" });
-  // const [state, setStateRaw] = useState<AppState>({ state: "overview", report: require("./report.json") /*, property: "bst_tests.py::test_insert_post"*/ });
+  // const [state, setStateRaw] = useState<AppState>({ state: "ready", report: require("./report.json"), property: null /*"bst_tests.py::test_insert_post"*/ });
+  const [shouldShowExplainer, setShouldShowExplainer] = useState<boolean>(true);
 
   const setState = (newState: AppState) => {
     setStateRaw(newState);
@@ -83,10 +85,42 @@ const App = () => {
         </span>
       </div>
       <div className="p-1 mt-10">
+        {shouldShowExplainer &&
+          <Card className="mb-1 text-sm">
+            <div className="text-lg font-bold mb-1">
+              Tyche {state.property !== null && <span className="font-normal text-base text-accent">/ {state.property}</span>}
+            </div>
+            <span className="">
+              Tyche helps you understand the effectiveness of your property-based testing.&nbsp;
+              {state.property === null
+                ? <>
+                  This page shows an overview of your last test execution. Properties are marked as
+                  passing (<i className="codicon codicon-check text-success" />),
+                  passing with warnings (<i className="codicon codicon-warning text-warning" />),
+                  or failing (<i className="codicon codicon-x text-error" />).
+                </>
+                : <>
+                  This page shows detailed information about examples that were used to test
+                  <span className="text-accent"> {state.property}</span>.
+                  High level statistics are always shown. If you want to visualize
+                  more granular distribution information, you can collect
+                  <span className="italic"> features</span>; consult the documentation for your PBT
+                  framework to learn how.
+                </>
+              }
+              <div className="w-full text-right mt-1 text-base">
+                <a href="https://github.com/tyche-pbt/tyche-extension" className="text-primary">Learn More</a>
+              </div>
+            </span>
+          </Card>}
         {state.state === "ready" && state.property === null &&
           <Overview report={state.report} selectProperty={(property) => setState({ state: "ready", report: state.report, property })} />}
         {state.state === "ready" && state.property !== null &&
-          <PropertyView testInfo={state.report.properties[state.property]} property={state.property} />}
+          <PropertyView
+            testInfo={state.report.properties[state.property]}
+            property={state.property}
+            setShouldShowExplainer={setShouldShowExplainer}
+          />}
       </div>
     </div >
   );
