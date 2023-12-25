@@ -73,7 +73,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center">
+      <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center z-30">
         {state.state === "ready" && state.property === null &&
           <div></div>}
         {state.state === "ready" && state.property !== null &&

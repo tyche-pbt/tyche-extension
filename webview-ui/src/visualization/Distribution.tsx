@@ -14,18 +14,18 @@ export const vegaConfig = {
 };
 
 type DistributionProps = {
-  filter: string;
+  title: JSX.Element;
   spec: VisualizationSpec;
   listeners?: SignalListeners;
 };
 
 const Distribution = (props: DistributionProps) => {
-  const { filter, spec, listeners } = props;
+  const { title, spec, listeners } = props;
 
   return <div className="w-full">
     <div className="flex mb-1">
       <div>
-        <span className="font-bold">Distribution of</span> <span className="font-mono">{filter}</span>
+        {title}
       </div>
       <div className="flex-auto flex flex-row-reverse">
         <Popover className="relative">

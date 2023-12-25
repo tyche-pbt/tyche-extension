@@ -122,7 +122,9 @@ export const BucketChart = (props: BucketChartProps) => {
   };
 
   return <Distribution
-    filter={props.feature}
+    title={<>
+      <span className="font-bold">Distribution of</span> <span className="font-mono">{props.feature}</span>
+    </>}
     spec={spec}
     listeners={listeners}
   />;

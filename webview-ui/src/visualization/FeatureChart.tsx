@@ -55,7 +55,9 @@ export const FeatureChart = (props: FeatureChartProps) => {
   };
 
   return <Distribution
-    filter={feature}
+    title={<>
+      <span className="font-bold">Distribution of</span> <span className="font-mono">{feature}</span>
+    </>}
     spec={spec}
     listeners={listeners}
   />;

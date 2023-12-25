@@ -32,7 +32,7 @@ const PropertyView = (props: PropertyViewProps) => {
   return <>
     {exampleFilter !== undefined &&
       <>
-        <div className="fixed top-0 right-0 left-0 bg-accent py-2 px-3 h-10 flex justify-between items-center">
+        <div className="fixed top-0 right-0 left-0 bg-accent py-2 px-3 h-10 flex justify-between items-center z-40">
           <button onClick={() => setExampleFilter(undefined)}>
             <i className="codicon codicon-close text-background" />
           </button>
