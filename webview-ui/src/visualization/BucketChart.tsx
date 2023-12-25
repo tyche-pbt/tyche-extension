@@ -3,6 +3,7 @@ import { THEME_COLORS } from "../utilities/colors";
 import { SignalListeners, Vega } from "react-vega";
 import { Handler } from "vega-tooltip";
 import * as vl from "vega-lite";
+import { Popover } from "@headlessui/react";
 
 type BucketChartProps = {
   feature: string;
@@ -106,6 +107,35 @@ export const BucketChart = (props: BucketChartProps) => {
     <div className="flex mb-1">
       <div>
         <span className="font-bold">Distribution of</span> <span className="font-mono">{props.feature}</span>
+      </div>
+      <div className="flex-auto flex flex-row-reverse">
+        <Popover className="relative">
+          <Popover.Button className="mr-2">
+            <i className="codicon codicon-menu" />
+          </Popover.Button>
+          <Popover.Panel className="absolute w-44 right-2 top-8 z-10 bg-white border border-black border-opacity-25 rounded-md">
+            {({ close }) =>
+              <>
+                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
+                  onClick={() => {
+                    const exportSpec = liteSpec;
+                    exportSpec["$schema"] = "https://vega.github.io/schema/vega-lite/v5.json";
+                    navigator.clipboard.writeText(JSON.stringify(exportSpec, null, 2));
+                    close();
+                  }}>
+                  Copy Vega-Lite Spec
+                </button>
+                <button className="w-full hover:bg-primary hover:bg-opacity-25 text-left px-2 py-1"
+                  onClick={() => {
+                    window.open("https://vega.github.io/editor/#/custom/vega-lite");
+                    close();
+                  }}>
+                  Open Vega Editor
+                </button>
+              </>
+            }
+          </Popover.Panel>
+        </Popover>
       </div>
     </div>
     <Vega
