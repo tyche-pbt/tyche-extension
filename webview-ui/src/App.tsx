@@ -36,7 +36,6 @@ const App = () => {
       report: command.report,
       property: state.state === "ready" ? state.property : null,
     });
-    console.log(JSON.stringify(command.report, null, 2))
   };
 
   useEffect(() => {
