@@ -17,7 +17,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
     <Card className="col-span-1">
       <div className="opacity-60 text-sm">Tested</div>
       <span className="text-3xl">
-        {props.testInfo.samples.filter((x) => x.outcome === "passed" && !x.duplicate).length}
+        {props.testInfo.samples.filter((x) => x.outcome !== "gave_up" && !x.duplicate).length}
       </span> unique cases.
     </Card>
     <Card className="col-span-1">
