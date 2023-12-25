@@ -9,6 +9,10 @@ module.exports = {
       black: "#000",
       white: "#fff"
     },
+    fontFamily: {
+      sans: ["Tahoma", "sans-serif"],
+      mono: ["Courier", "monospace"],
+    },
     extend: {},
   },
   plugins: [

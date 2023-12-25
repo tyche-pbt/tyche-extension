@@ -40,7 +40,7 @@ const Info = (props: InfoProps) => {
         <Disclosure>
           {({ open }) => (<>
             <Disclosure.Button
-              className={"bg-primary text-white hover:bg-opacity-70 w-full flex items-center " + (open ? "rounded-t-md" : "rounded-md")} >
+              className={"hover:bg-opacity-25 hover:bg-primary w-full flex items-center " + (open ? "rounded-t-md bg-primary bg-opacity-25" : "rounded-md")} >
               <div className="px-2 py-1">
                 <i className="codicon codicon-info " />
               </div>
@@ -49,7 +49,7 @@ const Info = (props: InfoProps) => {
                 <i className={"codicon codicon-chevron-right " + (open ? "transform rotate-90" : "")} />
               </div>
             </Disclosure.Button>
-            <Disclosure.Panel className="p-2 border border-primary rounded-b-md">
+            <Disclosure.Panel className="p-2 border border-primary border-opacity-25 rounded-b-md">
               <Markdown className="markdown text-sm">{x.content}</Markdown>
             </Disclosure.Panel>
           </>)}

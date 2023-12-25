@@ -12,7 +12,8 @@ export const PrettyExample = (props: PrettyExampleProps) => {
         <Disclosure.Button as="pre" className={`text-sm w-full break-words whitespace-pre-wrap ${open ? "cursor-zoom-out" : "cursor-zoom-in"}`}>
           {props.example.item}
         </Disclosure.Button>
-        <Disclosure.Panel as="pre" className="text-sm w-full break-words whitespace-pre-wrap">
+        <Disclosure.Panel as="pre" className="mt-2 text-sm w-full break-words whitespace-pre-wrap">
+          <div className="font-sans">Details:</div>
           {JSON.stringify(props.example.metadata, null, 2)}
         </Disclosure.Panel>
       </>}

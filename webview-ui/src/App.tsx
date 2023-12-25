@@ -88,7 +88,7 @@ const App = () => {
             <i className="codicon codicon-arrow-left text-background" />
           </button>}
         <span className="text-sm text-background">
-          Run: {new Date(state.report.timestamp * 1000).toLocaleString()}
+          Last run {new Date(state.report.timestamp * 1000).toLocaleString()}
         </span>
       </div>
       <div className="p-1 mt-10">

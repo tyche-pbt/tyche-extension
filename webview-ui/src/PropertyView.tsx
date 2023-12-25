@@ -51,9 +51,9 @@ const PropertyView = (props: PropertyViewProps) => {
         <HighLevelStats testInfo={testInfo} property={property} />
         <Card>
           <button
-            className="text-sm text-center rounded-md w-full hover:bg-primary hover:bg-opacity-25 py-1"
+            className="text-center rounded-md w-full hover:bg-primary hover:bg-opacity-25 py-1"
             onClick={() => setExampleFilter("all")} >
-            See All Examples
+            See All Examples <i className="codicon codicon-arrow-right ml-1" />
           </button>
         </Card>
         <Charts
