@@ -15,11 +15,13 @@ export const OrdinalChart = (props: OrdinalChartProps) => {
   const dataset = props.dataset;
 
   const featureData: { label: number; freq: number; }[] =
-    Array.from(dataset.filter(x => x.features.ordinal[feature] !== undefined).map((x) => Math.round(x.features.ordinal[feature]))
+    Array.from(dataset.filter(x => x.features.ordinal[feature] !== undefined).map((x) => x.features.ordinal[feature])
       .reduce((acc, curr) => {
         return (acc.get(curr) ? acc.set(curr, acc.get(curr)! + 1) : acc.set(curr, 1), acc);
       }, new Map<number, number>()))
       .map(([k, v]) => ({ label: k, freq: v }));
+
+  const quality = featureData.every(x => parseInt(x.label.toString()) === x.label) ? "ordinal" : "quantitative";
 
   const spec: VisualizationSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -38,7 +40,7 @@ export const OrdinalChart = (props: OrdinalChartProps) => {
     }],
     mark: { type: "bar", cursor: "pointer" },
     encoding: {
-      x: { field: "label", type: "ordinal", bin: true, axis: { title: null } },
+      x: { field: "label", type: quality, bin: true, axis: { title: null } },
       y: { field: "freq", type: "quantitative", axis: { title: "# of Samples" } },
       color: { value: THEME_COLORS.primary },
       fillOpacity: {
