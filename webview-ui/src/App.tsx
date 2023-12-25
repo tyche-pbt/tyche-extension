@@ -12,17 +12,14 @@ type LoadDataCommand = {
 type AppState = {
   state: "loading"
 } | {
-  state: "overview";
+  state: "ready";
   report: Report;
-} | {
-  state: "selected";
-  report: Report;
-  property: string;
+  property: string | null;
 };
 
 const App = () => {
-  // const [state, setStateRaw] = useState<AppState>({ state: "loading" });
-  const [state, setStateRaw] = useState<AppState>({ state: "overview", report: require("./report.json") /*, property: "bst_tests.py::test_insert_post"*/ });
+  const [state, setStateRaw] = useState<AppState>({ state: "loading" });
+  // const [state, setStateRaw] = useState<AppState>({ state: "overview", report: require("./report.json") /*, property: "bst_tests.py::test_insert_post"*/ });
 
   const setState = (newState: AppState) => {
     setStateRaw(newState);
@@ -32,16 +29,10 @@ const App = () => {
   };
 
   const loadData = (command: LoadDataCommand) => {
-    if (state.state === "selected" && command.report.properties[state.property]) {
-      setState({
-        state: "selected",
-        report: command.report,
-        property: state.property,
-      });
-    }
     setState({
-      state: "overview",
+      state: "ready",
       report: command.report,
+      property: state.state === "ready" ? state.property : null,
     });
   };
 
@@ -81,10 +72,10 @@ const App = () => {
   return (
     <div className="App">
       <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center">
-        {state.state === "overview" &&
+        {state.state === "ready" && state.property === null &&
           <div></div>}
-        {state.state === "selected" &&
-          <button onClick={() => setState({ state: "overview", report: state.report })}>
+        {state.state === "ready" && state.property !== null &&
+          <button onClick={() => setState({ state: "ready", report: state.report, property: null })}>
             <i className="codicon codicon-arrow-left text-background" />
           </button>}
         <span className="text-sm text-background">
@@ -92,9 +83,9 @@ const App = () => {
         </span>
       </div>
       <div className="p-1 mt-10">
-        {state.state === "overview" &&
-          <Overview report={state.report} selectProperty={(property) => setState({ state: "selected", report: state.report, property })} />}
-        {state.state === "selected" &&
+        {state.state === "ready" && state.property === null &&
+          <Overview report={state.report} selectProperty={(property) => setState({ state: "ready", report: state.report, property })} />}
+        {state.state === "ready" && state.property !== null &&
           <PropertyView testInfo={state.report.properties[state.property]} property={state.property} />}
       </div>
     </div >

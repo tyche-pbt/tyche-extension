@@ -1,4 +1,3 @@
-import { Popover } from "@headlessui/react";
 import VegaLite from "../utilities/VegaLite";
 import { SignalListeners, VisualizationSpec } from "react-vega";
 
@@ -27,7 +26,7 @@ const Distribution = (props: DistributionProps) => {
       <div>
         <span className="font-bold">Distribution of</span> <span className="font-mono">{filter}</span>
       </div>
-      <div className="flex-auto flex flex-row-reverse">
+      {/* <div className="flex-auto flex flex-row-reverse">
         <Popover className="relative">
           <Popover.Button className="mr-2">
             <i className="codicon codicon-menu" />
@@ -53,7 +52,7 @@ const Distribution = (props: DistributionProps) => {
             }
           </Popover.Panel>
         </Popover>
-      </div>
+      </div> */}
     </div>
     <VegaLite
       className="w-full"
