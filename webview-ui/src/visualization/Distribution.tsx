@@ -23,13 +23,13 @@ const Distribution = (props: DistributionProps) => {
   const { title, spec, listeners } = props;
 
   return <div className="w-full">
-    <div className="flex mb-1">
-      <div>
+    <div className="mb-1 flex">
+      <div className="flex-1 text-nowrap overflow-hidden overflow-ellipsis ">
         {title}
       </div>
-      <div className="flex-auto flex flex-row-reverse">
+      <div className="flex flex-row-reverse">
         <Popover className="relative">
-          <Popover.Button className="mr-2">
+          <Popover.Button className="mx-2">
             <i className="codicon codicon-menu" />
           </Popover.Button>
           <Popover.Panel className="absolute w-44 right-2 top-8 z-10 bg-white border border-black border-opacity-25 rounded-md">

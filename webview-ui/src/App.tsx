@@ -36,6 +36,7 @@ const App = () => {
       report: command.report,
       property: state.state === "ready" ? state.property : null,
     });
+    console.log(JSON.stringify(command.report, null, 2))
   };
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const App = () => {
       <div className="p-1 mt-10">
         {shouldShowExplainer &&
           <Card className="mb-1 text-sm">
-            <div className="text-lg font-bold mb-1">
+            <div className="text-lg font-bold mb-1 break-all">
               Tyche {state.property !== null && <span className="font-normal text-base text-accent">/ {state.property}</span>}
             </div>
             <span className="">
@@ -101,7 +102,7 @@ const App = () => {
                 </>
                 : <>
                   This page shows detailed information about the samples that were used to test
-                  <span className="text-accent"> {state.property}</span>.
+                  <span className="text-accent break-all"> {state.property}</span>.
                   High level statistics are always shown. If you want to visualize
                   more granular distribution information, you can collect
                   <span className="italic"> features</span>; consult the documentation for your PBT

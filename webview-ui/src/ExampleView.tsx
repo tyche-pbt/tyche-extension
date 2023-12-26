@@ -12,10 +12,11 @@ export const ExampleView = (props: ExampleViewProps) => {
 
   const dataset = filter
     ? props.dataset.filter((x) =>
-      ("ordinal" in filter && x.features.ordinal[filter.ordinal] === filter.value) ||
-      ("nominal" in filter && x.features.nominal[filter.nominal] === filter.value)
+      x.item !== "" &&
+      (("ordinal" in filter && x.features.ordinal[filter.ordinal] === filter.value) ||
+        ("nominal" in filter && x.features.nominal[filter.nominal] === filter.value))
     )
-    : props.dataset;
+    : props.dataset.filter(x => x.item !== "");
 
   return <div className="w-full">
     <Card>

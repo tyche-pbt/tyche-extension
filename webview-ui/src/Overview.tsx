@@ -8,30 +8,28 @@ type OverviewProps = {
 
 const Overview = (props: OverviewProps) => {
   return <Card className="mt-2">
-    <table className="w-full">
-      <tbody>
-        {
-          Object.keys(props.report.properties).map((property) =>
-            <tr
-              className="hover:bg-primary hover:bg-opacity-25 cursor-pointer"
-              onClick={() => props.selectProperty(property)}
-              key={property}>
-              <td className="pl-2 py-1 rounded-s-md">
-                {property}
-              </td>
-              <td className="text-right pr-2 py-1 rounded-e-md">
-                {props.report.properties[property].status === "failure" &&
-                  <i className="codicon codicon-x text-error" />}
-                {props.report.properties[property].status === "success" &&
-                  <i className="codicon codicon-check text-success" />}
-                {props.report.properties[property].status === "warning" &&
-                  <i className="codicon codicon-warning text-warning" />}
-              </td>
-            </tr>
-          )
-        }
-      </tbody>
-    </table>
+    <ul className="w-full">
+      {Object.keys(props.report.properties).map((property) =>
+        <li
+          className="hover:bg-primary hover:bg-opacity-25 cursor-pointer flex w-full py-1 px-1 rounded-md"
+          onClick={() => props.selectProperty(property)}
+          key={property}>
+          <div
+            className="flex-1 min-w-0 overflow-auto overflow-ellipsis"
+            style={{ direction: "rtl" }}
+            title={property}>
+            {property}
+          </div>
+          <div className="ml-3">
+            {props.report.properties[property].status === "failure" &&
+              <i className="codicon codicon-x text-error" />}
+            {props.report.properties[property].status === "success" &&
+              <i className="codicon codicon-check text-success" />}
+            {props.report.properties[property].status === "warning" &&
+              <i className="codicon codicon-warning text-warning" />}
+          </div>
+        </li>)}
+    </ul>
   </Card>;
 };
 
