@@ -16,6 +16,7 @@ export const NominalChart = (props: NominalChartProps) => {
 
   const data: { label: string, freq: number }[] = buckets.map(
     (bucket) => ({
+      rawLabel: bucket,
       label: bucket === undefined ? "N/a" : bucket === "" ? "true" : bucket,
       freq: props.dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
     }));
@@ -116,7 +117,7 @@ export const NominalChart = (props: NominalChartProps) => {
 
   const listeners: SignalListeners = {
     filter: (_name, value) => {
-      props.viewValue((value as { label: string }).label)
+      props.viewValue((value as { rawLabel: string }).rawLabel)
     }
   };
 

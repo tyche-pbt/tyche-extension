@@ -51,7 +51,7 @@ const Info = (props: InfoProps) => {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="p-2 border border-primary border-opacity-25 rounded-b-md">
-                <Markdown className="markdown text-sm">{x.content}</Markdown>
+                <Markdown className="markdown text-sm break-words">{x.content}</Markdown>
               </Disclosure.Panel>
             </>)}
           </Disclosure >

@@ -41,7 +41,7 @@ export const UniqueTimeChart = (props: UniqueTimeChartProps) => {
   };
 
   return <Distribution
-    title={<span className="font-bold">Unique, Valid Samples Over Time</span>}
+    title={<span className="font-bold">Unique, Valid Samples Over Run</span>}
     spec={spec}
     listeners={{}}
   />;

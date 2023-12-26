@@ -87,8 +87,8 @@ const App = () => {
       <div className="p-1 mt-10">
         {shouldShowExplainer &&
           <Card className="mb-1 text-sm">
-            <div className="text-lg font-bold mb-1 break-all">
-              Tyche {state.property !== null && <span className="font-normal text-base text-accent">/ {state.property}</span>}
+            <div className="text-lg font-bold mb-1 break-all leading-none">
+              Tyche {state.property !== null && <>: <span className="font-normal text-base text-accent"> {state.property}</span></>}
             </div>
             <span className="">
               Tyche helps you understand the effectiveness of your property-based testing.&nbsp;
