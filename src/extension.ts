@@ -72,7 +72,7 @@ export function activate(context: ExtensionContext) {
   });
 
   // Re-renders coverage highlights when the user switches documents.
-  window.onDidChangeVisibleTextEditors(() => {
-    // coverageDecorator.decorateCoverage(dataManager);
-  });
+  // window.onDidChangeVisibleTextEditors(() => {
+  //   coverageDecorator.decorateCoverage(dataManager);
+  // });
 }

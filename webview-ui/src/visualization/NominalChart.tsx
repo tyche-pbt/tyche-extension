@@ -10,23 +10,22 @@ type NominalChartProps = {
 };
 
 export const NominalChart = (props: NominalChartProps) => {
-  const buckets = Array.from(new Set(props.dataset.flatMap((x) => {
-    if (!(props.feature in x.features.nominal)) { return []; }
-    return [x.features.nominal[props.feature]];
-  })));
+  const buckets = Array.from(new Set(props.dataset.map((x) =>
+    x.features.nominal[props.feature]
+  )));
 
-  const bucketedData: { label: string, freq: number }[] = buckets.map(
+  const data: { label: string, freq: number }[] = buckets.map(
     (bucket) => ({
-      label: bucket,
+      label: bucket === undefined ? "N/a" : bucket === "" ? "true" : bucket,
       freq: props.dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
     }));
 
   const binsSpec: VisualizationSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     config: vegaConfig,
-    data: { name: "table", values: bucketedData },
+    data: { name: "table", values: data },
     width: "container",
-    height: 20,
+    height: 40,
     signals: [{
       name: "filter",
       value: {},
@@ -86,7 +85,7 @@ export const NominalChart = (props: NominalChartProps) => {
   const histSpec: VisualizationSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     config: vegaConfig,
-    data: { name: "table", values: bucketedData },
+    data: { name: "table", values: data },
     width: "container",
     height: 150,
     signals: [{
