@@ -17,6 +17,12 @@ export class TychePanel {
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
   }
 
+  public static reset() {
+    if (TychePanel.currentPanel) {
+      TychePanel.currentPanel.dispose();
+    }
+  }
+
   /**
    * Renders the Tyche panel.
    * @param extensionUri The URI of the extension.

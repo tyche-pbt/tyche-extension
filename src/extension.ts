@@ -1,32 +1,10 @@
 import { commands, ExtensionContext, languages, workspace, window, Uri, GlobPattern } from "vscode";
 import { TychePanel } from "./panels/TychePanel";
-import { WebSocketServer } from "ws";
 import { parseDataLines } from "./datatypes";
 import { DataManager } from "./DataManager";
-import { CoverageDecorator } from "./CoverageDecorator";
 
 const dataManager = new DataManager();
-const coverageDecorator = new CoverageDecorator();
-
-function launchWebsocketServer(context: ExtensionContext) {
-  const server = new WebSocketServer({
-    port: workspace.getConfiguration("tyche").get("websocketPort")
-  });
-  server.on("connection", (socket) => {
-    socket.on("message", (message) => {
-      const lines = parseDataLines(message.toString());
-
-      if (typeof lines === "string") {
-        window.showErrorMessage(lines);
-        return;
-      }
-
-      dataManager.addLines(lines);
-      TychePanel.getOrCreate(dataManager, context.extensionUri);
-    });
-  });
-  context.subscriptions.push({ dispose() { server.close(); } });
-}
+// const coverageDecorator = new CoverageDecorator();
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {
@@ -41,7 +19,7 @@ export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
       dataManager.clear();
       dataManager.addLines(lines);
       TychePanel.getOrCreate(dataManager, context.extensionUri);
-      coverageDecorator.decorateCoverage(dataManager);
+      // coverageDecorator.decorateCoverage(dataManager);
     }).catch((e) => {
       window.showErrorMessage(e);
       console.error(e);
@@ -73,6 +51,12 @@ export function activate(context: ExtensionContext) {
     });
   }));
 
+  context.subscriptions.push(commands.registerCommand("tyche.reset", () => {
+    TychePanel.reset();
+    dataManager.clear();
+    // coverageDecorator.clear();
+  }));
+
   let lastStamp: { [key: string]: number } = {};
 
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
@@ -89,9 +73,6 @@ export function activate(context: ExtensionContext) {
 
   // Re-renders coverage highlights when the user switches documents.
   window.onDidChangeVisibleTextEditors(() => {
-    coverageDecorator.decorateCoverage(dataManager);
+    // coverageDecorator.decorateCoverage(dataManager);
   });
-
-  // Set up the websocket server that listens for reports.
-  launchWebsocketServer(context);
 }

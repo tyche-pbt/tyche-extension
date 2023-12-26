@@ -15,7 +15,7 @@ const Overview = (props: OverviewProps) => {
           onClick={() => props.selectProperty(property)}
           key={property}>
           <div
-            className="flex-1 min-w-0 overflow-auto overflow-ellipsis"
+            className="flex-1 min-w-0 overflow-hidden overflow-ellipsis"
             style={{ direction: "rtl" }}
             title={property}>
             {property}

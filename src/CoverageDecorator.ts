@@ -32,6 +32,11 @@ const redLineDecoration = (opacity: number) => window.createTextEditorDecoration
 export class CoverageDecorator {
   private _decorations: TextEditorDecorationType[] = [];
 
+  public clear() {
+    this._decorations.forEach((decoration) => decoration.dispose());
+    this._decorations = [];
+  }
+
   public decorateCoverage(dataManager: DataManager) {
     this._decorations.forEach((decoration) => decoration.dispose());
     this._decorations = [];
