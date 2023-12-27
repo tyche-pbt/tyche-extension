@@ -7,13 +7,17 @@ function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { 
 }
 
 export class DataManager {
-  private _dataLines: DataLine[] = [];
-  private _latestRuns: { [property: string]: number } = {};
+  private _data: Map<string, Map<number, DataLine[]>> = new Map();
 
   constructor() { }
 
   private get _latestLines(): DataLine[] {
-    return this._dataLines.filter(line => line.run_start >= this._latestRuns[line.property] - 1);
+    const lines = [];
+    for (let [_, runs] of this._data) {
+      const latestRun = Math.max(...runs.keys());
+      lines.push(...runs.get(latestRun) || []);
+    }
+    return lines;
   }
 
   public get report(): Report {
@@ -25,13 +29,13 @@ export class DataManager {
   }
 
   public addLine(line: DataLine) {
-    this._latestRuns[line.property] = Math.max(this._latestRuns[line.property] || 0, line.run_start);
-    this._dataLines.push(line);
+    const propRuns = this._data.get(line.property) || new Map();
+    const runData = propRuns.get(line.run_start) || [];
+    this._data.set(line.property, propRuns.set(line.run_start, [...runData, line]));
   }
 
   public clear() {
-    this._dataLines = [];
-    this._latestRuns = {};
+    this._data = new Map();
   }
 
   private static _buildReport(data: DataLine[]): Report {
