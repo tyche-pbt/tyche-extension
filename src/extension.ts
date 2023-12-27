@@ -8,6 +8,9 @@ const dataManager = new DataManager();
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {
+    if (uris.length === 0) {
+      return;
+    }
     Promise.all(uris.map((uri) => workspace.fs.readFile(uri))).then((buffers) => {
       const lines = buffers.map((buffer) => {
         const data = parseDataLines(buffer.toString());
@@ -48,6 +51,12 @@ export function activate(context: ExtensionContext) {
     }, (e) => {
       window.showErrorMessage(e);
       console.error(e);
+    });
+  }));
+
+  context.subscriptions.push(commands.registerCommand("tyche.load-from-observation-directory", () => {
+    (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
+      visualizeGlob(glob, context);
     });
   }));
 

@@ -26,6 +26,11 @@
         "category": "Tyche"
       },
       {
+        "command": "tyche.load-from-observation-directory",
+        "title": "Load From Observation Directory",
+        "category": "Tyche"
+      },
+      {
         "command": "tyche.reset",
         "title": "Reset",
         "category": "Tyche"
