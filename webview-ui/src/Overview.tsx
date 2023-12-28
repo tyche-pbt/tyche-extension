@@ -1,4 +1,4 @@
-import { Report } from "../../src/datatypes";
+import { Report } from "./report";
 import Card from "./ui/Card";
 
 type OverviewProps = {

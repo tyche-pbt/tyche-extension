@@ -1,4 +1,5 @@
-import { Report } from "../../src/datatypes";
+import { DataLine } from "../../src/datatypes";
+import { buildReport, Report } from "./report";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,7 @@ import Overview from "./Overview";
 import Card from "./ui/Card";
 
 type LoadDataCommand = {
-  report: Report;
+  lines: DataLine[];
 };
 
 type AppState = {
@@ -20,7 +21,6 @@ type AppState = {
 
 const App = () => {
   const [state, setStateRaw] = useState<AppState>({ state: "loading" });
-  // const [state, setStateRaw] = useState<AppState>({ state: "ready", report: require("./report.json"), property: null /*"bst_tests.py::test_insert_post"*/ });
   const [shouldShowExplainer, setShouldShowExplainer] = useState<boolean>(true);
 
   const setState = (newState: AppState) => {
@@ -31,9 +31,10 @@ const App = () => {
   };
 
   const loadData = (command: LoadDataCommand) => {
+    const report = buildReport(command.lines);
     setState({
       state: "ready",
-      report: command.report,
+      report,
       property: state.state === "ready" ? state.property : null,
     });
   };

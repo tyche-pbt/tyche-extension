@@ -1,4 +1,4 @@
-import { ExampleFilter, SampleInfo } from "../../../src/datatypes";
+import { ExampleFilter, SampleInfo } from "../report";
 import { OrdinalChart } from "../visualization/OrdinalChart";
 import { NominalChart } from "../visualization/NominalChart";
 import Card from "../ui/Card";

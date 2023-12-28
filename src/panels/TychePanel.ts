@@ -48,7 +48,7 @@ export class TychePanel {
   public render(dataManager: DataManager) {
     this._panel.webview.postMessage({
       command: "load-data",
-      report: dataManager.report,
+      lines: dataManager.latestLines,
     });
   }
 

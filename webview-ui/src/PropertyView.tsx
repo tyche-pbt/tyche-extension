@@ -1,4 +1,4 @@
-import { ExampleFilter, TestInfo } from "../../src/datatypes";
+import { ExampleFilter, TestInfo } from "./report";
 import { Charts } from "./panes/Charts";
 import { HighLevelStats } from "./panes/HighLevelStats";
 import { FailingCases } from "./panes/FailingCases";

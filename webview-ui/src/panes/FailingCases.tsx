@@ -1,4 +1,4 @@
-import { SampleInfo } from "../../../src/datatypes";
+import { SampleInfo } from "../report";
 import Card from "../ui/Card";
 import { PrettyExample } from "../ui/PrettyExample";
 

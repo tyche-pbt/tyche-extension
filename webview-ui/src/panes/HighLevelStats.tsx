@@ -1,4 +1,4 @@
-import { TestInfo } from "../../../src/datatypes";
+import { TestInfo } from "../report";
 import Card from "../ui/Card";
 
 type HighLevelStatsProps = {

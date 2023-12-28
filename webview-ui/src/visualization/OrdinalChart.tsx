@@ -1,4 +1,4 @@
-import { SampleInfo } from "../../../src/datatypes";
+import { SampleInfo } from "../report";
 import { THEME_COLORS } from "../utilities/colors";
 import { SignalListeners, VisualizationSpec } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";

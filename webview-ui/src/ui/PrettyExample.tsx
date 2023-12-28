@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { SampleInfo } from "../../../src/datatypes";
+import { SampleInfo } from "../report";
 
 type PrettyExampleProps = {
   example: SampleInfo;
