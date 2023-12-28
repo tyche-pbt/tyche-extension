@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { DataManager } from "../DataManager";
+import { DataLine } from "../datatypes";
 
 /**
  * The main panel of the Tyche extension.
@@ -28,7 +28,7 @@ export class TychePanel {
    * @param extensionUri The URI of the extension.
    * @returns The Tyche panel.
    */
-  public static getOrCreate(dataManager: DataManager, extensionUri: Uri) {
+  public static getOrCreate(lines: DataLine[], extensionUri: Uri) {
     if (TychePanel.currentPanel) {
       TychePanel.currentPanel._panel.reveal(ViewColumn.Two);
     } else {
@@ -41,14 +41,14 @@ export class TychePanel {
 
       TychePanel.currentPanel = new TychePanel(panel, extensionUri);
     }
-    TychePanel.currentPanel.render(dataManager);
+    TychePanel.currentPanel.render(lines);
     return TychePanel.currentPanel;
   }
 
-  public render(dataManager: DataManager) {
+  public render(lines: DataLine[]) {
     this._panel.webview.postMessage({
       command: "load-data",
-      lines: dataManager.latestLines,
+      lines,
     });
   }
 

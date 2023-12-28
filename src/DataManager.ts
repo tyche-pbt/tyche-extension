@@ -1,9 +1,36 @@
-import { DataLine } from './datatypes';
+import { DataLine, ErrorLine, schemaProtoLine } from './datatypes';
 
-export class DataManager {
+export function parseDataLines(jsonString: string): DataLine[] | string {
+  const dataLines = [];
+  for (const line of jsonString.split("\n")) {
+    if (line === "") {
+      continue;
+    }
+    try {
+      const obj = JSON.parse(line);
+      const parsedLine = schemaProtoLine.parse(obj);
+      dataLines.push(parsedLine);
+    } catch (e) {
+      return ("Tyche: Could not parse JSON report.\n" + e + "\nInvalid Object: " + line);
+    }
+  }
+
+  const errorLine = dataLines.find((line) => line.type === "error") as ErrorLine | undefined;
+  if (errorLine !== undefined) {
+    return ("Tyche: Encountered unknown failure.\n" + errorLine.message);
+  }
+
+  return dataLines as DataLine[];
+}
+
+export function findLatestLines(lines: DataLine[]): DataLine[] {
+  const manager = new DataManager();
+  manager.addLines(lines);
+  return manager.latestLines;
+}
+
+class DataManager {
   private _data: Map<string, Map<number, DataLine[]>> = new Map();
-
-  constructor() { }
 
   public get latestLines(): DataLine[] {
     const lines = [];

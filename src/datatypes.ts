@@ -39,26 +39,3 @@ export type InfoLine = z.infer<typeof schemaInfoLine>;
 export type ErrorLine = z.infer<typeof schemaErrorLine>;
 export type DataLine = z.infer<typeof schemaDataLine>;
 export type ProtoLine = z.infer<typeof schemaProtoLine>;
-
-export function parseDataLines(jsonString: string): DataLine[] | string {
-  const dataLines = [];
-  for (const line of jsonString.split("\n")) {
-    if (line === "") {
-      continue;
-    }
-    try {
-      const obj = JSON.parse(line);
-      const parsedLine = schemaProtoLine.parse(obj);
-      dataLines.push(parsedLine);
-    } catch (e) {
-      return ("Tyche: Could not parse JSON report.\n" + e + "\nInvalid Object: " + line);
-    }
-  }
-
-  const errorLine = dataLines.find((line) => line.type === "error") as ErrorLine | undefined;
-  if (errorLine !== undefined) {
-    return ("Tyche: Encountered unknown failure.\n" + errorLine.message);
-  }
-
-  return dataLines as DataLine[];
-}

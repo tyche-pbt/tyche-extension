@@ -1,10 +1,6 @@
 import { commands, ExtensionContext, languages, workspace, window, Uri, GlobPattern } from "vscode";
 import { TychePanel } from "./panels/TychePanel";
-import { parseDataLines } from "./datatypes";
-import { DataManager } from "./DataManager";
-
-const dataManager = new DataManager();
-// const coverageDecorator = new CoverageDecorator();
+import { findLatestLines, parseDataLines } from "./DataManager";
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {
@@ -19,9 +15,7 @@ export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
         }
         return data;
       }).reduce((acc, val) => acc.concat(val), []);
-      dataManager.clear();
-      dataManager.addLines(lines);
-      TychePanel.getOrCreate(dataManager, context.extensionUri);
+      TychePanel.getOrCreate(findLatestLines(lines), context.extensionUri);
       // coverageDecorator.decorateCoverage(dataManager);
     }).catch((e) => {
       window.showErrorMessage(e);
@@ -62,8 +56,6 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerCommand("tyche.reset", () => {
     TychePanel.reset();
-    dataManager.clear();
-    // coverageDecorator.clear();
   }));
 
   let lastStamp: { [key: string]: number } = {};
@@ -79,9 +71,4 @@ export function activate(context: ExtensionContext) {
       }, 600);
     });
   });
-
-  // Re-renders coverage highlights when the user switches documents.
-  // window.onDidChangeVisibleTextEditors(() => {
-  //   coverageDecorator.decorateCoverage(dataManager);
-  // });
 }

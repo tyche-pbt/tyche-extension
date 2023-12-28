@@ -47,7 +47,8 @@
         "tyche.observationGlobs": {
           "type": "array",
           "default": [
-            "**/.hypothesis/observed/*.jsonl"
+            "**/.hypothesis/observed/*.jsonl",
+            "**/.quickcheck/observations/*.jsonl"
           ],
           "description": "The directories to search for observations."
         }
