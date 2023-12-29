@@ -56,10 +56,11 @@
     }
   },
   "scripts": {
+    "build:observability-tools": "cd observability-tools && npm run build",
     "install:all": "npm install && cd webview-ui && npm install",
-    "start:webview": "cd webview-ui && npm run start",
-    "build:webview": "cd webview-ui && npm run build",
-    "test:webview": "cd webview-ui && npm run test",
+    "start:webview": "npm run build:observability-tools && cd webview-ui && npm run start",
+    "build:webview": "npm run build:observability-tools && cd webview-ui && npm run build",
+    "test:webview": "npm run build:observability-tools && cd webview-ui && npm run test",
     "vscode:prepublish": "npm run build",
     "build": "npm run build:webview && npm run compile",
     "compile": "tsc -p ./",
@@ -84,6 +85,7 @@
   },
   "dependencies": {
     "@vscode/codicons": "^0.0.35",
+    "observability-tools": "file:observability-tools",
     "path": "^0.12.7",
     "react": "^18.2.0",
     "ws": "^8.14.2",

@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, languages, workspace, window, Uri, GlobPattern } from "vscode";
 import { TychePanel } from "./panels/TychePanel";
-import { findLatestLines, parseDataLines } from "./DataManager";
+import { findLatestLines, parseDataLines } from "observability-tools";
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {

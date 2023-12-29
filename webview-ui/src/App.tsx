@@ -1,4 +1,4 @@
-import { DataLine } from "../../src/datatypes";
+import { DataLine } from "observability-tools";
 import { buildReport, Report } from "./report";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";

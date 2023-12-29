@@ -1,0 +1,16 @@
+{
+  "name": "observability-tools",
+  "version": "1.0.0",
+  "description": "Tools for working with PBT observability.",
+  "main": "out/index.js",
+  "types": "out/index.d.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harrison Goldstein",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

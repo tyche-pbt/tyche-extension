@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { DataLine } from "../datatypes";
+import { DataLine } from "observability-tools";
 
 /**
  * The main panel of the Tyche extension.

@@ -33,11 +33,11 @@ class DataManager {
   private _data: Map<string, Map<number, DataLine[]>> = new Map();
 
   public get latestLines(): DataLine[] {
-    const lines = [];
-    for (let [_, runs] of this._data) {
-      const latestRun = Math.max(...runs.keys());
+    const lines: DataLine[] = [];
+    this._data.forEach((runs) => {
+      const latestRun = Math.max(...Array.from(runs.keys()));
       lines.push(...runs.get(latestRun) || []);
-    }
+    });
     return lines;
   }
 

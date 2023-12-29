@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { DataLine } from "../../src/datatypes";
+import { DataLine } from "observability-tools";
 
 export const schemaSampleInfo = z.object({
   outcome: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),

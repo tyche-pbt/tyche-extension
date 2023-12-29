@@ -22,7 +22,6 @@
     "strictPropertyInitialization": false
   },
   "include": [
-    "src",
-    "../src/datatypes.ts",
+    "src"
   ]
 }
