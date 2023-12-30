@@ -1,7 +1,5 @@
-import * as vscode from "vscode";
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
+import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, workspace } from "vscode";
 import { getUri } from "../utilities/getUri";
-import { DataLine } from "observability-tools";
 
 /**
  * The main panel of the Tyche extension.
@@ -15,6 +13,16 @@ export class TychePanel {
     this._panel = panel;
     this._panel.onDidDispose(this.dispose, null, this._disposables);
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
+    this._panel.webview.onDidReceiveMessage((message) => {
+      switch (message.command) {
+        case "error":
+          window.showErrorMessage("An error occurred parsing the given JSON lines file. See the output tab.");
+
+          const outputChannel = window.createOutputChannel("Tyche");
+          outputChannel.append(message.message);
+          break;
+      }
+    });
   }
 
   public static reset() {
@@ -28,7 +36,7 @@ export class TychePanel {
    * @param extensionUri The URI of the extension.
    * @returns The Tyche panel.
    */
-  public static getOrCreate(lines: DataLine[], extensionUri: Uri) {
+  public static getOrCreate(linesString: string, extensionUri: Uri) {
     if (TychePanel.currentPanel) {
       TychePanel.currentPanel._panel.reveal(ViewColumn.Two);
     } else {
@@ -41,14 +49,14 @@ export class TychePanel {
 
       TychePanel.currentPanel = new TychePanel(panel, extensionUri);
     }
-    TychePanel.currentPanel.render(lines);
+    TychePanel.currentPanel.render(linesString);
     return TychePanel.currentPanel;
   }
 
-  public render(lines: DataLine[]) {
+  public render(linesString: string) {
     this._panel.webview.postMessage({
       command: "load-data",
-      lines,
+      lines: linesString,
     });
   }
 
@@ -75,7 +83,7 @@ export class TychePanel {
    */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     // The CSS file from the React build output
-    const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
+    const codiconsUri = webview.asWebviewUri(Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
     const stylesUri = getUri(webview, extensionUri, [
       "webview-ui",
       "build",

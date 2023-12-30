@@ -1,6 +1,5 @@
-import { commands, ExtensionContext, languages, workspace, window, Uri, GlobPattern } from "vscode";
+import { commands, ExtensionContext, workspace, window, Uri, GlobPattern } from "vscode";
 import { TychePanel } from "./panels/TychePanel";
-import { findLatestLines, parseDataLines } from "observability-tools";
 
 export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
   workspace.findFiles(glob).then((uris) => {
@@ -8,15 +7,8 @@ export function visualizeGlob(glob: GlobPattern, context: ExtensionContext) {
       return;
     }
     Promise.all(uris.map((uri) => workspace.fs.readFile(uri))).then((buffers) => {
-      const lines = buffers.map((buffer) => {
-        const data = parseDataLines(buffer.toString());
-        if (typeof data === "string") {
-          throw new Error(data);
-        }
-        return data;
-      }).reduce((acc, val) => acc.concat(val), []);
-      TychePanel.getOrCreate(findLatestLines(lines), context.extensionUri);
-      // coverageDecorator.decorateCoverage(dataManager);
+      const linesString = buffers.map((buffer) => buffer.toString()).join("\n");
+      TychePanel.getOrCreate(linesString, context.extensionUri);
     }).catch((e) => {
       window.showErrorMessage(e);
       console.error(e);

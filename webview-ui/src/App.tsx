@@ -1,4 +1,4 @@
-import { DataLine } from "observability-tools";
+import { parseLatestDataLines } from "observability-tools";
 import { buildReport, Report } from "./report";
 import { vscode } from "./utilities/vscode";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import Overview from "./Overview";
 import Card from "./ui/Card";
 
 type LoadDataCommand = {
-  lines: DataLine[];
+  lines: string;
 };
 
 type AppState = {
@@ -31,7 +31,16 @@ const App = () => {
   };
 
   const loadData = (command: LoadDataCommand) => {
-    const report = buildReport(command.lines);
+    const lines = parseLatestDataLines(command.lines);
+    if (typeof lines === "string") {
+      console.error(lines);
+      vscode.postMessage({
+        command: "error",
+        message: lines,
+      });
+      return;
+    }
+    const report = buildReport(lines);
     setState({
       state: "ready",
       report,

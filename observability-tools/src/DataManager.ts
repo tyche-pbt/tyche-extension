@@ -1,6 +1,14 @@
 import { DataLine, ErrorLine, schemaProtoLine } from './datatypes';
 
-export function parseDataLines(jsonString: string): DataLine[] | string {
+export function parseLatestDataLines(linesString: string): DataLine[] | string {
+  const lines = parseDataLines(linesString);
+  if (typeof lines === "string") {
+    return lines;
+  }
+  return findLatestLines(lines);
+}
+
+function parseDataLines(jsonString: string): DataLine[] | string {
   const dataLines = [];
   for (const line of jsonString.split("\n")) {
     if (line === "") {
@@ -23,7 +31,7 @@ export function parseDataLines(jsonString: string): DataLine[] | string {
   return dataLines as DataLine[];
 }
 
-export function findLatestLines(lines: DataLine[]): DataLine[] {
+function findLatestLines(lines: DataLine[]): DataLine[] {
   const manager = new DataManager();
   manager.addLines(lines);
   return manager.latestLines;
