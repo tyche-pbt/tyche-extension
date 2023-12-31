@@ -21,6 +21,16 @@ webview-ui/package.json
 webview-ui/package-lock.json
 webview-ui/node_modules/**
 
+observability-tools/src/**
+observability-tools/public/**
+observability-tools/scripts/**
+observability-tools/index.html
+observability-tools/README.md
+observability-tools/package.json
+observability-tools/package-lock.json
+observability-tools/node_modules/**
+
+
 # Ignore Misc
 .yarnrc
 vsc-extension-quickstart.md
