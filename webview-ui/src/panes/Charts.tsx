@@ -17,11 +17,6 @@ export const Charts = (props: ChartsProps) => {
   const { dataset, features } = props;
 
   return <div className="w-full grid grid-cols-1">
-    <Card>
-      <UniqueTimeChart
-        dataset={dataset}
-      />
-    </Card>
     {[...features.nominal.map((x) =>
       <Card key={`bucket-${x}`}>
         <NominalChart
@@ -40,5 +35,10 @@ export const Charts = (props: ChartsProps) => {
         </Card>,
       ]),
     ]}
+    <Card>
+      <UniqueTimeChart
+        dataset={dataset}
+      />
+    </Card>
   </div >;
 }

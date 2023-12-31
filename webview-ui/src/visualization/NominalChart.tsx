@@ -6,7 +6,7 @@ import Distribution, { vegaConfig } from "./Distribution";
 type NominalChartProps = {
   feature: string;
   dataset: SampleInfo[];
-  viewValue: (v: string) => void;
+  viewValue: (v: string | undefined) => void;
 };
 
 export const NominalChart = (props: NominalChartProps) => {
@@ -117,7 +117,12 @@ export const NominalChart = (props: NominalChartProps) => {
 
   const listeners: SignalListeners = {
     filter: (_name, value) => {
-      props.viewValue((value as { rawLabel: string }).rawLabel)
+      const label = (value as { label: string }).label;
+      if (label === "N/a") {
+        props.viewValue(undefined);
+      } else {
+        props.viewValue(label);
+      }
     }
   };
 

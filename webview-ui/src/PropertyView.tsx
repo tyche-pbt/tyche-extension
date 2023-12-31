@@ -31,21 +31,13 @@ const PropertyView = (props: PropertyViewProps) => {
 
   return <>
     {exampleFilter !== undefined &&
-      <>
-        <div className="fixed top-0 right-0 left-0 bg-accent py-2 px-3 h-10 flex justify-between items-center z-40">
-          <button onClick={() => setExampleFilter(undefined)}>
-            <i className="codicon codicon-close text-background" />
-          </button>
-        </div>
-        <ExampleView filter={exampleFilter === "all" ? undefined : exampleFilter} dataset={testInfo.samples} />
-      </>
+      <ExampleView filter={exampleFilter === "all" ? undefined : exampleFilter} dataset={testInfo.samples} closeExamples={() => setExampleFilter(undefined)} />
     }
     {exampleFilter === undefined &&
       <>
         <Info status={testInfo.status} info={testInfo.info} />
         {testInfo.status === "failure" &&
-          <FailingCases dataset={testInfo.samples} />
-        }
+          <FailingCases dataset={testInfo.samples} />}
         <HighLevelStats testInfo={testInfo} property={property} />
         <Card>
           <button

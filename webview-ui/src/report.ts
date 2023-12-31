@@ -35,7 +35,7 @@ export type ExampleFilter = {
   value: number;
 } | {
   nominal: string,
-  value: string
+  value: string | undefined
 };
 
 function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {

@@ -31,7 +31,8 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         <div className="opacity-60 text-sm flex-1">Discarded</div>
         {
           discardPercent > 33 &&
-          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning">
+          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning"
+            title="This property has a high proportion of discarded samples. Consider writing a generator that enforces preconditions by construction.">
             {">33%"}
           </div>
         }
@@ -45,7 +46,8 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         <div className="opacity-60 text-sm flex-1">Revisited</div>
         {
           duplicatePercent > 33 &&
-          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning">
+          <div className="text-sm text-white rounded-full font-bold px-2 bg-warning"
+            title="This property has a high proportion of duplicate samples. Consider generating in a larger space.">
             {">33%"}
           </div>
         }
