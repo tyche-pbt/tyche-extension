@@ -8,6 +8,10 @@ type UniqueTimeChartProps = {
 };
 
 export const UniqueTimeChart = (props: UniqueTimeChartProps) => {
+  if (props.dataset.length === 0) {
+    return <div className="text-center">No samples</div>;
+  }
+
   let s = 0;
 
   const data: { step: number, total: number }[] = [];

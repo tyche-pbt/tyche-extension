@@ -38,7 +38,8 @@ const PropertyView = (props: PropertyViewProps) => {
         <Info status={testInfo.status} info={testInfo.info} />
         {testInfo.status === "failure" &&
           <FailingCases dataset={testInfo.samples} />}
-        <HighLevelStats testInfo={testInfo} property={property} />
+        <HighLevelStats testInfo={testInfo} property={property}
+          setExampleFilter={setExampleFilter} />
         <Card>
           <button
             className="text-center rounded-md w-full hover:bg-primary hover:bg-opacity-25 py-1"

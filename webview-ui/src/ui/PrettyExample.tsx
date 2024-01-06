@@ -16,7 +16,7 @@ export const PrettyExample = (props: PrettyExampleProps) => {
         </Disclosure.Button>
         <Disclosure.Panel as="pre" className="mt-2 text-sm w-full break-words whitespace-pre-wrap">
           <div className="font-sans">Details:</div>
-          {JSON.stringify(props.example.metadata, null, 2)}
+          {JSON.stringify(props.example.dataLine, null, 2)}
         </Disclosure.Panel>
       </>}
     </Disclosure>

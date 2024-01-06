@@ -1,8 +1,13 @@
 import * as z from "zod";
-import { DataLine } from "observability-tools";
+import { DataLine, schemaDataLine } from "observability-tools";
 
 export const schemaSampleInfo = z.object({
-  outcome: z.union([z.literal("passed"), z.literal("failed"), z.literal("gave_up")]),
+  outcome: z.union([
+    z.literal("passed"),
+    z.literal("failed"),
+    z.literal("gave_up"),
+    z.literal("invalid")
+  ]),
   item: z.string(),
   duplicate: z.boolean(),
   features: z.object({
@@ -10,7 +15,7 @@ export const schemaSampleInfo = z.object({
     nominal: z.record(z.string()),
   }),
   coverage: z.record(z.array(z.number())),
-  metadata: z.any(),
+  dataLine: schemaDataLine
 });
 
 export const schemaTestInfo = z.object({
@@ -34,8 +39,11 @@ export type ExampleFilter = {
   ordinal: string;
   value: number;
 } | {
-  nominal: string,
-  value: string | undefined
+  nominal: string;
+  value: string | undefined;
+} | {
+  subset: string;
+  examples: SampleInfo[];
 };
 
 function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {
@@ -61,15 +69,19 @@ export function buildReport(data: DataLine[]): Report {
     }
 
     if (line.type === "test_case") {
-      const duplicate = seen.includes(line.representation.toString());
-      seen.push(line.representation.toString());
+      const key = JSON.stringify([line.representation, line.arguments]);
+      const duplicate = seen.includes(key);
+      seen.push(key);
 
       if (line.status === "failed") {
         report.properties[line.property].status = "failure";
       }
 
+      const outcome = line.status === "gave_up"
+        ? (line.representation === "" ? "gave_up" : "invalid")
+        : line.status;
       report.properties[line.property].samples.push({
-        outcome: line.status,
+        outcome,
         duplicate,
         item: line.representation.toString(),
         features: {
@@ -77,7 +89,7 @@ export function buildReport(data: DataLine[]): Report {
           nominal: filterObject(line.features, v => typeof v === "string")
         },
         coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
-        metadata: { howGenerated: line.how_generated, metadata: line.metadata },
+        dataLine: line,
       });
     } else {
       report.properties[line.property].info.push({
@@ -89,7 +101,7 @@ export function buildReport(data: DataLine[]): Report {
   }
 
   for (const property in report.properties) {
-    const discards = report.properties[property].samples.filter(sample => sample.outcome === "gave_up").length;
+    const discards = report.properties[property].samples.filter(sample => sample.outcome === "invalid").length;
     const duplicates = report.properties[property].samples.filter(sample => sample.duplicate).length;
     const samples = report.properties[property].samples.length;
     if (discards / samples > 0.33 || duplicates / samples > 0.33) {

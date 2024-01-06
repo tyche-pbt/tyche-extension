@@ -12,7 +12,10 @@ type OrdinalChartProps = {
 export const OrdinalChart = (props: OrdinalChartProps) => {
   const { feature, viewValue } = props;
 
-  const dataset = props.dataset;
+  const dataset = props.dataset.filter(x => x.outcome !== "gave_up");
+  if (dataset.length === 0) {
+    return <div className="text-center">No samples</div>;
+  }
 
   const featureData: { label: number; freq: number; }[] =
     Array.from(dataset.filter(x => x.features.ordinal[feature] !== undefined).map((x) => x.features.ordinal[feature])

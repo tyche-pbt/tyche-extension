@@ -10,7 +10,12 @@ type NominalChartProps = {
 };
 
 export const NominalChart = (props: NominalChartProps) => {
-  const buckets = Array.from(new Set(props.dataset.map((x) =>
+  const dataset = props.dataset.filter(x => x.outcome !== "gave_up");
+  if (dataset.length === 0) {
+    return <div className="text-center">No samples</div>;
+  }
+
+  const buckets = Array.from(new Set(dataset.map((x) =>
     x.features.nominal[props.feature]
   )));
 
@@ -18,7 +23,7 @@ export const NominalChart = (props: NominalChartProps) => {
     (bucket) => ({
       rawLabel: bucket,
       label: bucket === undefined ? "N/a" : bucket === "" ? "true" : bucket,
-      freq: props.dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
+      freq: dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
     }));
 
   const binsSpec: VisualizationSpec = {

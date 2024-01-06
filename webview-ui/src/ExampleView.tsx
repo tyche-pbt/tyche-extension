@@ -21,10 +21,13 @@ export const ExampleView = (props: ExampleViewProps) => {
     dataset = props.dataset.filter((x) =>
       x.features.ordinal[filter.ordinal] === filter.value);
     filterText = `${filter.ordinal} = ${filter.value}`;
-  } else {
+  } else if ("nominal" in filter) {
     dataset = props.dataset.filter((x) =>
       x.features.nominal[filter.nominal] === filter.value);
     filterText = `${filter.nominal} = ${filter.value}`;
+  } else {
+    dataset = filter.examples;
+    filterText = filter.subset;
   }
 
   return <>
