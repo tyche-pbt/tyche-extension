@@ -18,5 +18,8 @@ module.exports = {
   plugins: [
     require('@headlessui/tailwindcss')
   ],
+  safelist: [{
+    pattern: /(bg|text|border)-(foreground|background|primary|success|warning|error|accent|accent2|accent3| accent4)/
+  }]
 }
 

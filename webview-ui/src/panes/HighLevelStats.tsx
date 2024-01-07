@@ -19,6 +19,85 @@ const isGaveUp = (x: SampleInfo) => x.outcome === "gave_up";
 const isUnique = (x: SampleInfo) => !x.duplicate;
 const isDuplicate = (x: SampleInfo) => x.duplicate;
 
+// const Breakdown = (props: BreakdownProps) => {
+//   const { samples, setExampleFilter } = props;
+
+//   const validity: [string, (x: SampleInfo) => boolean][] = [
+//     ["Valid", isValid],
+//     ["Discarded", isDiscarded],
+//     ["Gave Up", isGaveUp],
+//   ];
+
+//   const uniqueness: [string, (x: SampleInfo) => boolean][] = [
+//     ["Unique", isUnique],
+//     ["Duplicate", isDuplicate],
+//   ];
+
+//   return <table className="table-auto w-full">
+//     <thead>
+//       <tr>
+//         <td></td>
+//         {uniqueness.map(([key, _]) =>
+//           <td key={key + "-head"} className="font-bold px-2">{key}</td>)}
+//         <td className="px-2 italic">Total</td>
+//       </tr>
+//     </thead>
+//     <tbody>
+//       {validity.map(([validityKey, validityPred]) => {
+//         return <tr key={validityKey + "-row"}>
+//           <td className="font-bold">{validityKey}</td>
+//           {uniqueness.map(([uniquenessKey, uniquenessPred]) => {
+//             const slice = samples.filter(validityPred).filter(uniquenessPred);
+//             return <td
+//               key={validityKey + "-" + uniquenessKey + "-cell"}
+//               className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
+//               onClick={() =>
+//                 setExampleFilter({
+//                   subset: validityKey + ", " + uniquenessKey,
+//                   examples: slice
+//                 })}>
+//               {slice.length}
+//             </td>;
+//           })}
+//           <td
+//             className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2 italic"
+//             onClick={() =>
+//               setExampleFilter({
+//                 subset: validityKey,
+//                 examples: samples.filter(validityPred)
+//               })} >
+//             {samples.filter(validityPred).length}
+//           </td>
+//         </tr>;
+//       })}
+//       <tr>
+//         <td className="italic">Total</td>
+//         {uniqueness.map(([key, pred]) => {
+//           const slice = samples.filter(pred);
+//           return <td
+//             key={key + "-total"}
+//             className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2 italic"
+//             onClick={() =>
+//               setExampleFilter({
+//                 subset: key,
+//                 examples: slice
+//               })}>
+//             {slice.length}
+//           </td>;
+//         })}
+//         <td
+//           className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2 italic"
+//           onClick={() =>
+//             setExampleFilter({
+//               subset: "",
+//               examples: samples
+//             })}>
+//           {samples.length}</td>
+//       </tr>
+//     </tbody>
+//   </table>;
+// }
+
 const Breakdown = (props: BreakdownProps) => {
   const { samples, setExampleFilter } = props;
 
@@ -33,68 +112,89 @@ const Breakdown = (props: BreakdownProps) => {
     ["Duplicate", isDuplicate],
   ];
 
-  return <table className="table-auto w-full">
-    <thead>
-      <tr>
-        <td></td>
-        {uniqueness.map(([key, _]) =>
-          <td key={key + "-head"} className="font-bold px-2">{key}</td>)}
-        <td className="px-2 italic">Total</td>
-      </tr>
-    </thead>
-    <tbody>
-      {validity.map(([validityKey, validityPred]) =>
-        <tr key={validityKey + "-row"}>
-          <td className="font-bold">{validityKey}</td>
-          {uniqueness.map(([uniquenessKey, uniquenessPred]) => {
+  return <>
+    <div className="flex justify-between ml-20 mr-10">
+      {uniqueness.map(([uniquenessKey, uniquenessPred]) => {
+        const width = samples.filter(uniquenessPred).length / samples.length * 100;
+        if (!width) return null;
+        return <span
+          key={uniquenessKey + "-label"}
+          className="text-sm font-bold">
+          {uniquenessKey}</span>
+      })}
+    </div>
+    <div className="flex">
+      <div className="w-24">
+        {validity.map(([validityKey, validityPred]) => {
+          const height = samples.filter(validityPred).length / samples.length * 100;
+          if (!height) return null;
+          return <div
+            key={validityKey + "-label"}
+            className="text-sm flex items-center font-bold"
+            style={{ height: height + "%" }}>
+            {validityKey}</div>
+        })}
+      </div>
+      <div className="w-full h-48">
+        {validity.map(([validityKey, validityPred], i) =>
+          uniqueness.map(([uniquenessKey, uniquenessPred]) => {
+            const colors = ["success", "warning", "accent3"];
             const slice = samples.filter(validityPred).filter(uniquenessPred);
-            return <td
+            const width = slice.length / samples.filter(validityPred).length * 100;
+            const height = samples.filter(validityPred).length / samples.length * 100;
+            const bg = `bg-${colors[i]} ${uniquenessKey === "Duplicate" ? "bg-opacity-60 " : ""}`;
+            const textDec = validityKey === "Valid" && uniquenessKey === "Unique" ? "font-bold" : "";
+            if (!width || !height) return null;
+            return <div
               key={validityKey + "-" + uniquenessKey + "-cell"}
-              className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
+              style={{ width: width + "%", height: height + "%" }}
+              className="float-left text-sm p-0.5"
               onClick={() =>
                 setExampleFilter({
                   subset: validityKey + ", " + uniquenessKey,
                   examples: slice
                 })}>
-              {slice.length}
-            </td>;
-          })}
-          <td
-            className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
+              <div className={"w-full h-full hover:bg-opacity-70 cursor-pointer flex items-center justify-center " + bg + textDec}>
+                {slice.length}
+              </div>
+            </div>;
+          }))}
+      </div>
+      <div className="w-10">
+        {validity.map(([validityKey, validityPred]) => {
+          const slice = samples.filter(validityPred);
+          const height = slice.length / samples.length * 100;
+          if (!height) return null;
+          return <div
+            key={validityKey + "-label"}
+            className="text-sm flex items-center italic text-right hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-1"
+            style={{ height: height + "%" }}
             onClick={() =>
               setExampleFilter({
                 subset: validityKey,
-                examples: samples.filter(validityPred)
-              })} >
-            {samples.filter(validityPred).length}
-          </td>
-        </tr>)}
-      <tr>
-        <td className="italic">Total</td>
-        {uniqueness.map(([key, pred]) => {
-          const slice = samples.filter(pred);
-          return <td
-            key={key + "-total"}
-            className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
-            onClick={() =>
-              setExampleFilter({
-                subset: key,
                 examples: slice
               })}>
-            {slice.length}
-          </td>;
+            {slice.length}</div>
         })}
-        <td
-          className="hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
+      </div>
+    </div>
+    <div className="flex justify-between ml-20 mr-10">
+      {uniqueness.map(([uniquenessKey, uniquenessPred]) => {
+        const slice = samples.filter(uniquenessPred);
+        const width = slice.length / samples.length * 100;
+        if (!width) return null;
+        return <span
+          key={uniquenessKey + "-label"}
+          className="text-sm italic hover:bg-primary hover:bg-opacity-25 cursor-pointer rounded-md px-2"
           onClick={() =>
             setExampleFilter({
-              subset: "",
-              examples: samples
+              subset: uniquenessKey,
+              examples: slice
             })}>
-          {samples.length}</td>
-      </tr>
-    </tbody>
-  </table>;
+          {slice.length}</span>
+      })}
+    </div>
+  </>;
 }
 
 export const HighLevelStats = (props: HighLevelStatsProps) => {
@@ -146,6 +246,9 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         </span> duplicates.
       </Card>}
     <Card className="col-span-2">
+      <div className="flex-1 text-nowrap overflow-hidden overflow-ellipsis font-bold mb-1">
+        Sample Breakdown
+      </div>
       <Breakdown samples={props.testInfo.samples} setExampleFilter={props.setExampleFilter} />
     </Card>
   </div >;
