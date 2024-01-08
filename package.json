@@ -85,6 +85,7 @@
   },
   "dependencies": {
     "@vscode/codicons": "^0.0.35",
+    "json5": "^2.2.3",
     "observability-tools": "file:observability-tools",
     "path": "^0.12.7",
     "react": "^18.2.0",

@@ -1,4 +1,5 @@
 import { DataLine, ErrorLine, schemaProtoLine } from './datatypes';
+import json5 from 'json5';
 
 export function parseLatestDataLines(linesString: string): DataLine[] | string {
   const lines = parseDataLines(linesString);
@@ -15,7 +16,7 @@ function parseDataLines(jsonString: string): DataLine[] | string {
       continue;
     }
     try {
-      const obj = JSON.parse(line);
+      const obj = json5.parse(line);
       const parsedLine = schemaProtoLine.parse(obj);
       dataLines.push(parsedLine);
     } catch (e) {
