@@ -48,6 +48,10 @@ const App = () => {
     });
   };
 
+  const openEmpty = () => {
+    setState({ state: "loading" });
+  };
+
   useEffect(() => {
     if (vscode.isVSCode()) {
       const state = vscode.getState();
@@ -64,6 +68,9 @@ const App = () => {
       switch (message.command) {
         case "load-data":
           loadData(message);
+          break;
+        case "open-empty":
+          openEmpty();
           break;
       }
     });

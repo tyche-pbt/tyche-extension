@@ -50,6 +50,10 @@ export function activate(context: ExtensionContext) {
     TychePanel.reset();
   }));
 
+  context.subscriptions.push(commands.registerCommand("tyche.open", () => {
+    TychePanel.getOrCreate(undefined, context.extensionUri);
+  }));
+
   let lastStamp: { [key: string]: number } = {};
 
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {

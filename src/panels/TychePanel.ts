@@ -36,7 +36,7 @@ export class TychePanel {
    * @param extensionUri The URI of the extension.
    * @returns The Tyche panel.
    */
-  public static getOrCreate(linesString: string, extensionUri: Uri) {
+  public static getOrCreate(linesString: string | undefined, extensionUri: Uri) {
     if (TychePanel.currentPanel) {
       TychePanel.currentPanel._panel.reveal(ViewColumn.Two);
     } else {
@@ -53,11 +53,18 @@ export class TychePanel {
     return TychePanel.currentPanel;
   }
 
-  public render(linesString: string) {
-    this._panel.webview.postMessage({
-      command: "load-data",
-      lines: linesString,
-    });
+  public render(linesString?: string) {
+    if (!linesString) {
+      this._panel.webview.postMessage({
+        command: "open-empty",
+        lines: linesString,
+      });
+    } else {
+      this._panel.webview.postMessage({
+        command: "load-data",
+        lines: linesString,
+      });
+    }
   }
 
   /**
