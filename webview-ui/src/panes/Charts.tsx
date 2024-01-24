@@ -3,6 +3,7 @@ import { OrdinalChart } from "../visualization/OrdinalChart";
 import { NominalChart } from "../visualization/NominalChart";
 import Card from "../ui/Card";
 import { UniqueTimeChart } from "../visualization/UniqueTimeChart";
+import { CoverageChart } from "../visualization/CoverageChart";
 
 type ChartsProps = {
   dataset: SampleInfo[];
@@ -16,7 +17,13 @@ type ChartsProps = {
 export const Charts = (props: ChartsProps) => {
   const { dataset, features } = props;
 
+  const coverageChart = <CoverageChart dataset={dataset} />;
+
   return <div className="w-full grid grid-cols-1">
+    {coverageChart &&
+      <Card>
+        {coverageChart}
+      </Card>}
     {[...features.nominal.map((x) =>
       <Card key={`bucket-${x}`}>
         <NominalChart
