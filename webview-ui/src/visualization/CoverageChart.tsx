@@ -23,10 +23,10 @@ export const CoverageChart = (props: CoverageChartProps) => {
   });
 
   // Normalize and massage
-  const data: { step: number, value: number, type: "Lines Covered" | "Interactions Covered" }[] = [];
+  const data: { step: number, value: number, type: "Lines" | "Interactions" }[] = [];
   rawData.forEach((x) => {
-    data.push({ step: x.step, value: (x.lines_covered / covered.size) * 100, type: "Lines Covered" });
-    data.push({ step: x.step, value: (x.interactions_covered / coveredInteractions.size) * 100, type: "Interactions Covered" });
+    data.push({ step: x.step, value: (x.lines_covered / covered.size) * 100, type: "Lines" });
+    data.push({ step: x.step, value: (x.interactions_covered / coveredInteractions.size) * 100, type: "Interactions" });
   })
 
   if (covered.size === 0) {
@@ -52,7 +52,8 @@ export const CoverageChart = (props: CoverageChartProps) => {
         axis: { title: "% of Coverage" }
       },
       color: {
-        field: "type"
+        field: "type",
+        title: "Coverage"
       },
     }
   };
