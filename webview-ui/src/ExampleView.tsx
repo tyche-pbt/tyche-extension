@@ -2,6 +2,8 @@ import { ExampleFilter, SampleInfo } from "./report";
 import { StaticCard } from "./ui/Card";
 import { PrettyExample } from "./ui/PrettyExample";
 import { Transition } from "@headlessui/react";
+import { useState } from "react";
+import { useDebounce } from "./utilities/useDebounce";
 
 type ExampleViewProps = {
   dataset: SampleInfo[];
@@ -10,6 +12,12 @@ type ExampleViewProps = {
 };
 
 export const ExampleView = (props: ExampleViewProps) => {
+  const [textSearchFilter, setTextSearchFilter] = useState("");
+  const debouncedTextSearchFilter = useDebounce(textSearchFilter, 500);
+  const onTextFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTextSearchFilter(e.target.value);
+  };
+
   const { filter } = props;
 
   let dataset: SampleInfo[];
@@ -29,13 +37,26 @@ export const ExampleView = (props: ExampleViewProps) => {
     filterText = filter.subset;
   }
 
+  dataset = dataset.filter((x) =>
+    x.item.toLocaleLowerCase().includes(debouncedTextSearchFilter.toLocaleLowerCase())
+  );
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-10 px-3 py-2 bg-accent">
         <button onClick={props.closeExamples}>
           <i className="codicon codicon-close text-background" />
         </button>
-        <span className="font-mono text-sm text-background">{filterText}</span>
+        <div>
+          <input
+            type="text"
+            className="px-2 py-1 mr-4 focus:outline-none"
+            value={textSearchFilter}
+            placeholder="Filter..."
+            onChange={onTextFilterChange}
+          />
+          <span className="font-mono text-sm text-background">{filterText}</span>
+        </div>
       </div>
       <Transition
         appear={true}
@@ -51,7 +72,7 @@ export const ExampleView = (props: ExampleViewProps) => {
           </StaticCard>
           {dataset.map((x, i) => (
             <StaticCard key={`example-${i}`} className="mt-2">
-              <PrettyExample example={x} />
+              <PrettyExample example={x} highlightText={debouncedTextSearchFilter} />
             </StaticCard>
           ))}
         </div>
