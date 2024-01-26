@@ -55,6 +55,7 @@
     "install:all": "npm install && cd webview-ui && npm install",
     "start:webview": "npm run build:observability-tools && cd webview-ui && npm run start",
     "build:webview": "npm run build:observability-tools && cd webview-ui && npm run build",
+    "dev:webview": "npm run build:observability-tools && cd webview-ui && npm run dev",
     "test:webview": "npm run build:observability-tools && cd webview-ui && npm run test",
     "vscode:prepublish": "npm run build",
     "build": "npm run build:webview && npm run compile",
