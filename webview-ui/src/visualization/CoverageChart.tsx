@@ -19,49 +19,51 @@ export const CoverageChart = (props: CoverageChartProps) => {
   >([]);
 
   useEffect(() => {
-    let covered: Set<string> = new Set();
-    let coveredInteractions: Set<string> = new Set();
+    setTimeout(() => {
+      let covered: Set<string> = new Set();
+      let coveredInteractions: Set<string> = new Set();
 
-    const rawData: { step: number; lines_covered: number; interactions_covered: number }[] = [];
-    props.dataset.forEach((x, i) => {
-      Object.entries(x.coverage).forEach(([prop, lines]) =>
-        lines.forEach((line) => covered.add(`${prop}:${line}`))
-      );
-      uniqueTokens("arguments" in x.dataLine ? x.dataLine.arguments : null).forEach((x: any) =>
-        coveredInteractions.add(x)
-      );
-      rawData.push({
-        step: i,
-        lines_covered: covered.size,
-        interactions_covered: coveredInteractions.size,
+      const rawData: { step: number; lines_covered: number; interactions_covered: number }[] = [];
+      props.dataset.forEach((x, i) => {
+        Object.entries(x.coverage).forEach(([prop, lines]) =>
+          lines.forEach((line) => covered.add(`${prop}:${line}`))
+        );
+        uniqueTokens("arguments" in x.dataLine ? x.dataLine.arguments : null).forEach((x: any) =>
+          coveredInteractions.add(x)
+        );
+        rawData.push({
+          step: i,
+          lines_covered: covered.size,
+          interactions_covered: coveredInteractions.size,
+        });
       });
-    });
 
-    if (covered.size === 0) {
-      setData(null);
-      return;
-    }
+      if (covered.size === 0) {
+        setData(() => null);
+        return;
+      }
 
-    // Normalize and massage
-    const newData: {
-      step: number;
-      value: number;
-      type: "Lines" | "Interactions";
-    }[] = [];
-    rawData.forEach((x) => {
-      newData.push({
-        step: x.step,
-        value: (x.lines_covered / covered.size) * 100,
-        type: "Lines",
+      // Normalize and massage
+      const newData: {
+        step: number;
+        value: number;
+        type: "Lines" | "Interactions";
+      }[] = [];
+      rawData.forEach((x) => {
+        newData.push({
+          step: x.step,
+          value: (x.lines_covered / covered.size) * 100,
+          type: "Lines",
+        });
+        newData.push({
+          step: x.step,
+          value: (x.interactions_covered / coveredInteractions.size) * 100,
+          type: "Interactions",
+        });
       });
-      newData.push({
-        step: x.step,
-        value: (x.interactions_covered / coveredInteractions.size) * 100,
-        type: "Interactions",
-      });
-    });
 
-    setData(newData);
+      setData(() => newData);
+    }, 0);
   }, [props.dataset]);
 
   if (props.dataset.length === 0) {
