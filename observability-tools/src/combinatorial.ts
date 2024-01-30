@@ -28,17 +28,21 @@ function flatMap<T, U>(xs: T[], f: (x: T) => U[]): U[] {
 
 function atomPairs(x: any): [Atom, Atom][] {
   function aux(x: any): [Atom, Atom][] {
-    const res: [Atom, Atom][] =
-      typeof x === 'object'
-        ? flatMap(Object.entries(x), ([k, v]) =>
-          flatMap(aux(v), ([k2, v2]) =>
-            [[k2, v2], [k, k2], [k, v2]] as [Atom, Atom][]
-          ))
-        : Array.isArray(x)
-          ? flatMap(x, aux)
-          : (typeof x === "number")
-            ? [[bucket(x), bucket(x)]]
-            : [[x, x]];
+    let res: [Atom, Atom][];
+    if (x === null || x === undefined || typeof x === 'boolean' || typeof x === 'string') {
+      res = [[x, x]];
+    } else if (typeof x === 'number') {
+      res = [[bucket(x), bucket(x)]];
+    } else if (typeof x === 'object') {
+      res = flatMap(Object.entries(x), ([k, v]) =>
+        flatMap(aux(v), ([k2, v2]) =>
+          [[k2, v2], [k, k2], [k, v2]] as [Atom, Atom][]
+        ));
+    } else if (Array.isArray(x)) {
+      res = flatMap(x, aux);
+    } else {
+      res = [];
+    }
     return dedupAtomPairs(res);
   }
   return aux(x).filter(([k, v]) => k !== v);

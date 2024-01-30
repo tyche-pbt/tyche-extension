@@ -37,25 +37,29 @@ export const CoverageChart = (props: CoverageChartProps) => {
         });
       });
 
-      if (covered.size === 0 || coveredInteractions.size === 0) {
-        setData(() => null);
-        return;
-      }
-
       // Normalize and massage
       const newData: ChartPoint[] = [];
       rawData.forEach((x) => {
-        newData.push({
-          step: x.step,
-          value: (x.lines_covered / covered.size) * 100,
-          type: "Lines",
-        });
-        newData.push({
-          step: x.step,
-          value: (x.interactions_covered / coveredInteractions.size) * 100,
-          type: "Interactions",
-        });
+        if (covered.size !== 0) {
+          newData.push({
+            step: x.step,
+            value: (x.lines_covered / covered.size) * 100,
+            type: "Lines",
+          });
+        }
+        if (coveredInteractions.size !== 0) {
+          newData.push({
+            step: x.step,
+            value: (x.interactions_covered / coveredInteractions.size) * 100,
+            type: "Interactions",
+          });
+        }
       });
+
+      if (newData.length === 0) {
+        setData(() => null);
+        return;
+      }
 
       setData(() => newData);
     }, 0);
