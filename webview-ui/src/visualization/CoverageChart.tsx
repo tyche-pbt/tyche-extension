@@ -8,15 +8,14 @@ type CoverageChartProps = {
   dataset: SampleInfo[];
 };
 
+type ChartPoint = {
+  step: number;
+  value: number;
+  type: "Lines" | "Interactions";
+};
+
 export const CoverageChart = (props: CoverageChartProps) => {
-  const [data, setData] = useState<
-    | {
-        step: number;
-        value: number;
-        type: "Lines" | "Interactions";
-      }[]
-    | null
-  >([]);
+  const [data, setData] = useState<ChartPoint[] | null>([]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -38,17 +37,13 @@ export const CoverageChart = (props: CoverageChartProps) => {
         });
       });
 
-      if (covered.size === 0) {
+      if (covered.size === 0 || coveredInteractions.size === 0) {
         setData(() => null);
         return;
       }
 
       // Normalize and massage
-      const newData: {
-        step: number;
-        value: number;
-        type: "Lines" | "Interactions";
-      }[] = [];
+      const newData: ChartPoint[] = [];
       rawData.forEach((x) => {
         newData.push({
           step: x.step,
@@ -97,11 +92,9 @@ export const CoverageChart = (props: CoverageChartProps) => {
     },
   };
 
-  return (
-    <Distribution
-      title={<span className="font-bold">Unique Lines Covered Over Run</span>}
-      spec={spec}
-      listeners={{}}
-    />
-  );
+  return <Distribution
+    title={<span className="font-bold">Coverage</span>}
+    spec={spec}
+    listeners={{}}
+  />;
 };
