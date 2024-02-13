@@ -1,5 +1,6 @@
 import { ExampleFilter, SampleInfo, TestInfo } from "../report";
 import Card from "../ui/Card";
+import Tooltip from "../ui/Tooltip";
 
 type HighLevelStatsProps = {
   property: string;
@@ -246,8 +247,14 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         </span> duplicates.
       </Card>}
     <Card className="col-span-2">
-      <div className="flex-1 text-nowrap overflow-hidden overflow-ellipsis font-bold mb-1">
-        Sample Breakdown
+      <div className="flex-1">
+        <span className="text-nowrap overflow-hidden overflow-ellipsis font-bold mb-1">
+          Sample Breakdown
+        </span> <Tooltip>
+          Click on a region of the chart to see the samples that contribute to it.
+          <br />
+          Uniqueness is computed based on the string representation of each sample.
+        </Tooltip>
       </div>
       <Breakdown samples={props.testInfo.samples} setExampleFilter={props.setExampleFilter} />
     </Card>

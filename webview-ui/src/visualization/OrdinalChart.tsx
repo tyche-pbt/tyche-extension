@@ -24,7 +24,7 @@ export const OrdinalChart = (props: OrdinalChartProps) => {
       }, new Map<number, number>()))
       .map(([k, v]) => ({ label: k, freq: v }));
 
-  const quality = featureData.every(x => parseInt(x.label.toString()) === x.label) ? "ordinal" : "quantitative";
+  const quality = "ordinal"; // featureData.every(x => parseInt(x.label.toString()) === x.label) ? "ordinal" : "quantitative";
 
   const spec: VisualizationSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -65,5 +65,6 @@ export const OrdinalChart = (props: OrdinalChartProps) => {
     </>}
     spec={spec}
     listeners={listeners}
+    hasTooltip
   />;
 }

@@ -137,5 +137,6 @@ export const NominalChart = (props: NominalChartProps) => {
     </>}
     spec={spec}
     listeners={listeners}
+    hasTooltip
   />;
 }

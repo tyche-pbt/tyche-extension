@@ -1,6 +1,7 @@
 import { Popover } from "@headlessui/react";
 import VegaLite from "../utilities/VegaLite";
 import { SignalListeners, VisualizationSpec } from "react-vega";
+import Tooltip from "../ui/Tooltip";
 
 export const vegaConfig = {
   axis: {
@@ -17,15 +18,18 @@ type DistributionProps = {
   title: JSX.Element;
   spec: VisualizationSpec;
   listeners?: SignalListeners;
+  hasTooltip?: boolean;
 };
 
 const Distribution = (props: DistributionProps) => {
-  const { title, spec, listeners } = props;
+  const { title, spec, listeners, hasTooltip } = props;
 
   return <div className="w-full">
     <div className="mb-1 flex">
-      <div className="flex-1 text-nowrap overflow-hidden overflow-ellipsis ">
-        {title}
+      <div className="flex-1">
+        <span className="overflow-ellipsis text-nowrap">
+          {title}
+        </span> {hasTooltip && <Tooltip>Click on a region of the chart below to see the samples that contribute to it.</Tooltip>}
       </div>
       <div className="flex flex-row-reverse">
         <Popover className="relative">
