@@ -29,6 +29,11 @@
         "command": "tyche.open",
         "title": "Open",
         "category": "Tyche"
+      },
+      {
+        "command": "tyche.refresh",
+        "title": "Refresh Live View",
+        "category": "Tyche"
       }
     ],
     "configuration": {

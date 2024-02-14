@@ -23,6 +23,14 @@ export function activate(context: ExtensionContext) {
     TychePanel.getOrCreate(undefined, context.extensionUri);
   }));
 
+  context.subscriptions.push(commands.registerCommand("tyche.refresh", () => {
+    (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
+      workspace.findFiles(glob).then((uris) => {
+        visualizeUris(uris, context);
+      });
+    });
+  }));
+
   (workspace.getConfiguration("tyche").get("observationGlobs") as string[] || []).forEach((glob: string) => {
     let uris: Uri[] = [];
     let lastChange: number;
