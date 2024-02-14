@@ -6,10 +6,27 @@ type OverviewProps = {
   selectProperty(property: string): void;
 }
 
+type Status = "success" | "failure" | "warning";
+
+const compareStatus = (status1: Status, status2: Status): number => {
+  const toNum = (status: Status) => {
+    switch (status) {
+      case "success":
+        return 2;
+      case "warning":
+        return 1;
+      case "failure":
+        return 0;
+    }
+  };
+  return toNum(status1) - toNum(status2);
+}
+
+
 const Overview = (props: OverviewProps) => {
   return <Card className="mt-2">
     <ul className="w-full">
-      {Object.keys(props.report.properties).map((property) =>
+      {Object.entries(props.report.properties).sort(([, info1], [, info2]) => compareStatus(info1.status, info2.status)).map(([property, info]) =>
         <li
           className="hover:bg-primary hover:bg-opacity-25 cursor-pointer flex w-full py-1 px-1 rounded-md"
           onClick={() => props.selectProperty(property)}
@@ -21,11 +38,11 @@ const Overview = (props: OverviewProps) => {
             {property}
           </div>
           <div className="ml-3">
-            {props.report.properties[property].status === "failure" &&
+            {info.status === "failure" &&
               <i className="codicon codicon-x text-error" />}
-            {props.report.properties[property].status === "success" &&
+            {info.status === "success" &&
               <i className="codicon codicon-check text-success" />}
-            {props.report.properties[property].status === "warning" &&
+            {info.status === "warning" &&
               <i className="codicon codicon-warning text-warning" />}
           </div>
         </li>)}

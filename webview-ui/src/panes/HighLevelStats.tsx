@@ -58,11 +58,11 @@ const Breakdown = (props: BreakdownProps) => {
             const width = slice.length / samples.filter(validityPred).length * 100;
             const height = samples.filter(validityPred).length / samples.length * 100;
             const bg = `bg-${colors[i]} ${uniquenessKey === "Duplicate" ? "bg-opacity-60 " : ""}`;
-            const textDec = validityKey === "Valid" && uniquenessKey === "Unique" ? "font-bold" : "";
+            const textDec = validityKey === "Passed" && uniquenessKey === "Unique" ? "font-bold" : "";
             if (!width || !height) return null;
             return <div
               key={validityKey + "-" + uniquenessKey + "-cell"}
-              style={{ width: width + "%", height: height + "%" }}
+              style={{ width: width - 0.1 + "%", height: height + "%" }}
               className="float-left text-sm p-0.5"
               onClick={() =>
                 setExampleFilter({
