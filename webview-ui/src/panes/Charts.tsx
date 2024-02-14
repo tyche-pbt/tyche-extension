@@ -14,7 +14,9 @@ type ChartsProps = {
 }
 
 export const Charts = (props: ChartsProps) => {
-  const { dataset, features } = props;
+  const { dataset: rawDataset, features } = props;
+
+  const dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed")
 
   const coverageChart = null; // CoverageChart({ dataset });
 
