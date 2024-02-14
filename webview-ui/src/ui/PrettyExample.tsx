@@ -34,7 +34,7 @@ export const PrettyExample = (props: PrettyExampleProps) => {
                 </pre>
                 <div className="flex flex-col justify-center">
                   {props.duplicateCount !== undefined && props.duplicateCount > 1 && (
-                    <div className="flex items-center justify-center w-10 p-1 text-white rounded-full aspect-square bg-accent text-s">
+                    <div className="text-sm text-white rounded-full px-2 bg-accent ml-1">
                       {props.duplicateCount}&times;
                     </div>
                   )}
