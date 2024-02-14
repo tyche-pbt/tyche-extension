@@ -52,6 +52,14 @@ function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { 
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
 }
 
+export const isPassed = (x: SampleInfo) => x.outcome === "passed";
+export const isFailed = (x: SampleInfo) => x.outcome === "failed";
+export const isInvalid = (x: SampleInfo) => x.outcome === "invalid" || x.outcome === "gave_up";
+
+export const isUnique = (x: SampleInfo) => !x.duplicate;
+export const isDuplicate = (x: SampleInfo) => x.duplicate;
+
+
 export function buildReport(data: DataLine[]): Report {
   const report: Report = {
     timestamp: 0,
@@ -101,11 +109,11 @@ export function buildReport(data: DataLine[]): Report {
   }
 
   for (const property in report.properties) {
-    const discards = report.properties[property].samples.filter(sample => sample.outcome === "invalid").length;
-    const duplicates = report.properties[property].samples.filter(sample => sample.duplicate).length;
+    const discards = report.properties[property].samples.filter(isInvalid).length;
+    const validDuplicates = report.properties[property].samples.filter(x => isDuplicate(x) && !isInvalid(x)).length;
     const samples = report.properties[property].samples.length;
     if (report.properties[property].status === "success") {
-      if (discards / samples > 0.33 || duplicates / samples > 0.33) {
+      if (discards / samples > 0.33 || validDuplicates / samples > 0.33) {
         report.properties[property].status = "warning";
       }
     }
