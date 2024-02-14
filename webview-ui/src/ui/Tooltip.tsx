@@ -12,7 +12,7 @@ const Tooltip = (props: TooltipProps) => {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)} />
     {open &&
-      <div className="absolute w-48 bg-foreground text-white p-2 z-50 text-xs rounded-md bg-opacity-80">
+      <div className="absolute w-56 bg-foreground text-white p-2 z-50 text-xs rounded-md bg-opacity-80">
         {props.children}
       </div>}
   </div>;

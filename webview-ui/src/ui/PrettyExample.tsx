@@ -1,5 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { SampleInfo } from "../report";
+import Tooltip from "./Tooltip";
 
 type PrettyExampleProps = {
   example: SampleInfo;
@@ -21,7 +22,14 @@ export const PrettyExample = (props: PrettyExampleProps) => {
                   {props.example.item !== "" ? (
                     <PrettyText text={props.example.item} highlightText={props.highlightText} />
                   ) : (
-                    <span className="font-sans italic">(no representation)</span>
+                    <><span className="font-sans italic">Incomplete sample.</span> <Tooltip>
+                      <span className="font-sans">
+                        Some PBT frameworks may "give up" while generating a value if an internal
+                        filter fails too often or if they "run out" of randomness. If there are too
+                        many samples like this, you may want to file a bug report with your PBT
+                        framework.
+                      </span>
+                    </Tooltip></>
                   )}
                 </pre>
                 <div className="flex flex-col justify-center">
@@ -55,8 +63,8 @@ const PrettyText = (props: PrettyTextProps) => {
   const sections =
     props.highlightText !== undefined && props.highlightText.length > 0
       ? props.text.split(
-          new RegExp(`(${props.highlightText.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&")})`, "gi")
-        )
+        new RegExp(`(${props.highlightText.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&")})`, "gi")
+      )
       : [props.text];
   return (
     <>
