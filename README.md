@@ -1,3 +1,9 @@
+> **IMPORTANT ANNOUNCEMENT** Tyche is an ongoing research project at the University of Pennsylvania.
+> If you have tried out this interface, we would love to get in touch to ask about your experience;
+> your feedback may be used to guide the design and development of future PBT tools.
+> Please fill out [this very short form](https://forms.gle/LRUjA4hhL293XJv18) so we can
+> contact you for feedback and study recruiting.
+
 # Tyche
 
 Tyche, named after [the Greek goddess of chance](https://en.wikipedia.org/wiki/Tyche), aims to
@@ -18,13 +24,41 @@ their testing was thorough when, in fact, it had critical gaps. Tyche provides a
 interface for understanding testing effectiveness, surfacing both "pre-testing" information about
 test inputs and their distributions and "post-testing" information like code coverage.
 
-## Current Progress
+## Using Tyche
 
-Currently Tyche has one implemented integration with Python's Hypothesis framework. The library can
-be found [here](https://github.com/tyche-pbt/tyche-hypothesis).
+### In Hypothesis
 
-This integration allows Tyche to run and analyze Hypothesis properties, displaying statistics about
-test data if the property passes.
+Tyche is supported natively in Hypothesis via its [Observability
+API](https://hypothesis.readthedocs.io/en/latest/observability.html). Simply run a Hypothesis test
+with the `HYPOTHESIS_EXPERIMENTAL_OBSERVABILITY` flag set and Tyche should open automatically with
+information about your test results. (If it doesn't open automatically for some reason, you can run
+`Tyche: Open` and direct it to the appropriate files in your `.hypothesis/` directory manually.)
+
+You can add *features* to your Tyche visualization using Hypothesis's `event` and `target`
+functions. When visualized in Tyche, the following property will display information about generated
+list sizes alongside other available feedback:
+```python
+@given(st.lists(st.integers()))
+def test_example(l):
+    event("len", payload=len(l))
+    ...
+```
+
+### In QuickCheck
+
+We have an [experimental library](https://github.com/tyche-pbt/tyche-quickcheck) that adds limited
+support for Tyche to QuickCheck. As of now it needs to be installed via GitHub and it is not very
+fully featured, but we hope to make this support more robust over time.
+
+### Elsewhere
+
+You can implement support for Tyche in any PBT framework by having each property output data in a
+specific JSON lines format. The [Hypothesis
+documentation](https://hypothesis.readthedocs.io/en/latest/observability.html) has more information
+about the details of the format. Once you have valid JSON lines files, simply run `Tyche: Open` as a
+command in VSCode and direct the application to the correct files.
+
+Please contact [Harry Goldstein](mailto:hgoldstein95@gmail.com) if you need help.
 
 ## Developing
 
