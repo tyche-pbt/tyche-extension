@@ -15,6 +15,8 @@ libraries like [Hypothesis](https://hypothesis.readthedocs.io/en/latest/),
 The Tyche extension is currently in early alpha; we presented a prototype implementation, as a
 [demo](https://programs.sigchi.org/uist/2023/program/session/128188) at UIST 2023.
 
+![Screenshot of Tyche in Action](./demo.png)
+
 ## Motivation
 
 Current property-based testing frameworks give insufficient feedback about the specific values that

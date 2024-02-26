@@ -5,7 +5,10 @@
   "version": "0.3.7",
   "author": "Harrison Goldstein",
   "publisher": "HarrisonGoldstein",
-  "repository": "https://github.com/hgoldstein95/tyche-extension",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hgoldstein95/tyche-extension"
+  },
   "engines": {
     "vscode": "^1.46.0"
   },
