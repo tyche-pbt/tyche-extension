@@ -1,7 +1,7 @@
 > **IMPORTANT ANNOUNCEMENT** Tyche is an ongoing research project at the University of Pennsylvania.
 > If you have tried out this interface, we would love to get in touch to ask about your experience;
 > your feedback may be used to guide the design and development of future PBT tools.
-> Please fill out [this very short form](https://forms.gle/LRUjA4hhL293XJv18) so we can
+> Please fill out [this very short form](https://forms.gle/NmtXJiqfCBNptw2LA) so we can
 > contact you for feedback and study recruiting.
 
 # Tyche
@@ -12,7 +12,7 @@ libraries like [Hypothesis](https://hypothesis.readthedocs.io/en/latest/),
 [Bolero](https://docs.rs/bolero/latest/bolero/) and more. It is implemented as an extension for
 [Visual Studio Code](https://code.visualstudio.com/).
 
-The Tyche extension is currently in early alpha; we have a prototype implementation, appearing as a
+The Tyche extension is currently in early alpha; we presented a prototype implementation, as a
 [demo](https://programs.sigchi.org/uist/2023/program/session/128188) at UIST 2023.
 
 ## Motivation
