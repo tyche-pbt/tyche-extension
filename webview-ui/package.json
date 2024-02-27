@@ -9,6 +9,7 @@
     "test": "EXTEND_ESLINT=true react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "https://tyche-pbt.github.io/tyche-extension/",
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@headlessui/tailwindcss": "^0.2.0",

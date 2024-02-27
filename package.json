@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/hgoldstein95/tyche-extension"
   },
+  "homepage": "https://tyche-pbt.github.io/tyche-extension/",
   "engines": {
     "vscode": "^1.46.0"
   },
