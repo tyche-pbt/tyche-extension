@@ -3,6 +3,7 @@ import { VisualizationSpec, SignalListeners } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
 import { SampleInfo } from "../report";
 import { THEME_COLORS } from "../utilities/colors";
+import Card from "../ui/Card";
 
 type TimingChartProps = {
   dataset: SampleInfo[];
@@ -17,8 +18,11 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
 
   const [brush, setBrush] = useState<[number, number] | null>(null);
 
-  if (dataset.length === 0) {
-    return <div className="text-center">No samples</div>;
+  if (
+    dataset.length === 0 ||
+    dataset.every((x) => !("timing" in x.dataLine && x.dataLine.timing))
+  ) {
+    return null;
   }
 
   dataset.sort((a, b) => {
@@ -113,7 +117,7 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
   };
 
   return (
-    <>
+    <Card>
       <Distribution
         title={<span className="font-bold">Timing Breakdown</span>}
         spec={cumulativeSpec}
@@ -135,6 +139,6 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
         title={brush == null ? "Use shift + drag to select a range of samples" : undefined}>
         View selected samples <i className="ml-1 codicon codicon-arrow-right" />
       </button>
-    </>
+    </Card>
   );
 };

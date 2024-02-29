@@ -51,17 +51,15 @@ export const Charts = (props: ChartsProps) => {
       <Card>
         <UniqueTimeChart dataset={dataset} />
       </Card>
-      <Card>
-        <TimingChart
-          dataset={dataset}
-          viewValues={(examples) =>
-            props.setFilteredView({
-              subset: "Selected samples by time taken",
-              examples,
-            })
-          }
-        />
-      </Card>
+      <TimingChart
+        dataset={dataset}
+        viewValues={(examples) =>
+          props.setFilteredView({
+            subset: "Selected samples by time taken",
+            examples,
+          })
+        }
+      />
     </div>
   );
 };
