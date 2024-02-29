@@ -22,8 +22,8 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
   }
 
   dataset.sort((a, b) => {
-    if ("timing" in a.dataLine) {
-      if ("timing" in b.dataLine) {
+    if ("timing" in a.dataLine && a.dataLine.timing) {
+      if ("timing" in b.dataLine && b.dataLine.timing) {
         return (
           Object.values(a.dataLine.timing).reduce((acc, v) => acc + v, 0) -
           Object.values(b.dataLine.timing).reduce((acc, v) => acc + v, 0)
@@ -41,7 +41,7 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
   });
   const cumulativeData: { step: number; event: string; time: number }[] = dataset.flatMap(
     (x, step) =>
-      "timing" in x.dataLine
+      "timing" in x.dataLine && x.dataLine.timing
         ? Object.entries(x.dataLine.timing).map(([event, time]) => ({ step, event, time }))
         : []
   );
