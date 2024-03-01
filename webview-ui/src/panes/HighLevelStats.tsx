@@ -218,6 +218,9 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
             ["Duplicate", isDuplicate],
           ]}
           colors={["error", "success", "warning"]}
+          additionalLabelClasses={(verticalCategory, horizontalCategory) =>
+            verticalCategory === "Passed" && horizontalCategory === "Unique" ? "font-bold" : ""
+          }
         />
       </Card>
     </div>

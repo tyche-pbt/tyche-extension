@@ -6,6 +6,7 @@ type MosaicChartProps = {
   horizontalAxis: [string, (x: SampleInfo) => boolean][];
   verticalAxis: [string, (x: SampleInfo) => boolean][];
   colors: string[];
+  additionalLabelClasses?: (horizontalAxis: string, verticalAxis: string) => string;
 };
 
 export const MosaicChart = (props: MosaicChartProps) => {
@@ -49,8 +50,8 @@ export const MosaicChart = (props: MosaicChartProps) => {
               const width = (slice.length / samples.filter(verticalPred).length) * 100;
               const height = (samples.filter(verticalPred).length / samples.length) * 100;
               const bg = `bg-${colors[iv]}/${bgOpacityGrades[ih]} hover:bg-${colors[iv]}/75 hover:brightness-125 `;
-              const textDec =
-                verticalKey === "Passed" && horizontalKey === "Unique" ? "font-bold" : "";
+              const additionalClasses =
+                props.additionalLabelClasses?.(verticalKey, horizontalKey) ?? "";
               if (!width || !height) return null;
               return (
                 <div
@@ -70,7 +71,7 @@ export const MosaicChart = (props: MosaicChartProps) => {
                     className={
                       "w-full h-full cursor-pointer flex items-center justify-center " +
                       bg +
-                      textDec
+                      additionalClasses
                     }>
                     {slice.length}
                   </div>
@@ -109,7 +110,7 @@ export const MosaicChart = (props: MosaicChartProps) => {
           return (
             <span
               key={horizontalKey + "-label"}
-              className="px-4 py-2 text-sm italic rounded-md cursor-pointer hover:bg-primary hover:bg-opacity-25"
+              className="px-2 text-sm italic rounded-md cursor-pointer hover:bg-primary hover:bg-opacity-25"
               onClick={() =>
                 setExampleFilter({
                   subset: horizontalKey,
@@ -128,8 +129,15 @@ export const MosaicChart = (props: MosaicChartProps) => {
 function opacityGrades(n: number, min: number = 0.6) {
   return [
     1,
+    // Evenly spaces the range between 1 and min into the remaining n-2 steps
+    // If n == 2 this is empty and we return [1, min]
     ...Array.from({ length: n - 2 }).map((_, x) => 1 - ((1 - min) / (n - 1)) * (x + 1)),
     min,
-  ].map((x) => Math.round(x * 20) * 5);
-  // .map((x) => `bg-opacity-${Math.round(x * 20) * 5}`);
+  ].map(
+    // Round to the nearest 5 because tailwindcss only supports 5% increments
+    // We can't use tailwind arbitrary values e.g. bg-accent/[0.83] for 83% because
+    // the custom classes must be statically inferrable at compile time:
+    // https://tailwindcss.com/docs/content-configuration#class-detection-in-depth
+    (x) => Math.round(x * 20) * 5
+  );
 }
