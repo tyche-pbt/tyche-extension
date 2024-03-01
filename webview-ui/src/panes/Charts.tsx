@@ -15,31 +15,9 @@ type ChartsProps = {
 };
 
 export const Charts = (props: ChartsProps) => {
-  let { dataset: rawDataset, features } = props;
+  const { dataset: rawDataset, features } = props;
 
-  features = {
-    ...features,
-    nominal: ["horizontal feature", "vertical feature"],
-  };
-
-  let dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed");
-
-  const hFeatures = ["A", "B", "C", "D"];
-  const vFeatures = ["1", "2", "3", "4", "5"];
-
-  dataset = dataset.map((x, i) => {
-    return {
-      ...x,
-      features: {
-        ...x.features,
-        nominal: {
-          // ...x.features.nominal,
-          "vertical feature": vFeatures[Math.floor((i / dataset.length) * vFeatures.length)],
-          "horizontal feature": hFeatures[i % hFeatures.length],
-        },
-      },
-    };
-  });
+  const dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed");
 
   const coverageChart = null; // CoverageChart({ dataset });
 
@@ -104,6 +82,8 @@ const NominalMosaic = (props: NominalMosaicProps) => {
     new Set(samples.map((x) => x.features.nominal[feature2]).filter((x) => x !== undefined))
   );
 
+  // Presentation heuristic: the feature with fewer distinct categories should be the horizontal axis.
+  // It's not usually the case that there is more horizontal screen space than vertical.
   const [[horizontalFeature, horizontalBuckets], [verticalFeature, verticalBuckets]] =
     buckets1.length < buckets2.length
       ? [
@@ -114,9 +94,6 @@ const NominalMosaic = (props: NominalMosaicProps) => {
           [feature2, buckets2],
           [feature1, buckets1],
         ];
-
-  console.log(horizontalBuckets);
-  console.log(verticalBuckets);
 
   return (
     <Card>
