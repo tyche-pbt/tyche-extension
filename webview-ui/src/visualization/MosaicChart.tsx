@@ -3,69 +3,72 @@ import { ExampleFilter, SampleInfo, TestInfo } from "../report";
 type MosaicChartProps = {
   samples: SampleInfo[];
   setExampleFilter: (filter: ExampleFilter) => void;
-  axis1: [string, (x: SampleInfo) => boolean][];
-  axis2: [string, (x: SampleInfo) => boolean][];
+  horizontalAxis: [string, (x: SampleInfo) => boolean][];
+  verticalAxis: [string, (x: SampleInfo) => boolean][];
+  colors: string[];
 };
 
 export const MosaicChart = (props: MosaicChartProps) => {
-  const { samples, setExampleFilter, axis1, axis2 } = props;
+  const { samples, setExampleFilter, horizontalAxis, verticalAxis, colors } = props;
 
-  const horizontalAxis = axis1;
-  const verticalAxis = axis2;
+  const bgOpacityGrades = opacityGrades(horizontalAxis.length);
+  console.log(bgOpacityGrades);
 
   return (
     <>
       <div className="flex justify-between ml-20 mr-10">
-        {verticalAxis.map(([verticalKey, verticalPred]) => {
-          const width = (samples.filter(verticalPred).length / samples.length) * 100;
+        {horizontalAxis.map(([horizontalKey, horizontalPred]) => {
+          const width = (samples.filter(horizontalPred).length / samples.length) * 100;
           if (!width) return null;
           return (
-            <span key={verticalKey + "-label"} className="text-sm font-bold">
-              {verticalKey}
+            <span key={horizontalKey + "-label"} className="text-sm font-bold">
+              {horizontalKey}
             </span>
           );
         })}
       </div>
       <div className="flex">
         <div className="w-24">
-          {horizontalAxis.map(([horizontalKey, horizontalPred]) => {
-            const height = (samples.filter(horizontalPred).length / samples.length) * 100;
+          {verticalAxis.map(([verticalKey, verticalPred]) => {
+            const height = (samples.filter(verticalPred).length / samples.length) * 100;
             if (!height) return null;
             return (
               <div
-                key={horizontalKey + "-label"}
+                key={verticalKey + "-label"}
                 className="flex items-center text-sm font-bold"
                 style={{ height: height + "%" }}>
-                {horizontalKey}
+                {verticalKey}
               </div>
             );
           })}
         </div>
         <div className="w-full h-48">
-          {horizontalAxis.map(([horizontalKey, horizontalPred], i) =>
-            verticalAxis.map(([verticalKey, verticalPred]) => {
-              const colors = ["error", "success", "warning"];
-              const slice = samples.filter(horizontalPred).filter(verticalPred);
-              const width = (slice.length / samples.filter(horizontalPred).length) * 100;
-              const height = (samples.filter(horizontalPred).length / samples.length) * 100;
-              const bg = `bg-${colors[i]} ${verticalKey === "Duplicate" ? "bg-opacity-60 " : ""}`;
+          {verticalAxis.map(([verticalKey, verticalPred], iv) =>
+            horizontalAxis.map(([horizontalKey, horizontalPred], ih) => {
+              const slice = samples.filter(verticalPred).filter(horizontalPred);
+              const width = (slice.length / samples.filter(verticalPred).length) * 100;
+              const height = (samples.filter(verticalPred).length / samples.length) * 100;
+              const bg = `bg-${colors[iv]}/${bgOpacityGrades[ih]} hover:bg-${colors[iv]}/75 hover:brightness-125 `;
               const textDec =
-                horizontalKey === "Passed" && verticalKey === "Unique" ? "font-bold" : "";
+                verticalKey === "Passed" && horizontalKey === "Unique" ? "font-bold" : "";
               if (!width || !height) return null;
               return (
                 <div
-                  key={horizontalKey + "-" + verticalKey + "-cell"}
-                  style={{ width: width - 0.1 + "%", height: height + "%" }}
+                  key={verticalKey + "-" + horizontalKey + "-cell"}
+                  style={{
+                    width: width - 0.1 + "%",
+                    height: height + "%",
+                  }}
                   className="float-left text-sm p-0.5"
                   onClick={() =>
                     setExampleFilter({
-                      subset: horizontalKey + ", " + verticalKey,
+                      subset: verticalKey + ", " + horizontalKey,
                       examples: slice,
                     })
                   }>
                   <div
                     className={
-                      "w-full h-full hover:bg-opacity-70 cursor-pointer flex items-center justify-center " +
+                      "w-full h-full cursor-pointer flex items-center justify-center " +
                       bg +
                       textDec
                     }>
@@ -77,18 +80,18 @@ export const MosaicChart = (props: MosaicChartProps) => {
           )}
         </div>
         <div className="w-10">
-          {horizontalAxis.map(([horizontalKey, horizontalPred]) => {
-            const slice = samples.filter(horizontalPred);
+          {verticalAxis.map(([verticalKey, verticalPred]) => {
+            const slice = samples.filter(verticalPred);
             const height = (slice.length / samples.length) * 100;
             if (!height) return null;
             return (
               <div
-                key={horizontalKey + "-label"}
+                key={verticalKey + "-label"}
                 className="flex items-center px-1 text-sm italic text-right rounded-md cursor-pointer hover:bg-primary hover:bg-opacity-25"
                 style={{ height: height + "%" }}
                 onClick={() =>
                   setExampleFilter({
-                    subset: horizontalKey,
+                    subset: verticalKey,
                     examples: slice,
                   })
                 }>
@@ -99,17 +102,17 @@ export const MosaicChart = (props: MosaicChartProps) => {
         </div>
       </div>
       <div className="flex justify-between ml-20 mr-10">
-        {verticalAxis.map(([verticalKey, verticalPred]) => {
-          const slice = samples.filter(verticalPred);
+        {horizontalAxis.map(([horizontalKey, horizontalPred]) => {
+          const slice = samples.filter(horizontalPred);
           const width = (slice.length / samples.length) * 100;
           if (!width) return null;
           return (
             <span
-              key={verticalKey + "-label"}
-              className="px-2 text-sm italic rounded-md cursor-pointer hover:bg-primary hover:bg-opacity-25"
+              key={horizontalKey + "-label"}
+              className="px-4 py-2 text-sm italic rounded-md cursor-pointer hover:bg-primary hover:bg-opacity-25"
               onClick={() =>
                 setExampleFilter({
-                  subset: verticalKey,
+                  subset: horizontalKey,
                   examples: slice,
                 })
               }>
@@ -121,3 +124,12 @@ export const MosaicChart = (props: MosaicChartProps) => {
     </>
   );
 };
+
+function opacityGrades(n: number, min: number = 0.6) {
+  return [
+    1,
+    ...Array.from({ length: n - 2 }).map((_, x) => 1 - ((1 - min) / (n - 1)) * (x + 1)),
+    min,
+  ].map((x) => Math.round(x * 20) * 5);
+  // .map((x) => `bg-opacity-${Math.round(x * 20) * 5}`);
+}

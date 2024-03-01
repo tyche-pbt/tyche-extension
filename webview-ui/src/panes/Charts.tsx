@@ -19,10 +19,13 @@ export const Charts = (props: ChartsProps) => {
 
   features = {
     ...features,
-    nominal: [...features.nominal, "test feature"],
+    nominal: ["horizontal feature", "vertical feature"],
   };
 
   let dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed");
+
+  const hFeatures = ["A", "B", "C", "D"];
+  const vFeatures = ["1", "2", "3", "4", "5"];
 
   dataset = dataset.map((x, i) => {
     return {
@@ -30,17 +33,15 @@ export const Charts = (props: ChartsProps) => {
       features: {
         ...x.features,
         nominal: {
-          ...x.features.nominal,
-          "test feature": i < dataset.length * 0.2 ? "A" : i < dataset.length * 0.7 ? "B" : "C",
+          // ...x.features.nominal,
+          "vertical feature": vFeatures[Math.floor((i / dataset.length) * vFeatures.length)],
+          "horizontal feature": hFeatures[i % hFeatures.length],
         },
       },
     };
   });
 
   const coverageChart = null; // CoverageChart({ dataset });
-
-  console.log(dataset);
-  console.log(features);
 
   return (
     <div className="grid w-full grid-cols-1">
@@ -96,8 +97,26 @@ const NominalMosaic = (props: NominalMosaicProps) => {
   const { samples, setExampleFilter, feature1, feature2 } = props;
 
   // Collect all unique values for each feature
-  const buckets1 = Array.from(new Set(samples.map((x) => x.features.nominal[feature1])));
-  const buckets2 = Array.from(new Set(samples.map((x) => x.features.nominal[feature2])));
+  const buckets1 = Array.from(
+    new Set(samples.map((x) => x.features.nominal[feature1]).filter((x) => x !== undefined))
+  );
+  const buckets2 = Array.from(
+    new Set(samples.map((x) => x.features.nominal[feature2]).filter((x) => x !== undefined))
+  );
+
+  const [[horizontalFeature, horizontalBuckets], [verticalFeature, verticalBuckets]] =
+    buckets1.length < buckets2.length
+      ? [
+          [feature1, buckets1],
+          [feature2, buckets2],
+        ]
+      : [
+          [feature2, buckets2],
+          [feature1, buckets1],
+        ];
+
+  console.log(horizontalBuckets);
+  console.log(verticalBuckets);
 
   return (
     <Card>
@@ -106,8 +125,15 @@ const NominalMosaic = (props: NominalMosaicProps) => {
       <MosaicChart
         samples={samples}
         setExampleFilter={setExampleFilter}
-        axis1={buckets1.map((bucket) => [bucket, (x) => x.features.nominal[feature1] === bucket])}
-        axis2={buckets2.map((bucket) => [bucket, (x) => x.features.nominal[feature2] === bucket])}
+        horizontalAxis={horizontalBuckets.map((bucket) => [
+          bucket,
+          (x) => x.features.nominal[horizontalFeature] === bucket,
+        ])}
+        verticalAxis={verticalBuckets.map((bucket) => [
+          bucket,
+          (x) => x.features.nominal[verticalFeature] === bucket,
+        ])}
+        colors={["accent", "accent2", "accent3", "warning", "primary"]}
       />
     </Card>
   );

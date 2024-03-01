@@ -208,15 +208,16 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
         <MosaicChart
           samples={props.testInfo.samples}
           setExampleFilter={props.setExampleFilter}
-          axis1={[
+          verticalAxis={[
             ["Failed", isFailed],
             ["Passed", isPassed],
             ["Invalid", isInvalid],
           ]}
-          axis2={[
+          horizontalAxis={[
             ["Unique", isUnique],
             ["Duplicate", isDuplicate],
           ]}
+          colors={["error", "success", "warning"]}
         />
       </Card>
     </div>
