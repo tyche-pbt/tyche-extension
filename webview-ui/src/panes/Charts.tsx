@@ -1,3 +1,4 @@
+import { useState, useMemo, ChangeEvent } from "react";
 import { ExampleFilter, SampleInfo } from "../report";
 import { OrdinalChart } from "../visualization/OrdinalChart";
 import { NominalChart } from "../visualization/NominalChart";
@@ -79,16 +80,16 @@ const NominalMosaic = (props: NominalMosaicProps) => {
     const feature1 = nominalFeatures[0];
     const feature2 = nominalFeatures[1];
 
-  // Collect all unique values for each feature
-  const buckets1 = Array.from(
-    new Set(samples.map((x) => x.features.nominal[feature1]).filter((x) => x !== undefined))
-  );
-  const buckets2 = Array.from(
-    new Set(samples.map((x) => x.features.nominal[feature2]).filter((x) => x !== undefined))
-  );
+    // Collect all unique values for each feature
+    const buckets1 = Array.from(
+      new Set(samples.map((x) => x.features.nominal[feature1]).filter((x) => x !== undefined))
+    );
+    const buckets2 = Array.from(
+      new Set(samples.map((x) => x.features.nominal[feature2]).filter((x) => x !== undefined))
+    );
 
-  // Presentation heuristic: the feature with fewer distinct categories should be the horizontal axis.
-  // It's not usually the case that there is more horizontal screen space than vertical.
+    // Presentation heuristic: the feature with fewer distinct categories should be the horizontal axis.
+    // It's not usually the case that there is more horizontal screen space than vertical.
     return buckets1.length < buckets2.length
       ? [
           [feature1, buckets1],
@@ -131,26 +132,37 @@ const NominalMosaic = (props: NominalMosaicProps) => {
 
   return (
     <Card>
-      <span className="font-bold">Breakdown of </span>{" "}
-      <select className="px-2 py-1 font-mono" onChange={handleSetHorizontalFeature}>
-        {nominalFeatures
-          // .filter((feature) =>  font-mono= verticalFehandleSetHorizontalFeature
-          .map((feature) => (
-            <option key={feature} value={feature}>
-              {feature}
-            </option>
-          ))}
-      </select>
-      <span className="font-bold">vs.</span>{" "}
-      <select className="px-2 py-1 font-mono" onChange={handleSetHorizontalFeature}>
-        {nominalFeatures
-          // .filter((feature) =>  font-mono= verticalFehandleSetHorizontalFeature
-          .map((feature) => (
-            <option key={feature} value={feature}>
-              {feature}
-            </option>
-          ))}
-      </select>
+      {nominalFeatures.length === 2 ? (
+        <>
+          <span className="font-bold">Breakdown of </span>{" "}
+          <span className="font-mono">{horizontalFeature}</span>{" "}
+          <span className="font-bold">vs.</span>{" "}
+          <span className="font-mono">{verticalFeature}</span>
+        </>
+      ) : (
+        <>
+          <span className="font-bold">Breakdown of </span>{" "}
+          <select className="px-2 py-1 font-mono" onChange={handleSetVerticalFeature}>
+            {nominalFeatures
+              .filter((feature) => feature !== horizontalFeature)
+              .map((feature) => (
+                <option key={feature} value={feature}>
+                  {feature}
+                </option>
+              ))}
+          </select>
+          <span className="font-bold">vs.</span>{" "}
+          <select className="px-2 py-1 font-mono" onChange={handleSetHorizontalFeature}>
+            {nominalFeatures
+              .filter((feature) => feature !== verticalFeature)
+              .map((feature) => (
+                <option key={feature} value={feature}>
+                  {feature}
+                </option>
+              ))}
+          </select>
+        </>
+      )}
       <MosaicChart
         samples={samples}
         setExampleFilter={setExampleFilter}
