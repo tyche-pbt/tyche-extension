@@ -24,12 +24,11 @@ export const Charts = (props: ChartsProps) => {
   return (
     <div className="grid w-full grid-cols-1">
       {coverageChart && <Card>{coverageChart}</Card>}
-      {features.nominal.length == 2 ? (
+      {features.nominal.length >= 2 ? (
         <NominalMosaic
           samples={dataset}
           setExampleFilter={props.setFilteredView}
-          feature1={features.nominal[0]}
-          feature2={features.nominal[1]}
+          nominalFeatures={features.nominal}
         />
       ) : (
         [
@@ -67,12 +66,18 @@ export const Charts = (props: ChartsProps) => {
 type NominalMosaicProps = {
   samples: SampleInfo[];
   setExampleFilter: (filter: ExampleFilter) => void;
-  feature1: string;
-  feature2: string;
+  nominalFeatures: string[];
 };
 
 const NominalMosaic = (props: NominalMosaicProps) => {
-  const { samples, setExampleFilter, feature1, feature2 } = props;
+  const { samples, setExampleFilter, nominalFeatures } = props;
+
+  const [
+    [defaultHorizontalFeature, defaultHorizontalBuckets],
+    [defaultVerticalFeature, defaultVerticalBuckets],
+  ] = useMemo(() => {
+    const feature1 = nominalFeatures[0];
+    const feature2 = nominalFeatures[1];
 
   // Collect all unique values for each feature
   const buckets1 = Array.from(
@@ -84,8 +89,7 @@ const NominalMosaic = (props: NominalMosaicProps) => {
 
   // Presentation heuristic: the feature with fewer distinct categories should be the horizontal axis.
   // It's not usually the case that there is more horizontal screen space than vertical.
-  const [[horizontalFeature, horizontalBuckets], [verticalFeature, verticalBuckets]] =
-    buckets1.length < buckets2.length
+    return buckets1.length < buckets2.length
       ? [
           [feature1, buckets1],
           [feature2, buckets2],
@@ -94,11 +98,59 @@ const NominalMosaic = (props: NominalMosaicProps) => {
           [feature2, buckets2],
           [feature1, buckets1],
         ];
+  }, [samples, nominalFeatures]);
+
+  const [horizontalFeature, setHorizontalFeature] = useState(defaultHorizontalFeature);
+  const [verticalFeature, setVerticalFeature] = useState(defaultVerticalFeature);
+
+  const horizontalBuckets = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          samples.map((x) => x.features.nominal[horizontalFeature]).filter((x) => x !== undefined)
+        )
+      ),
+    [samples, horizontalFeature]
+  );
+  const verticalBuckets = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          samples.map((x) => x.features.nominal[verticalFeature]).filter((x) => x !== undefined)
+        )
+      ),
+    [samples, verticalFeature]
+  );
+
+  const handleSetHorizontalFeature = (event: ChangeEvent<HTMLSelectElement>) => {
+    setHorizontalFeature(event.target.value);
+  };
+  const handleSetVerticalFeature = (event: ChangeEvent<HTMLSelectElement>) => {
+    setVerticalFeature(event.target.value);
+  };
 
   return (
     <Card>
-      <span className="font-bold">Breakdown of </span> <span className="font-mono">{feature1}</span>{" "}
-      <span className="font-bold">vs.</span> <span className="font-mono">{feature2}</span>
+      <span className="font-bold">Breakdown of </span>{" "}
+      <select className="px-2 py-1 font-mono" onChange={handleSetHorizontalFeature}>
+        {nominalFeatures
+          // .filter((feature) =>  font-mono= verticalFehandleSetHorizontalFeature
+          .map((feature) => (
+            <option key={feature} value={feature}>
+              {feature}
+            </option>
+          ))}
+      </select>
+      <span className="font-bold">vs.</span>{" "}
+      <select className="px-2 py-1 font-mono" onChange={handleSetHorizontalFeature}>
+        {nominalFeatures
+          // .filter((feature) =>  font-mono= verticalFehandleSetHorizontalFeature
+          .map((feature) => (
+            <option key={feature} value={feature}>
+              {feature}
+            </option>
+          ))}
+      </select>
       <MosaicChart
         samples={samples}
         setExampleFilter={setExampleFilter}
@@ -110,7 +162,16 @@ const NominalMosaic = (props: NominalMosaicProps) => {
           bucket,
           (x) => x.features.nominal[verticalFeature] === bucket,
         ])}
-        colors={["accent", "accent2", "accent3", "warning", "primary"]}
+        colors={[
+          "accent2",
+          "accent4",
+          "accent5",
+          "accent",
+          "success",
+          "accent3",
+          "warning",
+          "error",
+        ]}
       />
     </Card>
   );

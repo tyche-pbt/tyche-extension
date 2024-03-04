@@ -49,7 +49,9 @@ export const MosaicChart = (props: MosaicChartProps) => {
               const slice = samples.filter(verticalPred).filter(horizontalPred);
               const width = (slice.length / samples.filter(verticalPred).length) * 100;
               const height = (samples.filter(verticalPred).length / samples.length) * 100;
-              const bg = `bg-${colors[iv]}/${bgOpacityGrades[ih]} hover:bg-${colors[iv]}/75 hover:brightness-125 `;
+              const bg = `bg-${colors[iv % colors.length]}/${
+                bgOpacityGrades[ih]
+              } hover:brightness-125 `;
               const additionalClasses =
                 props.additionalLabelClasses?.(verticalKey, horizontalKey) ?? "";
               if (!width || !height) return null;
