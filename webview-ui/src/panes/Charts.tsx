@@ -43,17 +43,19 @@ export const Charts = (props: ChartsProps) => {
               />
             </Card>
           )),
-          ...features.ordinal.flatMap((x) => [
-            <Card key={`feature-${x}`}>
-              <OrdinalChart
-                feature={x}
-                dataset={dataset}
-                viewValue={(value) => props.setFilteredView({ ordinal: x, value })}
-              />
-            </Card>,
-          ]),
         ]
       )}
+      {[
+        ...features.ordinal.flatMap((x) => [
+          <Card key={`feature-${x}`}>
+            <OrdinalChart
+              feature={x}
+              dataset={dataset}
+              viewValue={(value) => props.setFilteredView({ ordinal: x, value })}
+            />
+          </Card>,
+        ]),
+      ]}
       {/* <Card className="text-sm">
       <strong>NOTE:</strong> You can add your own charts by registering "features" for your test
       inputs. Consult your PBT framework's documentation to learn more.
