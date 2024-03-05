@@ -12,7 +12,8 @@ export const schemaTestCaseLine = z.object({
   how_generated: z.string().optional(),
   features: z.record(z.any()),
   coverage: z.union([z.record(z.array(z.number())), z.literal("no_coverage_info"), z.null()]),
-  metadata: z.any()
+  metadata: z.any(),
+  timing: z.record(z.number()).optional(),
 });
 
 export const schemaInfoLine = z.object({

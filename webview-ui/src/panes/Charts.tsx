@@ -5,6 +5,7 @@ import { NominalChart } from "../visualization/NominalChart";
 import Card from "../ui/Card";
 import { UniqueTimeChart } from "../visualization/UniqueTimeChart";
 import { MosaicChart } from "../visualization/MosaicChart";
+import { TimingChart } from "../visualization/TimingChart";
 
 type ChartsProps = {
   dataset: SampleInfo[];
@@ -60,6 +61,15 @@ export const Charts = (props: ChartsProps) => {
       <Card>
         <UniqueTimeChart dataset={dataset} />
       </Card>
+      <TimingChart
+        dataset={dataset}
+        viewValues={(examples) =>
+          props.setFilteredView({
+            subset: "Selected samples by time taken",
+            examples,
+          })
+        }
+      />
     </div>
   );
 };
