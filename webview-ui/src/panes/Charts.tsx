@@ -31,7 +31,8 @@ export const Charts = (props: ChartsProps) => {
           examples,
         })
       }
-    />;
+    />
+  );
 
   return (
     <div className="grid w-full grid-cols-1">

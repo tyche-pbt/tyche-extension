@@ -23,7 +23,7 @@ export const MosaicChart = (props: MosaicChartProps) => {
           if (!width) return null;
           return (
             <span key={horizontalKey + "-label"} className="text-sm font-bold">
-              {horizontalKey}
+              {horizontalKey || "N/A"}
             </span>
           );
         })}
@@ -37,8 +37,9 @@ export const MosaicChart = (props: MosaicChartProps) => {
               <div
                 key={verticalKey + "-label"}
                 className="flex items-center text-sm font-bold"
-                style={{ height: height + "%" }}>
-                {verticalKey}
+                style={{ height: height + "%" }}
+              >
+                {verticalKey || "N/A"}
               </div>
             );
           })}
@@ -68,13 +69,15 @@ export const MosaicChart = (props: MosaicChartProps) => {
                       subset: verticalKey + ", " + horizontalKey,
                       examples: slice,
                     })
-                  }>
+                  }
+                >
                   <div
                     className={
                       "w-full h-full cursor-pointer flex items-center justify-center " +
                       bg +
                       additionalClasses
-                    }>
+                    }
+                  >
                     {slice.length}
                   </div>
                 </div>
@@ -97,7 +100,8 @@ export const MosaicChart = (props: MosaicChartProps) => {
                     subset: verticalKey,
                     examples: slice,
                   })
-                }>
+                }
+              >
                 {slice.length}
               </div>
             );
@@ -118,7 +122,8 @@ export const MosaicChart = (props: MosaicChartProps) => {
                   subset: horizontalKey,
                   examples: slice,
                 })
-              }>
+              }
+            >
               {slice.length}
             </span>
           );
