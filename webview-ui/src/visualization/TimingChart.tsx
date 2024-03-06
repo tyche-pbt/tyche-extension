@@ -2,7 +2,6 @@ import { useState } from "react";
 import { VisualizationSpec, SignalListeners } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
 import { SampleInfo } from "../report";
-import Card from "../ui/Card";
 
 type TimingChartProps = {
   dataset: SampleInfo[];
@@ -116,7 +115,7 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
   };
 
   return (
-    <Card>
+    <>
       <Distribution
         title={<span className="font-bold">Timing Breakdown</span>}
         spec={cumulativeSpec}
@@ -138,6 +137,6 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
         title={brush == null ? "Use shift + drag to select a range of samples" : undefined}>
         View selected samples <i className="ml-1 codicon codicon-arrow-right" />
       </button>
-    </Card>
+    </>
   );
 };

@@ -13,13 +13,13 @@ type LoadDataCommand = {
 
 type AppState =
   | {
-      state: "loading";
-    }
+    state: "loading";
+  }
   | {
-      state: "ready";
-      report: Report;
-      property: string | null;
-    };
+    state: "ready";
+    report: Report;
+    property: string | null;
+  };
 
 type AppProps = {
   dataSourceURL?: string;
@@ -57,7 +57,7 @@ const App = (props: AppProps) => {
         property: state.state === "ready" ? state.property : null,
       });
     },
-    [state.state, (state as any).property, setState]
+    [state.state, (state as any).property, setState] // eslint-disable-line
   );
 
   const openEmpty = () => {
@@ -133,7 +133,7 @@ const App = (props: AppProps) => {
   }
 
   return (
-    <div className="App">
+    <div className="App max-w-xl mx-auto">
       <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center z-30">
         {state.state === "ready" && state.property === null && <div></div>}
         {state.state === "ready" && state.property !== null && (

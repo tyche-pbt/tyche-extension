@@ -1,7 +1,6 @@
 import { SampleInfo } from "../report";
 import { VisualizationSpec } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
-import { uniqueTokens } from "observability-tools";
 import { useEffect, useState } from "react";
 
 type CoverageChartProps = {
@@ -27,9 +26,9 @@ export const CoverageChart = (props: CoverageChartProps) => {
         Object.entries(x.coverage).forEach(([prop, lines]) =>
           lines.forEach((line) => covered.add(`${prop}:${line}`))
         );
-        uniqueTokens("arguments" in x.dataLine ? x.dataLine.arguments : null).forEach((x: any) =>
-          coveredInteractions.add(x)
-        );
+        // uniqueTokens("arguments" in x.dataLine ? x.dataLine.arguments : null).forEach((x: any) =>
+        //   coveredInteractions.add(x)
+        // );
         rawData.push({
           step: i,
           lines_covered: covered.size,

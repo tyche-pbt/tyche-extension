@@ -2,10 +2,10 @@ import { ExampleFilter, SampleInfo } from "../report";
 import { OrdinalChart } from "../visualization/OrdinalChart";
 import { NominalChart } from "../visualization/NominalChart";
 import Card from "../ui/Card";
-import { UniqueTimeChart } from "../visualization/UniqueTimeChart";
+import { UniqueOverTimeChart } from "../visualization/UniqueOverTimeChart";
+import { NominalMosaicChart } from "../visualization/NominalMosaicChart";
 import { TimingChart } from "../visualization/TimingChart";
 import { CoverageChart } from "../visualization/CoverageChart";
-import { NominalMosaicChart } from "../visualization/NominalMosaicChart";
 
 type ChartsProps = {
   dataset: SampleInfo[];
@@ -21,8 +21,17 @@ export const Charts = (props: ChartsProps) => {
 
   const dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed");
 
-  const coverageChart = CoverageChart({ dataset });
-  const uniqueTimeChart = UniqueTimeChart({ dataset });
+  const coverageChart = <CoverageChart dataset={dataset} />;
+  const timingChart =
+    <TimingChart
+      dataset={dataset}
+      viewValues={(examples) =>
+        props.setFilteredView({
+          subset: "Selected samples by time taken",
+          examples,
+        })
+      }
+    />;
 
   return (
     <div className="grid w-full grid-cols-1">
@@ -61,18 +70,10 @@ export const Charts = (props: ChartsProps) => {
       inputs. Consult your PBT framework's documentation to learn more.
     </Card> */}
       {coverageChart && <Card>{coverageChart}</Card>}
-      {uniqueTimeChart && <Card>{uniqueTimeChart}</Card>}
-      <TimingChart
-        dataset={dataset}
-        viewValues={(examples) =>
-          props.setFilteredView({
-            subset: "Selected samples by time taken",
-            examples,
-          })
-        }
-      />
+      {timingChart && <Card>{timingChart}</Card>}
+      <Card>
+        <UniqueOverTimeChart dataset={dataset} />
+      </Card>
     </div>
   );
 };
-
-

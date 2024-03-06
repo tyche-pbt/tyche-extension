@@ -3,11 +3,11 @@ import { THEME_COLORS } from "../utilities/colors";
 import { VisualizationSpec } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
 
-type UniqueTimeChartProps = {
+type UniqueOverTimeChartProps = {
   dataset: SampleInfo[];
 };
 
-export const UniqueTimeChart = (props: UniqueTimeChartProps) => {
+export const UniqueOverTimeChart = (props: UniqueOverTimeChartProps) => {
   if (props.dataset.length === 0) {
     return <div className="text-center">No samples</div>;
   }
