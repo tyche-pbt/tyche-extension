@@ -193,6 +193,7 @@ const App = (props: AppProps) => {
             selectProperty={(property) =>
               setState({ state: "ready", report: state.report, property })
             }
+            simplifiedMode={props.simplifiedMode}
           />
         )}
         {state.state === "ready" && state.property !== null && (

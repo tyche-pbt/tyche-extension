@@ -4,6 +4,7 @@ import Card from "./ui/Card";
 type OverviewProps = {
   report: Report;
   selectProperty(property: string): void;
+  simplifiedMode: boolean;
 }
 
 type Status = "success" | "failure" | "warning";
@@ -37,14 +38,15 @@ const Overview = (props: OverviewProps) => {
             title={property}>
             {property}
           </div>
-          <div className="ml-3">
-            {info.status === "failure" &&
-              <i className="codicon codicon-x text-error" />}
-            {info.status === "success" &&
-              <i className="codicon codicon-check text-success" />}
-            {info.status === "warning" &&
-              <i className="codicon codicon-warning text-warning" />}
-          </div>
+          {!props.simplifiedMode &&
+            <div className="ml-3">
+              {info.status === "failure" &&
+                <i className="codicon codicon-x text-error" />}
+              {info.status === "success" &&
+                <i className="codicon codicon-check text-success" />}
+              {info.status === "warning" &&
+                <i className="codicon codicon-warning text-warning" />}
+            </div>}
         </li>)}
     </ul>
   </Card>;
