@@ -65,6 +65,6 @@ export const OrdinalChart = (props: OrdinalChartProps) => {
     </>}
     spec={spec}
     listeners={listeners}
-    hasTooltip
+    tooltip="Click on a region of the chart below to see the samples that contribute to it."
   />;
 }

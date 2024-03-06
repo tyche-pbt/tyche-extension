@@ -10,9 +10,6 @@ type TimingChartProps = {
 
 export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
   const [cumulative, setCumulative] = useState(false);
-  const handleSetCumulative = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCumulative(e.target.checked);
-  };
 
   const [brush, setBrush] = useState<[number, number] | null>(null);
 
@@ -120,23 +117,25 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
         title={<span className="font-bold">Timing Breakdown</span>}
         spec={cumulativeSpec}
         listeners={listeners}
+        tooltip="Use Shift + Drag to select a range of samples."
       />
-      <label className="flex items-center my-4 text-lg">
-        <input type="checkbox" className="w-4 h-4" onChange={handleSetCumulative} />
-        <span className="ml-2 leading-none">Cumulative</span>
-      </label>
-      <button
-        className={
-          "w-full py-1 text-center rounded-md " +
-          (brush == null
-            ? "cursor-not-allowed"
-            : "cursor-pointer hover:bg-primary hover:bg-opacity-25")
-        }
-        onClick={() => viewValues(dataset.slice(brush?.[0] ?? 0, brush?.[1] ?? dataset.length))}
-        disabled={brush == null}
-        title={brush == null ? "Use shift + drag to select a range of samples" : undefined}>
-        View selected samples <i className="ml-1 codicon codicon-arrow-right" />
-      </button>
+      <div className="flex justify-around mb-1">
+        <button onClick={() => setCumulative(!cumulative)}
+          className="rounded-md border-accent border px-4 hover:bg-accent hover:bg-opacity-25 text-sm">
+          {cumulative ? "Show Time per Sample" : "Show Cumulative Time"}
+        </button>
+        <button
+          className={
+            "px-4 rounded-md border border-accent2 text-sm " +
+            (brush == null
+              ? " cursor-not-allowed text-foreground text-opacity-50 border-opacity-25"
+              : " cursor-pointer hover:bg-accent2 hover:bg-opacity-25")
+          }
+          onClick={() => viewValues(dataset.slice(brush?.[0] ?? 0, brush?.[1] ?? dataset.length))}
+          disabled={brush == null}>
+          View Selected Samples <i className="ml-1 codicon codicon-arrow-right" />
+        </button>
+      </div>
     </>
   );
 };
