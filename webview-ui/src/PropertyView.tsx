@@ -13,6 +13,7 @@ type PropertyViewProps = {
   testInfo: TestInfo;
   setShouldShowExplainer: (shouldShowExplainer: boolean) => void;
   simplifiedMode: boolean;
+  goBack: () => void;
 };
 
 const PropertyView = (props: PropertyViewProps) => {
@@ -20,7 +21,7 @@ const PropertyView = (props: PropertyViewProps) => {
   const [exampleFilter, setExampleFilterRaw] = useState<ExampleFilter | "all" | undefined>(undefined);
 
   if (simplifiedMode) {
-    return <SimpleExampleView dataset={testInfo.samples} />;
+    return <SimpleExampleView dataset={testInfo.samples} closeExamples={props.goBack} />;
   }
 
   const setExampleFilter = (filter: ExampleFilter | "all" | undefined) => {

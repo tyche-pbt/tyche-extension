@@ -202,6 +202,7 @@ const App = (props: AppProps) => {
             property={state.property}
             setShouldShowExplainer={setShouldShowExplainer}
             simplifiedMode={props.simplifiedMode}
+            goBack={() => setState({ state: "ready", report: state.report, property: null })}
           />
         )}
       </div>
