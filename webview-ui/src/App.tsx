@@ -23,6 +23,7 @@ type AppState =
 
 type AppProps = {
   dataSourceURL?: string;
+  simplifiedMode: boolean;
 };
 
 const App = (props: AppProps) => {
@@ -148,7 +149,7 @@ const App = (props: AppProps) => {
         </span>
       </div>
       <div className="p-1 mt-10">
-        {shouldShowExplainer && (
+        {shouldShowExplainer && (!props.simplifiedMode) && (
           <Card className="mb-1 text-sm">
             <div className="text-lg font-bold mb-1 break-all leading-none">
               Tyche{" "}
@@ -199,6 +200,7 @@ const App = (props: AppProps) => {
             testInfo={state.report.properties[state.property]}
             property={state.property}
             setShouldShowExplainer={setShouldShowExplainer}
+            simplifiedMode={props.simplifiedMode}
           />
         )}
       </div>

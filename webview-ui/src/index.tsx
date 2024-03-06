@@ -5,8 +5,11 @@ import "@vscode/codicons/dist/codicon.css";
 import "./index.scss";
 
 let dataSourceURL: string | undefined;
+let simplifiedMode = false;
 if (document && document.location && document.location.search) {
-  const maybeDataSourceUrl = new URLSearchParams(document.location.search).get("dataSourceURL");
+  const searchParams = new URLSearchParams(document.location.search);
+  simplifiedMode = searchParams.get("simplifiedMode") === "true";
+  const maybeDataSourceUrl = searchParams.get("dataSourceURL");
   if (maybeDataSourceUrl) {
     dataSourceURL = decodeURI(maybeDataSourceUrl);
   }
@@ -14,7 +17,7 @@ if (document && document.location && document.location.search) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App dataSourceURL={dataSourceURL} />
+    <App dataSourceURL={dataSourceURL} simplifiedMode={simplifiedMode} />
   </React.StrictMode>,
   document.getElementById("root")
 );

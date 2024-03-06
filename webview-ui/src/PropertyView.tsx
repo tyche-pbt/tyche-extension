@@ -6,16 +6,22 @@ import Info from "./panes/Info";
 import Card from "./ui/Card";
 import { useState } from "react";
 import { ExampleView } from "./ExampleView";
+import { SimpleExampleView } from "./SimpleExampleView";
 
 type PropertyViewProps = {
   property: string;
   testInfo: TestInfo;
   setShouldShowExplainer: (shouldShowExplainer: boolean) => void;
+  simplifiedMode: boolean;
 };
 
 const PropertyView = (props: PropertyViewProps) => {
-  const { testInfo, property } = props;
+  const { testInfo, property, simplifiedMode } = props;
   const [exampleFilter, setExampleFilterRaw] = useState<ExampleFilter | "all" | undefined>(undefined);
+
+  if (simplifiedMode) {
+    return <SimpleExampleView dataset={testInfo.samples} />;
+  }
 
   const setExampleFilter = (filter: ExampleFilter | "all" | undefined) => {
     setExampleFilterRaw(filter);

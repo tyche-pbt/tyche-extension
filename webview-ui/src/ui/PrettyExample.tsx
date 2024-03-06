@@ -6,9 +6,16 @@ type PrettyExampleProps = {
   example: SampleInfo;
   highlightText?: string;
   duplicateCount?: number;
+  noExpand?: boolean;
 };
 
 export const PrettyExample = (props: PrettyExampleProps) => {
+  if (props.noExpand) {
+    return <pre className="w-full text-sm break-words whitespace-pre-wrap">
+      <PrettyText text={props.example.item} highlightText={props.highlightText} />
+    </pre>;
+  }
+
   return (
     <>
       <div className="w-full">
