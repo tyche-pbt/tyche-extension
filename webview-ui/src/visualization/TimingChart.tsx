@@ -2,7 +2,6 @@ import { useState } from "react";
 import { VisualizationSpec, SignalListeners } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
 import { SampleInfo } from "../report";
-import { THEME_COLORS } from "../utilities/colors";
 import Card from "../ui/Card";
 
 type TimingChartProps = {
@@ -94,15 +93,15 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
       x: { field: "step", type: "quantitative", axis: { title: null } },
       y: cumulative
         ? {
-            aggregate: "sum",
-            field: "cumulative_time",
-            title: "Cumulative time",
-          }
+          aggregate: "sum",
+          field: "cumulative_time",
+          title: "Cumulative time",
+        }
         : {
-            aggregate: "sum",
-            field: "time",
-            title: "Time",
-          },
+          aggregate: "sum",
+          field: "time",
+          title: "Time",
+        },
       color: {
         field: "event",
         title: "Event",
