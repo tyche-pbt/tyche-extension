@@ -1,6 +1,5 @@
 import {
   ExampleFilter,
-  SampleInfo,
   TestInfo,
   isDuplicate,
   isFailed,
@@ -15,6 +14,7 @@ import { MosaicChart } from "../visualization/MosaicChart";
 type HighLevelStatsProps = {
   property: string;
   testInfo: TestInfo;
+  simplifiedMode?: boolean;
   setExampleFilter: (filter: ExampleFilter) => void;
 };
 
@@ -28,6 +28,19 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
   const uniqueValid = props.testInfo.samples.filter(
     (x) => (isPassed(x) || isFailed(x)) && isUnique(x)
   );
+
+  if (props.simplifiedMode) {
+    return <div className="grid w-full grid-cols-2">
+      <Card className="col-span-1">
+        <div className="text-sm opacity-60">Tested</div>
+        <span className="text-3xl">{uniqueValid.length}</span> unique cases.
+      </Card>
+      <Card className="col-span-1">
+        <div className="text-sm opacity-60">Generated</div>
+        <span className="text-3xl">{samples.length}</span> samples.
+      </Card>
+    </div>;
+  }
 
   return (
     <div className="grid w-full grid-cols-2">

@@ -21,7 +21,7 @@ const PropertyView = (props: PropertyViewProps) => {
   const [exampleFilter, setExampleFilterRaw] = useState<ExampleFilter | "all" | undefined>(undefined);
 
   if (simplifiedMode) {
-    return <SimpleExampleView dataset={testInfo.samples} closeExamples={props.goBack} />;
+    return <SimpleExampleView testInfo={testInfo} closeExamples={props.goBack} property={property} />;
   }
 
   const setExampleFilter = (filter: ExampleFilter | "all" | undefined) => {
