@@ -29,6 +29,14 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
     (x) => (isPassed(x) || isFailed(x)) && isUnique(x)
   );
 
+  const totalTime = samples.map((x) => {
+    if (x.dataLine.type === "test_case" && x.dataLine.timing) {
+      return Object.values(x.dataLine.timing).reduce((a, b) => a + b, 0);
+    } else {
+      return 0;
+    }
+  }).reduce((a, b) => a + b, 0);
+
   if (props.simplifiedMode) {
     return <div className="grid w-full grid-cols-2">
       <Card className="col-span-1">
@@ -78,6 +86,14 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
           <span className="text-3xl">{validDuplicates.length}</span> valid duplicates.
         </Card>
       )}
+      {totalTime > 0 &&
+        <Card className="col-span-2">
+          <div className="flex">
+            <div className="flex-1 text-sm opacity-60">Spent</div>
+          </div>
+          <span className="text-3xl">{totalTime.toPrecision(2)}</span> seconds testing.
+        </Card>
+      }
       <Card className="col-span-2">
         <div className="flex-1">
           <span className="mb-1 overflow-hidden font-bold text-nowrap overflow-ellipsis">
