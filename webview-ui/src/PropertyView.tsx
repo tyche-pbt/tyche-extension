@@ -2,11 +2,12 @@ import { ExampleFilter, TestInfo } from "./report";
 import { Charts } from "./panes/Charts";
 import { HighLevelStats } from "./panes/HighLevelStats";
 import { FailingCases } from "./panes/FailingCases";
-import Info from "./panes/Info";
+import Status from "./panes/Status";
 import Card from "./ui/Card";
 import { useState } from "react";
 import { ExampleView } from "./ExampleView";
 import { SimpleExampleView } from "./SimpleExampleView";
+import Info from "./panes/Info";
 
 type PropertyViewProps = {
   property: string;
@@ -42,7 +43,7 @@ const PropertyView = (props: PropertyViewProps) => {
     }
     {exampleFilter === undefined &&
       <>
-        <Info status={testInfo.status} info={testInfo.info} />
+        <Status status={testInfo.status} />
         {testInfo.status === "failure" &&
           <FailingCases dataset={testInfo.samples} />}
         <HighLevelStats testInfo={testInfo} property={property}
@@ -59,6 +60,7 @@ const PropertyView = (props: PropertyViewProps) => {
           dataset={testInfo.samples}
           features={{ ordinal, nominal }}
         />
+        <Info info={testInfo.info} />
       </>
     }
   </>;

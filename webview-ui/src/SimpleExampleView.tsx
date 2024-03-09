@@ -1,4 +1,4 @@
-import { HighLevelStats } from "./panes/HighLevelStats";
+import Markdown from "react-markdown";
 import { TestInfo } from "./report";
 import Card from "./ui/Card";
 import { PrettyExample } from "./ui/PrettyExample";
@@ -18,15 +18,21 @@ export const SimpleExampleView = ({ property, testInfo, closeExamples }: SimpleE
       </button>
     </div>
     <Card className="mb-2">
-      <div className="text-lg font-bold">Samples</div>
+      <div className="text-lg font-bold">Examples</div>
       <div className="text-sm">
-        This page shows the samples generated during testing.
+        This page shows the results of executing <span className="text-accent break-all">{property}</span>,
+        including Hypothesis's "Show Statistics" output and a list of
+        the examples generated during testing.
       </div>
     </Card>
-    <HighLevelStats testInfo={testInfo} property={property} simplifiedMode setExampleFilter={() => { }} />
+    <Card className="mb-2">
+      {testInfo.info.map((x) =>
+        <Markdown className="markdown text-sm break-words py-1">{x.content}</Markdown>
+      )}
+    </Card>
     <Card>
       <div className="w-full">
-        {dataset.map((x, key) => (
+        {dataset.filter((x) => x.item !== "").map((x, key) => (
           <div key={key}>
             <div className="my-4">
               <PrettyExample example={x} noExpand />

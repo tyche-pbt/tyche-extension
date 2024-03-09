@@ -117,7 +117,7 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
         title={<span className="font-bold">Timing Breakdown</span>}
         spec={cumulativeSpec}
         listeners={listeners}
-        tooltip="Use Shift + Drag to select a range of samples."
+        tooltip="This charts shows the time spent in each phase of the testing process, for each input. Use Shift + Drag to select a range of samples."
       />
       <div className="flex justify-around mb-1">
         <button onClick={() => setCumulative(!cumulative)}

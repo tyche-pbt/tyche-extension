@@ -52,10 +52,13 @@ const App = (props: AppProps) => {
         return;
       }
       const report = buildReport(lines);
+      const properties = Object.keys(report.properties);
+      const property = properties.length === 1 ? properties[0] :
+        state.state === "ready" ? state.property : null;
       setState({
         state: "ready",
         report,
-        property: state.state === "ready" ? state.property : null,
+        property
       });
     },
     [state.state, (state as any).property, setState] // eslint-disable-line
@@ -134,7 +137,7 @@ const App = (props: AppProps) => {
   }
 
   return (
-    <div className="App max-w-xl mx-auto">
+    <div className="App max-w-xl mx-auto mb-10">
       <div className="fixed top-0 right-0 left-0 bg-primary py-2 px-3 h-10 flex justify-between items-center z-30">
         {state.state === "ready" && state.property === null && <div></div>}
         {state.state === "ready" && state.property !== null && (
@@ -151,40 +154,30 @@ const App = (props: AppProps) => {
       <div className="p-1 mt-10">
         {shouldShowExplainer && (!props.simplifiedMode) && (
           <Card className="mb-1 text-sm">
-            <div className="text-lg font-bold mb-1 break-all leading-none">
-              Tyche{" "}
-              {state.property !== null && (
-                <>
-                  : <span className="font-normal text-base text-accent"> {state.property}</span>
-                </>
-              )}
-            </div>
-            <span className="">
-              Tyche helps you understand the effectiveness of your property-based testing.&nbsp;
-              {state.property === null ? (
-                <>
-                  This page shows an overview of your last test execution. Properties are marked as
-                  passing (<i className="codicon codicon-check text-success" />
-                  ), passing with warnings (<i className="codicon codicon-warning text-warning" />
-                  ), or failing (<i className="codicon codicon-x text-error" />
-                  ).
-                </>
-              ) : (
-                <>
-                  This page shows detailed information about the samples that were used to test
-                  <span className="text-accent break-all"> {state.property}</span>. High level
-                  statistics are always shown. If you want to visualize more granular distribution
-                  information, you can collect
-                  <span className="italic"> features</span>; consult the documentation for your PBT
-                  framework to learn how.
-                </>
-              )}
-              <div className="w-full text-right mt-1 text-base">
-                <a href="https://github.com/tyche-pbt/tyche-extension" className="text-primary">
-                  Learn More
-                </a>
+            {state.property === null && <>
+              <div className="text-lg font-bold mb-1 break-all leading-none">
+                Tyche{" "}
               </div>
-            </span>
+              <span className="">
+                This page shows an overview of your last test execution. Properties are marked as
+                passing (<i className="codicon codicon-check text-success" />), passing with
+                warnings (<i className="codicon codicon-warning text-warning" />), or failing (<i
+                  className="codicon codicon-x text-error" />).
+              </span>
+            </>}
+            {state.property !== null && <>
+              <div className="text-lg font-bold mb-1 break-all leading-none">
+                Charts{" "}
+              </div>
+              <span>
+                This page shows charts that summarize the results of testing
+                <span className="text-accent break-all"> {state.property}</span>.
+                {/* High level statistics are always shown. If you want to visualize more granular
+                distribution information, you can collect <span className="italic"> features</span>;
+                consult the documentation for your PBT framework to learn how. */}
+              </span>
+            </>
+            }
           </Card>
         )}
         {state.state === "ready" && state.property === null && (
@@ -206,7 +199,7 @@ const App = (props: AppProps) => {
           />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

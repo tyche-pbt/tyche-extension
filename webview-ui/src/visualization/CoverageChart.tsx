@@ -96,8 +96,9 @@ export const CoverageChart = (props: CoverageChartProps) => {
   };
 
   return <Distribution
-    title={<span className="font-bold">Coverage</span>}
+    title={<span className="font-bold">Code Coverage</span>}
     spec={spec}
     listeners={{}}
+    tooltip="This chart shows the percentage of lines covered by the samples over the course of the testing process."
   />;
 };
