@@ -77,7 +77,7 @@ export function buildReport(data: DataLine[]): Report {
     }
 
     if (line.type === "test_case") {
-      const key = JSON.stringify([line.representation, line.arguments]);
+      const key = JSON.stringify([line.representation]);
       const duplicate = seen.includes(key);
       seen.push(key);
 

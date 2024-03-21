@@ -43,8 +43,6 @@ export const ExampleView = ({ dataset, filter, closeExamples }: ExampleViewProps
     );
 
     // Deduplicate & count
-    // FIXME: This is technically a different way of computing duplication than we use in the rest
-    // of the interface.
     const deduped: { [key: string]: { sample: SampleInfo, count: number } } = {};
     textFiltered.forEach((x) => {
       if (x.item in deduped) {
