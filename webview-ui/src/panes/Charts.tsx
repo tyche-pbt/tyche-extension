@@ -21,17 +21,17 @@ export const Charts = (props: ChartsProps) => {
 
   const dataset = rawDataset.filter((x) => x.outcome === "passed" || x.outcome === "failed");
 
-  const coverageChart = <CoverageChart dataset={dataset} />;
+  const coverageChart = CoverageChart({ dataset });
   const timingChart =
-    <TimingChart
-      dataset={dataset}
-      viewValues={(examples) =>
-        props.setFilteredView({
-          subset: "Selected samples by time taken",
-          examples,
-        })
-      }
-    />;
+    TimingChart(
+      {
+        dataset: dataset,
+        viewValues: (examples) =>
+          props.setFilteredView({
+            subset: "Selected samples by time taken",
+            examples,
+          })
+      });
 
   return (
     <div className="grid w-full grid-cols-1">
