@@ -1,19 +1,19 @@
-> **IMPORTANT ANNOUNCEMENT** Tyche is an ongoing research project at the University of Pennsylvania.
-> If you have tried out this interface, we would love to get in touch to ask about your experience;
-> your feedback may be used to guide the design and development of future PBT tools.
-> Please fill out [this very short form](https://forms.gle/NmtXJiqfCBNptw2LA) so we can
-> contact you for feedback and study recruiting.
-
 # Tyche
 
-Tyche, named after [the Greek goddess of chance](https://en.wikipedia.org/wiki/Tyche), aims to
-provide a comprehensive integrated development environment (IDE) for property-based testing
-libraries like [Hypothesis](https://hypothesis.readthedocs.io/en/latest/),
-[Bolero](https://docs.rs/bolero/latest/bolero/) and more. It is implemented as an extension for
-[Visual Studio Code](https://code.visualstudio.com/).
+Tyche ([pronounced /ˈtaɪki/](https://en.wikipedia.org/wiki/Tyche)) is a tool that helps developers
+to understand the effectiveness of their property-based tests. It works with PBT frameworks like
+[Python's Hypothesis](https://hypothesis.readthedocs.io/en/latest/),
+[Haskell's QuickCheck](https://hackage.haskell.org/package/QuickCheck),
+and
+[Coq's QuickChick](https://github.com/QuickChick/QuickChick),
+and it is easy to [implement](#elsewhere) in your framework of choice if it is not currently
+supported.
 
-The Tyche extension is currently in early alpha; we presented a prototype implementation, as a
-[demo](https://programs.sigchi.org/uist/2023/program/session/128188) at UIST 2023.
+Tyche is available as an extension for [Visual Studio Code](https://code.visualstudio.com/), but it
+can also be accessed [in the browser](https://tyche-pbt.github.io/tyche-extension/).
+
+Tyche is described in detail in a [paper](https://harrisongoldste.in/papers/uist24-tyche.pdf) that
+is appearing at UIST'24.
 
 ![Screenshot of Tyche in Action](./demo.png)
 
@@ -61,6 +61,9 @@ about the details of the format. Once you have valid JSON lines files, simply ru
 command in VSCode and direct the application to the correct files.
 
 Please contact [Harry Goldstein](mailto:hgoldstein95@gmail.com) if you need help.
+
+If you implement Tyche support for a PBT framework, please let us know so we can provide pointers to
+the appropriate documentation from here.
 
 ## Developing
 
