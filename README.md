@@ -4,6 +4,7 @@ Tyche ([pronounced /ˈtaɪki/](https://en.wikipedia.org/wiki/Tyche)) is a tool t
 to understand the effectiveness of their property-based tests. It works with PBT frameworks like
 [Python's Hypothesis](https://hypothesis.readthedocs.io/en/latest/),
 [Haskell's QuickCheck](https://hackage.haskell.org/package/QuickCheck),
+[Java's JQF](https://github.com/rohanpadhye/JQF/pull/258),
 and
 [Coq's QuickChick](https://github.com/QuickChick/QuickChick),
 and it is easy to [implement](#elsewhere) in your framework of choice if it is not currently
