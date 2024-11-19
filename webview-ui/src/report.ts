@@ -14,6 +14,7 @@ export const schemaSampleInfo = z.object({
     ordinal: z.record(z.number()),
     nominal: z.record(z.string()),
     continuous: z.record(z.number()),
+    twoD: z.record(z.tuple([z.tuple([z.string(), z.number()]), z.tuple([z.string(), z.number()])])),
   }),
   coverage: z.record(z.array(z.number())),
   dataLine: schemaDataLine
@@ -84,9 +85,12 @@ export function buildReport(data: DataLine[]): Report {
         const v = line.features[feature];
         const alreadySet = feature in featureMap[line.property];
         const numeric = typeof v === "number";
+        const tuple = Array.isArray(v);
         const integral = Number.isInteger(v);
 
-        if (numeric && !integral) {
+        if (tuple) {
+          featureMap[line.property][feature] = "twoD";
+        } else if (numeric && !integral) {
           featureMap[line.property][feature] = "continuous";
         } else if (numeric && integral && (!alreadySet || featureMap[line.property][feature] === "ordinal")) {
           featureMap[line.property][feature] = "ordinal";
@@ -129,6 +133,7 @@ export function buildReport(data: DataLine[]): Report {
           ordinal: filterObject(line.features, (k, _) => featureMap[line.property][k] === "ordinal"),
           nominal: filterObject(line.features, (k, _) => featureMap[line.property][k] === "nominal"),
           continuous: filterObject(line.features, (k, _) => featureMap[line.property][k] === "continuous"),
+          twoD: filterObject(line.features, (k, _) => featureMap[line.property][k] === "twoD"),
         },
         coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
         dataLine: line,

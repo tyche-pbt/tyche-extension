@@ -7,6 +7,7 @@ import { NominalMosaicChart } from "../visualization/NominalMosaicChart";
 import { TimingChart } from "../visualization/TimingChart";
 import { CoverageChart } from "../visualization/CoverageChart";
 import { ContinuousChart } from "../visualization/ContinuousChart";
+import { TwoDChart } from "../visualization/TwoDChart";
 
 type ChartsProps = {
   dataset: SampleInfo[];
@@ -14,6 +15,7 @@ type ChartsProps = {
     ordinal: string[];
     nominal: string[];
     continuous: string[];
+    twoD: string[];
   };
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 };
@@ -71,6 +73,17 @@ export const Charts = (props: ChartsProps) => {
         ...features.continuous.flatMap((x) => [
           <Card key={`feature-${x}`}>
             <ContinuousChart
+              feature={x}
+              dataset={dataset}
+              viewValue={(value) => props.setFilteredView({ ordinal: x, value })}
+            />
+          </Card>,
+        ]),
+      ]}
+      {[
+        ...features.twoD.flatMap((x) => [
+          <Card key={`feature-${x}`}>
+            <TwoDChart
               feature={x}
               dataset={dataset}
               viewValue={(value) => props.setFilteredView({ ordinal: x, value })}

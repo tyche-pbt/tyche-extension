@@ -3,13 +3,13 @@ import { THEME_COLORS } from "../utilities/colors";
 import { SignalListeners, VisualizationSpec } from "react-vega";
 import Distribution, { vegaConfig } from "./Distribution";
 
-type ContinuousChartProps = {
+type TwoDChartProps = {
   feature: string;
   dataset: SampleInfo[];
   viewValue: (v: number) => void;
 };
 
-export const ContinuousChart = (props: ContinuousChartProps) => {
+export const TwoDChart = (props: TwoDChartProps) => {
   const { feature, viewValue } = props;
 
   const dataset = props.dataset.filter(x => x.outcome !== "gave_up");
@@ -17,19 +17,21 @@ export const ContinuousChart = (props: ContinuousChartProps) => {
     return <div className="text-center">No samples</div>;
   }
 
-  const featureData: { label: number; value: number; }[] =
-    Array.from(dataset.filter(x => x.features.continuous[feature] !== undefined).map((x) => x.features.continuous[feature])
-      .reduce((acc, curr) => {
-        return (acc.get(curr) ? acc.set(curr, acc.get(curr)! + 1) : acc.set(curr, 1), acc);
-      }, new Map<number, number>()))
-      .map(([k, v]) => ({ label: k, value: v }));
+  const data = dataset.filter(x => x.features.twoD[feature] !== undefined);
+  const xlabel = data[0].features.twoD[feature][0][0];
+  const ylabel = data[0].features.twoD[feature][1][0];
+  const featureData: { x: number, y: number }[] =
+    Array.from(data.map((v) => {
+      const [x, y] = v.features.twoD[feature];
+      return { x: x[1], y: y[1] };
+    }));
 
   const spec: VisualizationSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     config: vegaConfig,
     data: { name: "table", values: featureData },
     width: "container",
-    height: 80,
+    height: 150,
     signals: [{
       name: "filter",
       value: {},
@@ -39,10 +41,10 @@ export const ContinuousChart = (props: ContinuousChartProps) => {
       name: "highlight",
       select: { type: "point", on: "mouseover", clear: "mouseout" },
     }],
-    mark: { type: "circle", cursor: "pointer", tooltip: true },
+    mark: { type: "point", cursor: "pointer", tooltip: true },
     encoding: {
-      x: { field: "label", type: "quantitative", axis: { title: null } },
-      size: { field: "value", type: "ordinal", legend: null },
+      x: { field: "x", type: "quantitative", axis: { title: xlabel } },
+      y: { field: "y", type: "quantitative", axis: { title: ylabel } },
       color: { value: THEME_COLORS.primary },
       fillOpacity: {
         condition: { param: "highlight", empty: false, value: 0.7 },

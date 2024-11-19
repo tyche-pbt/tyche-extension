@@ -39,6 +39,9 @@ const PropertyView = (props: PropertyViewProps) => {
   const continuous = testInfo.samples
     .map(sample => Object.keys(sample.features.continuous))
     .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
+  const twoD = testInfo.samples
+    .map(sample => Object.keys(sample.features.twoD))
+    .reduce((acc, curr) => Array.from(new Set<string>([...acc, ...curr])), []);
 
   return <>
     {exampleFilter !== undefined &&
@@ -61,7 +64,7 @@ const PropertyView = (props: PropertyViewProps) => {
         <Charts
           setFilteredView={setExampleFilter}
           dataset={testInfo.samples}
-          features={{ ordinal, nominal, continuous }}
+          features={{ ordinal, nominal, continuous, twoD }}
         />
         <Info info={testInfo.info} />
       </>
