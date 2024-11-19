@@ -6,12 +6,14 @@ import { UniqueOverTimeChart } from "../visualization/UniqueOverTimeChart";
 import { NominalMosaicChart } from "../visualization/NominalMosaicChart";
 import { TimingChart } from "../visualization/TimingChart";
 import { CoverageChart } from "../visualization/CoverageChart";
+import { ContinuousChart } from "../visualization/ContinuousChart";
 
 type ChartsProps = {
   dataset: SampleInfo[];
   features: {
     ordinal: string[];
     nominal: string[];
+    continuous: string[];
   };
   setFilteredView: (exampleFilter: ExampleFilter) => void;
 };
@@ -58,6 +60,17 @@ export const Charts = (props: ChartsProps) => {
         ...features.ordinal.flatMap((x) => [
           <Card key={`feature-${x}`}>
             <OrdinalChart
+              feature={x}
+              dataset={dataset}
+              viewValue={(value) => props.setFilteredView({ ordinal: x, value })}
+            />
+          </Card>,
+        ]),
+      ]}
+      {[
+        ...features.continuous.flatMap((x) => [
+          <Card key={`feature-${x}`}>
+            <ContinuousChart
               feature={x}
               dataset={dataset}
               viewValue={(value) => props.setFilteredView({ ordinal: x, value })}

@@ -13,6 +13,7 @@ export const schemaSampleInfo = z.object({
   features: z.object({
     ordinal: z.record(z.number()),
     nominal: z.record(z.string()),
+    continuous: z.record(z.number()),
   }),
   coverage: z.record(z.array(z.number())),
   dataLine: schemaDataLine
@@ -46,9 +47,9 @@ export type ExampleFilter = {
   examples: SampleInfo[];
 };
 
-function filterObject<V>(obj: { [key: string]: V }, pred: (v: V) => boolean): { [key: string]: V } {
+function filterObject<V>(obj: { [key: string]: V }, pred: (key: string, v: V) => boolean): { [key: string]: V } {
   return Object.entries(obj)
-    .filter(([_, v]) => pred(v))
+    .filter(([k, v]) => pred(k, v))
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
 }
 
@@ -65,7 +66,38 @@ export function buildReport(data: DataLine[]): Report {
     timestamp: 0,
     properties: {},
   };
+
+  if (data.length === 0) {
+    return report;
+  }
+
   let seen: string[] = [];
+
+  let featureMap: { [key: string]: { [key: string]: string } } = {};
+
+  for (const line of data) {
+    if (line.type === "test_case") {
+      if (!(line.property in featureMap)) {
+        featureMap[line.property] = {};
+      }
+      for (const feature in line.features) {
+        const v = line.features[feature];
+        const alreadySet = feature in featureMap[line.property];
+        const numeric = typeof v === "number";
+        const integral = Number.isInteger(v);
+
+        if (numeric && !integral) {
+          featureMap[line.property][feature] = "continuous";
+        } else if (numeric && integral && (!alreadySet || featureMap[line.property][feature] === "ordinal")) {
+          featureMap[line.property][feature] = "ordinal";
+        } else if (!numeric) {
+          featureMap[line.property][feature] = "nominal";
+        } else {
+          console.warn("possibly broken feature");
+        }
+      }
+    }
+  }
 
   for (const line of data) {
     if (report.timestamp === 0) {
@@ -88,13 +120,15 @@ export function buildReport(data: DataLine[]): Report {
       const outcome = line.status === "gave_up"
         ? (line.representation === "" ? "gave_up" : "invalid")
         : line.status;
+
       report.properties[line.property].samples.push({
         outcome,
         duplicate,
         item: line.representation.toString(),
         features: {
-          ordinal: filterObject(line.features, v => typeof v === "number"),
-          nominal: filterObject(line.features, v => typeof v === "string")
+          ordinal: filterObject(line.features, (k, _) => featureMap[line.property][k] === "ordinal"),
+          nominal: filterObject(line.features, (k, _) => featureMap[line.property][k] === "nominal"),
+          continuous: filterObject(line.features, (k, _) => featureMap[line.property][k] === "continuous"),
         },
         coverage: (line.coverage !== null && line.coverage !== "no_coverage_info") ? line.coverage : {},
         dataLine: line,

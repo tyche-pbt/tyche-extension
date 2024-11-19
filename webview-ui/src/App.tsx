@@ -167,7 +167,7 @@ const App = (props: AppProps) => {
             </>}
             {state.property !== null && <>
               <div className="text-lg font-bold mb-1 break-all leading-none">
-                Charts{" "}
+                Tyche{" "}
               </div>
               <span>
                 This page shows charts that summarize the results of testing
