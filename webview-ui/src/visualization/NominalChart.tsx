@@ -22,7 +22,7 @@ export const NominalChart = (props: NominalChartProps) => {
   const data: { label: string, freq: number }[] = buckets.map(
     (bucket) => ({
       rawLabel: bucket,
-      label: bucket === undefined ? "N/a" : bucket === "" ? "true" : bucket,
+      label: bucket === undefined ? "Not present" : bucket === "" ? "Present" : bucket,
       freq: dataset.filter((y) => y.features.nominal[props.feature] === bucket).length / props.dataset.length,
     }));
 
@@ -123,8 +123,10 @@ export const NominalChart = (props: NominalChartProps) => {
   const listeners: SignalListeners = {
     filter: (_name, value) => {
       const label = (value as { label: string }).label;
-      if (label === "N/a") {
+      if (label === "Not present") {
         props.viewValue(undefined);
+      } else if (label === "Present") {
+        props.viewValue("");
       } else {
         props.viewValue(label);
       }
