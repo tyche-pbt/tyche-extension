@@ -2,7 +2,7 @@
   "name": "tyche",
   "displayName": "Tyche",
   "description": "A VSCode extension for visualizing data produced when testing a Hypothesis property.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Harrison Goldstein",
   "publisher": "HarrisonGoldstein",
   "repository": {
@@ -19,7 +19,9 @@
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:haskell",
-    "onLanguage:ocaml"
+    "onLanguage:ocaml",
+    "onLanguage:lean",
+    "onLanguage:coq"
   ],
   "main": "./out/extension.js",
   "contributes": {
