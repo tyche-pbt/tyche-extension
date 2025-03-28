@@ -77,7 +77,7 @@ export const HighLevelStats = (props: HighLevelStatsProps) => {
           <div className="flex">
             <div className="flex-1 text-sm opacity-60">Spent</div>
           </div>
-          <span className="text-3xl">{totalTime.toPrecision(2)}</span> seconds testing.
+          <span className="text-3xl">{totalTime >= 10 ? Math.round(totalTime) : totalTime.toPrecision(2)}</span> seconds testing.
         </Card>
       }
       <Card className="col-span-2">
