@@ -33,9 +33,6 @@ const App = (props: AppProps) => {
   const setState = useCallback(
     (newState: AppState) => {
       setStateRaw(newState);
-      if (vscode.isVSCode()) {
-        vscode.setState(newState);
-      }
     },
     [setStateRaw]
   );
