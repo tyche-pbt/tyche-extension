@@ -34,11 +34,12 @@ export class TychePanel {
   /**
    * Renders the Tyche panel.
    * @param extensionUri The URI of the extension.
+   * @param preserveFocus If true, do not steal focus when revealing the panel.
    * @returns The Tyche panel.
    */
-  public static getOrCreate(linesString: string | undefined, extensionUri: Uri) {
+  public static getOrCreate(linesString: string | undefined, extensionUri: Uri, preserveFocus: boolean = false) {
     if (TychePanel.currentPanel) {
-      TychePanel.currentPanel._panel.reveal(ViewColumn.Two);
+      TychePanel.currentPanel._panel.reveal(ViewColumn.Two, preserveFocus);
     } else {
       const panel = window.createWebviewPanel(
         "tyche",
