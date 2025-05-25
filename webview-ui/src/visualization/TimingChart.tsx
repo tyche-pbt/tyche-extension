@@ -83,6 +83,7 @@ export const TimingChart = ({ dataset, viewValues }: TimingChartProps) => {
             as: "cumulative_time",
           },
         ],
+        groupby: ["event"],
       },
     ],
     encoding: {
