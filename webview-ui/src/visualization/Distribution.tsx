@@ -19,10 +19,11 @@ type DistributionProps = {
   spec: VisualizationSpec;
   listeners?: SignalListeners;
   tooltip?: string;
+  controls?: React.ReactNode;
 };
 
 const Distribution = (props: DistributionProps) => {
-  const { title, spec, listeners, tooltip } = props;
+  const { title, spec, listeners, tooltip, controls } = props;
 
   return <div className="w-full">
     <div className="mb-1 flex">
@@ -31,7 +32,7 @@ const Distribution = (props: DistributionProps) => {
           {title}
         </span> {tooltip && <Tooltip>{tooltip}</Tooltip>}
       </div>
-      <div className="flex flex-row-reverse">
+      <div className="flex flex-row-reverse items-center">
         <Popover className="relative">
           <Popover.Button className="mx-2">
             <i className="codicon codicon-menu" />
@@ -54,6 +55,7 @@ const Distribution = (props: DistributionProps) => {
             }
           </Popover.Panel>
         </Popover>
+        {controls}
       </div>
     </div>
     <VegaLite
